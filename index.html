@@ -500,7 +500,7 @@ calc();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+  navigator.serviceWorker.register('/FAISABILTY/sw.js', {scope: '/FAISABILTY/'}).catch(e => console.log(e));
 }
 </script>
 </body>

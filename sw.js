@@ -1,5 +1,5 @@
-const CACHE = 'faisabilite-v1';
-const FILES = ['/index.html'];
+const CACHE = 'faisabilite-v2';
+const FILES = ['./index.html', './sw.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));

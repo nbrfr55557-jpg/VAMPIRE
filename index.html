@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Faisabilité">
+<title>✈ Faisabilité Carburant</title>
+
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy2: #1b2a3e;
+    --navy3: #243447;
+    --accent: #00d4ff;
+    --accent2: #00ff9d;
+    --yellow: #ffd60a;
+    --red: #ff4757;
+    --text: #e8f4fd;
+    --muted: #7a9ab5;
+    --border: rgba(0,212,255,0.2);
+    --input-bg: rgba(255,214,10,0.08);
+    --result-bg: rgba(0,255,157,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Arial Narrow', 'Helvetica Neue Condensed', 'Roboto Condensed', Arial, sans-serif; letter-spacing: 0.01em;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+    background-image: 
+      radial-gradient(ellipse at 20% 0%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(0,255,157,0.04) 0%, transparent 50%);
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--navy2), var(--navy3));
+    border-bottom: 2px solid var(--accent);
+    padding: 1rem 1.2rem 0.8rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  header h1 {
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  header p {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-top: 0.2rem;
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+  }
+
+  .content { padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+
+  .section {
+    background: var(--navy2);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .section-header {
+    background: linear-gradient(90deg, var(--navy3), rgba(0,212,255,0.05));
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .row:last-child { border-bottom: none; }
+
+  .row-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+  .row-label small {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-weight: 400;
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+  }
+
+  .row-value {
+    text-align: right;
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+    font-size: 1rem;
+  }
+
+  .row-unit {
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  /* Editable inputs (yellow) */
+  input[type="number"] {
+    background: var(--input-bg);
+    border: 1.5px solid rgba(255,214,10,0.5);
+    border-radius: 6px;
+    color: var(--yellow);
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+    font-size: 1rem;
+    text-align: right;
+    padding: 0.3rem 0.5rem;
+    width: 90px;
+    outline: none;
+    -moz-appearance: textfield;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input[type="number"]:focus {
+    border-color: var(--yellow);
+    background: rgba(255,214,10,0.14);
+  }
+
+  /* Calculated values */
+  .calc {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* Converted values (kg/km) */
+  .convert {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* Result rows */
+  .result-section .section-header {
+    color: var(--accent2);
+    background: linear-gradient(90deg, var(--navy3), rgba(0,255,157,0.05));
+    border-color: rgba(0,255,157,0.2);
+  }
+  .result-section { border-color: rgba(0,255,157,0.2); }
+
+  .result-row {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    background: var(--result-bg);
+  }
+  .result-row:last-child { border-bottom: none; }
+
+  .result-main {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .result-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .result-value {
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--accent2);
+    letter-spacing: 0.05em;
+  }
+  .result-value span { font-size: 0.9rem; color: var(--muted); margin-left: 0.2rem; }
+
+  .result-sub {
+    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+  .result-sub.warn {
+    color: var(--red);
+    text-align: right;
+  }
+
+  .result-warn {
+    color: var(--red) !important;
+  }
+  .result-ok {
+    color: var(--accent2) !important;
+  }
+
+  .alert-bar {
+    margin: 0 1rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: center;
+    display: none;
+  }
+  .alert-bar.show { display: block; }
+  .alert-bar.danger { background: rgba(255,71,87,0.15); border: 1px solid var(--red); color: var(--red); }
+  .alert-bar.ok { background: rgba(0,255,157,0.1); border: 1px solid var(--accent2); color: var(--accent2); }
+
+  .sub-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 1rem 0.4rem 1.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    background: rgba(0,0,0,0.1);
+  }
+  .sub-row:last-child { border-bottom: none; }
+  .sub-label { font-size: 0.8rem; color: var(--muted); }
+  .sub-value { font-family: ui-monospace, 'SF Mono', 'Courier New', monospace; font-size: 0.85rem; color: var(--text); }
+  .sub-unit { font-family: ui-monospace, 'SF Mono', 'Courier New', monospace; font-size: 0.7rem; color: var(--muted); margin-left: 0.3rem; }
+
+  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 0.4rem; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>✈ Faisabilité Carburant</h1>
+  <p>Compléter les cases 🟡 — calcul automatique</p>
+</header>
+
+<div class="content">
+
+  <!-- CARBURANT -->
+  <div class="section">
+    <div class="section-header">⛽ Carburant</div>
+    <div class="row">
+      <div class="row-label">Kéro disponible</div>
+      <input type="number" id="kero_dispo" value="2095" oninput="calc()">
+      <div class="row-unit">L</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg</span>
+      <span><span class="sub-value" id="kero_dispo_kg">—</span><span class="sub-unit">kg</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Réserve 30min HOGE</div>
+      <input type="number" id="reserve" value="230" oninput="calc()">
+      <div class="row-unit">L</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg</span>
+      <span><span class="sub-value" id="reserve_kg">—</span><span class="sub-unit">kg</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Kéro utilisable<small>calculé automatiquement</small></div>
+      <div class="row-value calc" id="kero_util">—</div>
+      <div class="row-unit">L</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg</span>
+      <span><span class="sub-value" id="kero_util_kg">—</span><span class="sub-unit">kg</span></span>
+    </div>
+  </div>
+
+  <!-- CONSOMMATIONS -->
+  <div class="section">
+    <div class="section-header">🔥 Consommations</div>
+    <div class="row">
+      <div class="row-label">Conso sur zone</div>
+      <input type="number" id="conso_zone" value="450" oninput="calc()">
+      <div class="row-unit">L/h</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg/h</span>
+      <span><span class="sub-value" id="conso_zone_kg">—</span><span class="sub-unit">kg/h</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso en transit</div>
+      <input type="number" id="conso_transit" value="530" oninput="calc()">
+      <div class="row-unit">L/h</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg/h</span>
+      <span><span class="sub-value" id="conso_transit_kg">—</span><span class="sub-unit">kg/h</span></span>
+    </div>
+  </div>
+
+  <!-- MISE EN PLACE -->
+  <div class="section">
+    <div class="section-header">📍 Mise en place</div>
+    <div class="row">
+      <div class="row-label">Distance zone d'action</div>
+      <input type="number" id="dist_mep" value="460" oninput="calc()">
+      <div class="row-unit">Nm</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en km</span>
+      <span><span class="sub-value" id="dist_mep_km">—</span><span class="sub-unit">km</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Vitesse MEP</div>
+      <input type="number" id="vit_mep" value="130" oninput="calc()">
+      <div class="row-unit">Kt</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en km/h</span>
+      <span><span class="sub-value" id="vit_mep_kmh">—</span><span class="sub-unit">km/h</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Flight time MEP<small>calculé automatiquement</small></div>
+      <div class="row-value calc" id="ft_mep">—</div>
+      <div class="row-unit">h</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso MEP<small>calculé automatiquement</small></div>
+      <div class="row-value calc" id="conso_mep">—</div>
+      <div class="row-unit">L</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg</span>
+      <span><span class="sub-value" id="conso_mep_kg">—</span><span class="sub-unit">kg</span></span>
+    </div>
+  </div>
+
+  <!-- RETOUR / FARP -->
+  <div class="section">
+    <div class="section-header">🔄 Retour / FARP</div>
+    <div class="row">
+      <div class="row-label">Distance retour ou FARP</div>
+      <input type="number" id="dist_ret" value="0" oninput="calc()">
+      <div class="row-unit">Nm</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en km</span>
+      <span><span class="sub-value" id="dist_ret_km">—</span><span class="sub-unit">km</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Vitesse RET</div>
+      <input type="number" id="vit_ret" value="125" oninput="calc()">
+      <div class="row-unit">Kt</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en km/h</span>
+      <span><span class="sub-value" id="vit_ret_kmh">—</span><span class="sub-unit">km/h</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Flight time RET<small>calculé automatiquement</small></div>
+      <div class="row-value calc" id="ft_ret">—</div>
+      <div class="row-unit">h</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso RET<small>calculé automatiquement</small></div>
+      <div class="row-value calc" id="conso_ret">—</div>
+      <div class="row-unit">L</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en kg</span>
+      <span><span class="sub-value" id="conso_ret_kg">—</span><span class="sub-unit">kg</span></span>
+    </div>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <div id="alert" class="alert-bar"></div>
+
+  <div class="section result-section">
+    <div class="section-header">✅ Résultats</div>
+    <div class="result-row">
+      <div class="result-main">
+        <div class="result-label">⏱ Playtime sur zone</div>
+        <div class="result-value" id="playtime">—<span>h</span></div>
+      </div>
+      <div class="result-sub" id="playtime_min">—</div>
+    </div>
+    <div class="result-row">
+      <div class="result-main">
+        <div class="result-label">⛽ Kéro minimum RTB/FARP</div>
+        <div class="result-value" id="kero_min">—<span>L</span></div>
+      </div>
+      <div class="result-sub" id="kero_min_kg">—</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function fmt(v, dec=1) {
+  if (!isFinite(v) || isNaN(v)) return '—';
+  return v.toFixed(dec);
+}
+function fmtH(h) {
+  if (!isFinite(h) || isNaN(h) || h < 0) return '—';
+  const hh = Math.floor(h);
+  const mm = Math.round((h - hh) * 60);
+  return `${hh}h${mm.toString().padStart(2,'0')}`;
+}
+
+function calc() {
+  const get = id => parseFloat(document.getElementById(id).value) || 0;
+
+  const kero_dispo = get('kero_dispo');
+  const reserve = get('reserve');
+  const conso_zone = get('conso_zone');
+  const conso_transit = get('conso_transit');
+  const dist_mep = get('dist_mep');
+  const vit_mep = get('vit_mep');
+  const dist_ret = get('dist_ret');
+  const vit_ret = get('vit_ret');
+
+  // Conversions
+  const kero_dispo_kg = kero_dispo * 0.8;
+  const reserve_kg = reserve * 0.8;
+  const kero_util = kero_dispo - reserve;
+  const kero_util_kg = kero_util * 0.8;
+  const conso_zone_kg = conso_zone * 0.79;
+  const conso_transit_kg = conso_transit * 0.79;
+  const dist_mep_km = dist_mep * 1.852;
+  const vit_mep_kmh = vit_mep * 1.852;
+  const dist_ret_km = dist_ret * 1.852;
+  const vit_ret_kmh = vit_ret * 1.852;
+
+  // MEP
+  const ft_mep = vit_mep > 0 ? ((60 / vit_mep) * dist_mep) / 60 : 0;
+  const conso_mep = ft_mep * conso_transit;
+  const conso_mep_kg = conso_mep * 0.79;
+
+  // RET
+  const ft_ret = vit_ret > 0 ? ((60 / vit_ret) * dist_ret) / 60 : 0;
+  const conso_ret = ft_ret * conso_transit;
+  const conso_ret_kg = conso_ret * 0.79;
+
+  // Results
+  const playtime = conso_zone > 0 ? (kero_util - conso_mep - conso_ret) / conso_zone : 0;
+  const kero_min = (ft_ret * conso_transit) + 230;
+  const kero_min_kg = kero_min / 0.8;
+
+  // Update DOM
+  document.getElementById('kero_dispo_kg').textContent = fmt(kero_dispo_kg, 0);
+  document.getElementById('reserve_kg').textContent = fmt(reserve_kg, 0);
+  document.getElementById('kero_util').textContent = fmt(kero_util, 0);
+  document.getElementById('kero_util_kg').textContent = fmt(kero_util_kg, 0);
+  document.getElementById('conso_zone_kg').textContent = fmt(conso_zone_kg, 1);
+  document.getElementById('conso_transit_kg').textContent = fmt(conso_transit_kg, 1);
+  document.getElementById('dist_mep_km').textContent = fmt(dist_mep_km, 0);
+  document.getElementById('vit_mep_kmh').textContent = fmt(vit_mep_kmh, 0);
+  document.getElementById('ft_mep').textContent = fmtH(ft_mep);
+  document.getElementById('conso_mep').textContent = fmt(conso_mep, 0);
+  document.getElementById('conso_mep_kg').textContent = fmt(conso_mep_kg, 0);
+  document.getElementById('dist_ret_km').textContent = fmt(dist_ret_km, 0);
+  document.getElementById('vit_ret_kmh').textContent = fmt(vit_ret_kmh, 0);
+  document.getElementById('ft_ret').textContent = fmtH(ft_ret);
+  document.getElementById('conso_ret').textContent = fmt(conso_ret, 0);
+  document.getElementById('conso_ret_kg').textContent = fmt(conso_ret_kg, 0);
+
+  // Results
+  const ptEl = document.getElementById('playtime');
+  const alertEl = document.getElementById('alert');
+
+  if (playtime >= 0) {
+    ptEl.innerHTML = `${fmtH(playtime)}<span>h</span>`;
+    ptEl.className = 'result-value result-ok';
+    const ptMin = document.getElementById('playtime_min');
+    ptMin.textContent = `≈ ${Math.round(playtime * 60)} min sur zone`;
+    ptMin.className = 'result-sub';
+    alertEl.className = 'alert-bar ok show';
+    alertEl.textContent = '✓ Mission faisable';
+  } else {
+    ptEl.innerHTML = `NÉGATIF<span></span>`;
+    ptEl.className = 'result-value result-warn';
+    const ptMin = document.getElementById('playtime_min');
+    ptMin.textContent = `− ${Math.abs(Math.round(playtime * 60))} min manquantes`;
+    ptMin.className = 'result-sub warn';
+    alertEl.className = 'alert-bar danger show';
+    alertEl.textContent = '⚠ Mission NON faisable — carburant insuffisant';
+  }
+
+  document.getElementById('kero_min').innerHTML = `${fmt(kero_min, 0)}<span>L</span>`;
+  document.getElementById('kero_min_kg').textContent = `≈ ${fmt(kero_min_kg, 0)} kg`;
+}
+
+calc();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
+

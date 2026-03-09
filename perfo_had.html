@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PERFO HAD">
+<title>🚁 PERFO HAD</title>
+<style>
+:root {
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2235;
+  --accent:#f59e0b;--accent2:#fbbf24;
+  --green:#10b981;--red:#ef4444;--blue:#38bdf8;
+  --text:#f1f5f9;--muted:#64748b;
+  --border:rgba(245,158,11,0.15);
+  --green-border:rgba(16,185,129,0.2);
+  --red-border:rgba(239,68,68,0.2);
+  --mono:ui-monospace,'SF Mono','Courier New',monospace;
+  --sans:'Arial Narrow',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem;
+  background-image:radial-gradient(ellipse at 0% 0%,rgba(245,158,11,.05) 0%,transparent 50%),
+  radial-gradient(ellipse at 100% 100%,rgba(16,185,129,.03) 0%,transparent 50%)}
+header{background:linear-gradient(135deg,#0f1f35,#1a2d45);border-bottom:2px solid var(--accent);
+  padding:.9rem 1.2rem .7rem;position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:1.2rem;font-weight:900;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+header p{font-size:.7rem;color:var(--muted);font-family:var(--mono);margin-top:.15rem}
+.header-badge{font-family:var(--mono);font-size:.65rem;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:.2rem .5rem;letter-spacing:.08em}
+.content{padding:.8rem;display:flex;flex-direction:column;gap:.75rem}
+.section{background:var(--bg2);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+.section-header{background:linear-gradient(90deg,var(--bg3),rgba(245,158,11,.04));padding:.45rem .9rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
+  border-bottom:1px solid var(--border);font-family:var(--mono)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.04)}
+.grid2:last-child{border-bottom:none}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,.04)}
+.grid3:last-child{border-bottom:none}
+.cell{padding:.55rem .7rem;border-right:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column;gap:.15rem}
+.cell:last-child{border-right:none}
+.cell-label{font-size:.65rem;color:var(--muted);font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.cell-unit{font-size:.6rem;color:var(--muted);font-family:var(--mono)}
+input[type="number"],select{background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.45);
+  border-radius:5px;color:var(--accent2);font-family:var(--mono);font-size:.9rem;padding:.25rem .4rem;
+  width:100%;outline:none;-moz-appearance:textfield;transition:border-color .15s,background .15s}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type="number"]:focus,select:focus{border-color:var(--accent);background:rgba(245,158,11,.14)}
+select{cursor:pointer;-webkit-appearance:none;appearance:none}
+select option{background:var(--bg2);color:var(--text)}
+.pylones-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.pylon-col{border-right:1px solid rgba(255,255,255,.06);overflow:hidden}
+.pylon-col:last-child{border-right:none}
+.pylon-header{background:var(--bg3);padding:.4rem .5rem;font-size:.6rem;font-weight:700;
+  letter-spacing:.1em;color:var(--blue);text-align:center;font-family:var(--mono);
+  border-bottom:1px solid rgba(255,255,255,.06);text-transform:uppercase}
+.pylon-cell{padding:.45rem .5rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.pylon-cell:last-child{border-bottom:none}
+.pylon-label{font-size:.6rem;color:var(--muted);font-family:var(--mono);margin-bottom:.2rem}
+.canon-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:.5rem .7rem;gap:.5rem;
+  border-bottom:1px solid rgba(255,255,255,.04);align-items:end}
+.result-sub-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.04)}
+.result-sub-row:last-child{border-bottom:none}
+.result-sub-cell{padding:.55rem .9rem;border-right:1px solid rgba(255,255,255,.04)}
+.result-sub-cell:last-child{border-right:none}
+.rs-label{font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em}
+.rs-val{font-family:var(--mono);font-size:1rem;color:var(--text);margin-top:.15rem}
+.rs-val.neutral{color:var(--blue)}
+.masse-totale-row{background:rgba(245,158,11,.05);padding:.7rem .9rem;
+  display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.04)}
+.mt-label{font-size:.9rem;font-weight:700;color:var(--accent2)}
+.mt-val{font-family:var(--mono);font-size:1.8rem;color:var(--accent2)}
+.mt-val span{font-size:.8rem;color:var(--muted);margin-left:.2rem}
+
+/* H/V */
+.hv-section{border-color:var(--red-border)}
+.hv-section .section-header{color:var(--red);background:linear-gradient(90deg,var(--bg3),rgba(239,68,68,.04));border-color:var(--red-border)}
+
+
+.hv-diagram{
+  position:relative;height:160px;
+  border-top:1px solid rgba(255,255,255,.04);
+  background:rgba(0,0,0,0.2);
+  margin:0;
+}
+.hv-kp{position:absolute;display:flex;flex-direction:column;gap:.15rem}
+.hv-kp-label{font-size:.6rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.hv-kp-val{font-family:var(--mono);font-size:1.1rem;color:var(--red);font-weight:700}
+.hv-kp-val span{font-size:.65rem;color:var(--muted);font-weight:400}
+.hv-kp.top-left{top:.7rem;left:.9rem}
+.hv-kp.mid-right{top:50%;right:.9rem;transform:translateY(-50%);text-align:right;align-items:flex-end}
+.hv-kp.bot-left{bottom:.7rem;left:.9rem}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🚁 PERFO HAD</h1><p>Cases 🟡 → calcul automatique</p></div>
+  <div class="header-badge">HAD</div>
+</header>
+<div class="content">
+
+  <div class="section">
+    <div class="section-header">⚖️ Masses de base</div>
+    <div class="grid3">
+      <div class="cell"><div class="cell-label">Masse machine</div><input type="number" id="masse_machine" value="4300" oninput="calc()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Pilote</div><input type="number" id="masse_pilote" value="120" oninput="calc()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Gunner</div><input type="number" id="masse_gunner" value="120" oninput="calc()"><div class="cell-unit">kg</div></div>
+    </div>
+    <div class="grid2">
+      <div class="cell"><div class="cell-label">Masse soute</div><input type="number" id="masse_soute" value="65" oninput="calc()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">TR0 principal</div><input type="number" id="tro_princ" value="1100" oninput="calc()"><div class="cell-unit">L</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">🚀 Emports</div>
+    <div class="pylones-grid">
+      <div class="pylon-col">
+        <div class="pylon-header">OL</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_ol" onchange="updatePylon('ol');calc()">
+            <option value="VIDE">VIDE</option><option value="PLR12">PLR12</option><option value="PLM">PLM</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_ol_mun" style="display:none"><div class="pylon-label" id="label_ol_mun">Nb</div><input type="number" id="qte_ol" value="0" min="0" oninput="calc()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_ol" style="font-family:var(--mono);font-size:.85rem">0 <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+      <div class="pylon-col">
+        <div class="pylon-header">IL</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_il" onchange="updatePylon('il');calc()">
+            <option value="FERRY" selected>FERRY</option><option value="PLR22">PLR22</option><option value="CHAISE">CHAISE</option><option value="VIDE">VIDE</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_il_mun"><div class="pylon-label" id="label_il_mun">QTE TR0</div><input type="number" id="qte_il" value="365" min="0" oninput="calc()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_il" style="font-family:var(--mono);font-size:.85rem">— <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+      <div class="pylon-col">
+        <div class="pylon-header">IR</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_ir" onchange="updatePylon('ir');calc()">
+            <option value="FERRY" selected>FERRY</option><option value="PLR22">PLR22</option><option value="CHAISE">CHAISE</option><option value="VIDE">VIDE</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_ir_mun"><div class="pylon-label" id="label_ir_mun">QTE TR0</div><input type="number" id="qte_ir" value="365" min="0" oninput="calc()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_ir" style="font-family:var(--mono);font-size:.85rem">— <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+      <div class="pylon-col">
+        <div class="pylon-header">OR</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_or" onchange="updatePylon('or');calc()">
+            <option value="VIDE">VIDE</option><option value="PLR12">PLR12</option><option value="PLM">PLM</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_or_mun" style="display:none"><div class="pylon-label" id="label_or_mun">Nb</div><input type="number" id="qte_or" value="0" min="0" oninput="calc()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_or" style="font-family:var(--mono);font-size:.85rem">0 <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">🔫 Canon</div>
+    <div class="canon-row">
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb obus</div><input type="number" id="nb_obus" value="450" min="0" oninput="calc()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb caissons</div><input type="number" id="nb_caissons" value="4" min="0" oninput="calc()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Masse canon</div><div style="font-family:var(--mono);font-size:1rem;color:var(--text);padding:.25rem 0" id="masse_canon">—</div></div>
+    </div>
+
+  </div>
+
+  <div class="section">
+    <div class="section-header">📊 Récapitulatif masse</div>
+    <div class="result-sub-row" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="result-sub-cell"><div class="rs-label">TR0 total</div><div class="rs-val neutral" id="tro_tot">—<span style="font-size:.7rem;color:var(--muted)"> L</span></div></div>
+      <div class="result-sub-cell"><div class="rs-label">Masse TR0</div><div class="rs-val neutral" id="masse_tro">—<span style="font-size:.7rem;color:var(--muted)"> kg</span></div></div>
+      <div class="result-sub-cell"><div class="rs-label">Jettison</div><div class="rs-val neutral" id="masse_jettison">—<span style="font-size:.7rem;color:var(--muted)"> kg</span></div></div>
+    </div>
+    <div class="masse-totale-row">
+      <div class="mt-label">MASSE TOTALE</div>
+      <div class="mt-val" id="masse_totale">—<span>kg</span></div>
+    </div>
+  </div>
+
+  <div class="section hv-section">
+    <div class="section-header">📈 Diagramme H/V</div>
+    <div class="hv-diagram">
+
+      <div class="hv-kp top-left">
+        <div class="hv-kp-label">Corbeaux 🐦‍⬛</div>
+        <div class="hv-kp-val" id="hv_hmax">—<span> ft</span></div>
+      </div>
+      <div class="hv-kp mid-right">
+        <div class="hv-kp-label">V1 🚀</div>
+        <div class="hv-kp-val" id="hv_vmax">—<span> kt</span></div>
+      </div>
+      <div class="hv-kp bot-left">
+        <div class="hv-kp-label">Crocos 🐊</div>
+        <div class="hv-kp-val" id="hv_hmin">—<span> ft</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+const DONNEES={
+  VIDE:{masse:0,type:null,max:0},
+  PLM:{masse:93.5,type:'MISSILES',max:2},
+  PLR12:{masse:43,type:'ROQUETTES',max:12},
+  PLR22:{masse:65,type:'ROQUETTES',max:22},
+  FERRY:{masse:37,type:'QTE TR0',max:365},
+  CHAISE:{masse:66,type:'HELLFIRE',max:4},
+};
+const MUNIT={RKT:7.75,OBUS:0.55,CAISSON:3.5,HELLFIRE:47,MISTRAL:19.5};
+const HV=[
+  {masse:5500,vmax:3, hmax:140,hmin:130},
+  {masse:5600,vmax:6, hmax:160,hmin:90},
+  {masse:5700,vmax:11,hmax:175,hmin:60},
+  {masse:5800,vmax:13,hmax:190,hmin:50},
+  {masse:5900,vmax:16,hmax:210,hmin:41},
+  {masse:6000,vmax:19,hmax:225,hmin:35},
+  {masse:6100,vmax:21,hmax:246,hmin:30},
+  {masse:6200,vmax:23,hmax:260,hmin:25},
+  {masse:6300,vmax:28,hmax:276,hmin:18},
+  {masse:6400,vmax:30,hmax:290,hmin:15},
+  {masse:6500,vmax:32,hmax:300,hmin:14},
+  {masse:6600,vmax:34,hmax:315,hmin:13},
+];
+
+function interpHV(m){
+  // Arrondi à la masse supérieure dans le tableau
+  if(m<=HV[0].masse)return{...HV[0]};
+  if(m>=HV[HV.length-1].masse)return{...HV[HV.length-1]};
+  for(let i=0;i<HV.length;i++){
+    if(m<=HV[i].masse)return{...HV[i]};
+  }
+  return{...HV[HV.length-1]};
+}
+
+function updatePylon(s){
+  const sel=document.getElementById('emport_'+s).value;
+  const cm=document.getElementById('cell_'+s+'_mun');
+  const lm=document.getElementById('label_'+s+'_mun');
+  const inp=document.getElementById('qte_'+s);
+  if(sel==='VIDE'){cm.style.display='none';inp.value=0;}
+  else{cm.style.display='block';lm.textContent=DONNEES[sel].type;inp.max=DONNEES[sel].max;
+    if(parseFloat(inp.value)>DONNEES[sel].max)inp.value=DONNEES[sel].max;}
+}
+
+function getMpylon(s){
+  const sel=document.getElementById('emport_'+s).value;
+  const q=parseFloat(document.getElementById('qte_'+s).value)||0;
+  if(sel==='VIDE')return 0;
+  if(sel==='PLR12')return DONNEES.PLR12.masse+q*MUNIT.RKT;
+  if(sel==='PLM')return DONNEES.PLM.masse-(2-q)*MUNIT.MISTRAL;
+  if(sel==='PLR22')return DONNEES.PLR22.masse+q*MUNIT.RKT;
+  if(sel==='FERRY')return DONNEES.FERRY.masse+0.79*q;
+  if(sel==='CHAISE')return DONNEES.CHAISE.masse+q*MUNIT.HELLFIRE;
+  return 0;
+}
+
+function f(v,d=0){return(isFinite(v)&&!isNaN(v))?v.toFixed(d):'—'}
+
+function calc(){
+  const g=id=>parseFloat(document.getElementById(id).value)||0;
+  const mm=g('masse_machine'),mp=g('masse_pilote'),mg=g('masse_gunner'),
+        ms=g('masse_soute'),tp=g('tro_princ'),no=g('nb_obus'),nc=g('nb_caissons');
+  const mor=getMpylon('or'),mir=getMpylon('ir'),mil=getMpylon('il'),mol=getMpylon('ol');
+  const mc=no*MUNIT.OBUS+nc*MUNIT.CAISSON;
+  const mj=mor+mir+mil+mol;
+  const sir=document.getElementById('emport_ir').value;
+  const sil=document.getElementById('emport_il').value;
+  const qir=parseFloat(document.getElementById('qte_ir').value)||0;
+  const qil=parseFloat(document.getElementById('qte_il').value)||0;
+  const tt=tp+(sir==='FERRY'?qir:0)+(sil==='FERRY'?qil:0);
+  const mt_val=mm+mp+mg+ms+mc+mj+tp*0.79;
+
+  document.getElementById('masse_or').innerHTML=`${f(mor)} <span style="font-size:.6rem;color:var(--muted)">kg</span>`;
+  document.getElementById('masse_ir').innerHTML=`${f(mir)} <span style="font-size:.6rem;color:var(--muted)">kg</span>`;
+  document.getElementById('masse_il').innerHTML=`${f(mil)} <span style="font-size:.6rem;color:var(--muted)">kg</span>`;
+  document.getElementById('masse_ol').innerHTML=`${f(mol)} <span style="font-size:.6rem;color:var(--muted)">kg</span>`;
+  document.getElementById('masse_canon').textContent=`${f(mc)} kg`;
+  document.getElementById('masse_jettison').innerHTML=`${f(mj,0)}<span style="font-size:.7rem;color:var(--muted)"> kg</span>`;
+  document.getElementById('tro_tot').innerHTML=`${f(tt)}<span style="font-size:.7rem;color:var(--muted)"> L</span>`;
+  document.getElementById('masse_tro').innerHTML=`${f(tt*0.79)}<span style="font-size:.7rem;color:var(--muted)"> kg</span>`;
+  document.getElementById('masse_totale').innerHTML=`${f(mt_val,0)}<span>kg</span>`;
+
+  drawHV(mt_val);
+}
+
+function drawHV(masse){
+  const cur=interpHV(masse);
+  document.getElementById('hv_hmax').innerHTML=`${f(cur.hmax,0)}<span> ft</span>`;
+  document.getElementById('hv_vmax').innerHTML=`${f(cur.vmax,0)}<span> kt</span>`;
+  document.getElementById('hv_hmin').innerHTML=`${f(cur.hmin,0)}<span> ft</span>`;
+}
+
+updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
+calc();
+window.addEventListener('resize',()=>calc());
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/FAISABILTY/sw_had.js',{scope:'/FAISABILTY/'}).catch(()=>{});
+}
+</script>
+</body>
+</html>

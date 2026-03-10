@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Budget 2025">
+<title>Budget 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #17171e;
+    --surface2: #1e1e28;
+    --border: #2a2a38;
+    --accent: #00e5a0;
+    --accent2: #ff4d6d;
+    --accent3: #ffd166;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding-bottom: 120px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  header h1 span { color: var(--accent); }
+  .month-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin-top: 12px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .month-tabs::-webkit-scrollbar { display: none; }
+  .mtab {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .mtab.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 100;
+  }
+  .navbtn {
+    flex: 1;
+    padding: 12px 4px 16px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: color .2s;
+  }
+  .navbtn .ico { font-size: 20px; }
+  .navbtn.active { color: var(--accent); }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* FIELDS */
+  .field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+  .field:last-child { border-bottom: none; }
+  .field label {
+    font-size: 12px;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.3;
+  }
+  .field input[type="number"] {
+    width: 110px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 10px;
+    text-align: right;
+    outline: none;
+    transition: border-color .2s;
+    -moz-appearance: textfield;
+  }
+  .field input[type="number"]::-webkit-inner-spin-button,
+  .field input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .field input[type="number"]:focus { border-color: var(--accent); }
+  .field .unit { color: var(--muted); font-size: 11px; margin-left: 4px; flex-shrink: 0; }
+
+  /* DEP FIELD — double colonne */
+  .dep-field {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .dep-field:last-child { border-bottom: none; }
+  .dep-field .dep-label {
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 7px;
+    line-height: 1.3;
+  }
+  .dep-field .dep-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  /* Cumul — colonne gauche */
+  .dep-cumul {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .dep-cumul .clbl { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; }
+  .dep-cumul .cval { font-size: 16px; font-weight: 500; color: var(--accent2); }
+
+  /* Ajout rapide — colonne droite */
+  .dep-add {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dep-add input[type="number"] {
+    width: 90px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 10px;
+    text-align: right;
+    outline: none;
+    transition: border-color .2s;
+    -moz-appearance: textfield;
+  }
+  .dep-add input[type="number"]::-webkit-inner-spin-button,
+  .dep-add input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .dep-add input[type="number"]:focus { border-color: var(--accent3); }
+  .dep-add input[type="number"]::placeholder { color: var(--muted); font-size: 12px; }
+  .add-btn {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent3);
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform .1s, background .15s;
+    line-height: 1;
+  }
+  .add-btn:active { transform: scale(.92); background: #e6bb55; }
+  /* flash animation on cumul update */
+  @keyframes flash {
+    0%   { background: rgba(255,209,102,.25); }
+    100% { background: var(--surface2); }
+  }
+  .flash { animation: flash .4s ease-out; }
+
+  /* TOTALS */
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-top: 6px;
+  }
+  .total-row .lbl { font-size: 12px; font-family: 'Syne', sans-serif; font-weight: 600; }
+  .total-row .val { font-size: 18px; font-weight: 500; }
+
+  .tr-green { background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.25); }
+  .tr-green .val { color: var(--accent); }
+  .tr-red { background: rgba(255,77,109,.1); border: 1px solid rgba(255,77,109,.25); }
+  .tr-red .val { color: var(--accent2); }
+  .tr-yellow { background: rgba(255,209,102,.1); border: 1px solid rgba(255,209,102,.25); }
+  .tr-yellow .val { color: var(--accent3); }
+  .tr-blue { background: rgba(99,179,237,.1); border: 1px solid rgba(99,179,237,.25); }
+  .tr-blue .val { color: #63b3ed; }
+
+  /* BILAN PAGE */
+  .big-solde {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+  .big-solde .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+  }
+  .big-solde .amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    margin: 8px 0 4px;
+    letter-spacing: -2px;
+  }
+  .big-solde .sub { font-size: 11px; color: var(--muted); }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-box .slbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: 'Syne', sans-serif; }
+  .stat-box .sval { font-size: 20px; font-weight: 500; }
+
+  /* ANNUEL */
+  .month-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    gap: 10px;
+  }
+  .month-row .mname { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; width: 36px; flex-shrink: 0; }
+  .month-row .bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .month-row .bar { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .month-row .mval { font-size: 12px; text-align: right; min-width: 70px; flex-shrink: 0; }
+
+  /* DETTES */
+  .dette-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .dette-item:last-child { border-bottom: none; }
+  .dette-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .dette-name { font-size: 13px; font-weight: 500; }
+  .dette-capital { font-size: 16px; font-weight: 500; color: var(--accent2); }
+  .dette-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dette-mini { background: var(--surface2); border-radius: 8px; padding: 8px 10px; border: 1px solid var(--border); }
+  .dette-mini label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 3px; }
+  .dette-mini input {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  .dette-mini input::-webkit-inner-spin-button,
+  .dette-mini input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  /* OBJECTIFS */
+  .obj-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .obj-item:last-child { border-bottom: none; }
+  .obj-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .obj-name { font-size: 13px; font-weight: 500; }
+  .obj-pct { font-size: 13px; font-weight: 500; color: var(--accent); }
+  .obj-progress { height: 5px; background: var(--border); border-radius: 3px; margin: 6px 0 10px; overflow: hidden; }
+  .obj-progress .fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width .4s; }
+  .obj-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .obj-mini { background: var(--surface2); border-radius: 8px; padding: 8px 10px; border: 1px solid var(--border); }
+  .obj-mini label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 3px; }
+  .obj-mini input {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  .obj-mini input::-webkit-inner-spin-button,
+  .obj-mini input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  /* RESET BTN */
+  .reset-btn {
+    width: 100%;
+    padding: 14px;
+    background: rgba(255,77,109,.1);
+    border: 1px solid rgba(255,77,109,.3);
+    border-radius: 10px;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background .2s;
+  }
+  .reset-btn:active { background: rgba(255,77,109,.2); }
+
+  .section-note {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    padding: 8px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Budget <span>2025</span></h1>
+  <div class="month-tabs" id="monthTabs"></div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <button class="navbtn active" onclick="showPage('saisie',this)" id="nav-saisie">
+    <span class="ico">✏️</span>Saisie
+  </button>
+  <button class="navbtn" onclick="showPage('bilan',this)">
+    <span class="ico">📊</span>Bilan
+  </button>
+  <button class="navbtn" onclick="showPage('annuel',this)">
+    <span class="ico">📅</span>Annuel
+  </button>
+  <button class="navbtn" onclick="showPage('dettes',this)">
+    <span class="ico">💳</span>Dettes
+  </button>
+  <button class="navbtn" onclick="showPage('objectifs',this)">
+    <span class="ico">🎯</span>Objectifs
+  </button>
+</nav>
+
+<!-- SAISIE PAGE -->
+<div class="page active" id="page-saisie">
+
+  <!-- Revenus -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--accent)"></span>Revenus</div>
+    <div class="field">
+      <label>Salaire net</label>
+      <input type="number" id="rev_salaire" placeholder="0" min="0" oninput="save()">
+      <span class="unit">€</span>
+    </div>
+    <div class="field">
+      <label>Freelance / extra</label>
+      <input type="number" id="rev_freelance" placeholder="0" min="0" oninput="save()">
+      <span class="unit">€</span>
+    </div>
+    <div class="field">
+      <label>Aides / allocations</label>
+      <input type="number" id="rev_aides" placeholder="0" min="0" oninput="save()">
+      <span class="unit">€</span>
+    </div>
+    <div class="field">
+      <label>Autres revenus</label>
+      <input type="number" id="rev_autres" placeholder="0" min="0" oninput="save()">
+      <span class="unit">€</span>
+    </div>
+    <div class="total-row tr-green">
+      <span class="lbl">Total revenus</span>
+      <span class="val" id="tot_revenus">0 €</span>
+    </div>
+  </div>
+
+  <!-- Dépenses -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>Dépenses</div>
+
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px;padding:0 2px">
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Cumul du mois</span>
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Ajouter →</span>
+    </div>
+
+    <div class="dep-field">
+      <div class="dep-label">🏠 Logement (loyer, charges)</div>
+      <div class="dep-row">
+        <div class="dep-cumul" id="cumul_dep_logement"><span class="clbl">Total</span><span class="cval">0 €</span></div>
+        <div class="dep-add">
+          <input type="number" id="quick_dep_logement" placeholder="montant" min="0" onkeydown="if(event.key==='Enter')addDep('dep_logement')">
+          <button class="add-btn" onclick="addDep('dep_logement')">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-field">
+      <div class="dep-label">🚗 Transport</div>
+      <div class="dep-row">
+        <div class="dep-cumul" id="cumul_dep_transport"><span class="clbl">Total</span><span class="cval">0 €</span></div>
+        <div class="dep-add">
+          <input type="number" id="quick_dep_transport" placeholder="montant" min="0" onkeydown="if(event.key==='Enter')addDep('dep_transport')">
+          <button class="add-btn" onclick="addDep('dep_transport')">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-field">
+      <div class="dep-label">🛒 Alimentation / courses</div>
+      <div class="dep-row">
+        <div class="dep-cumul" id="cumul_dep_alim"><span class="clbl">Total</span><span class="cval">0 €</span></div>
+        <div class="dep-add">
+          <input type="number" id="quick_dep_alim" placeholder="montant" min="0" onkeydown="if(event.key==='Enter')addDep('dep_alim')">
+          <button class="add-btn" onclick="addDep('dep_alim')">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-field">
+      <div class="dep-label">🍽️ Sorties & restaurants</div>
+      <div class="dep-row">
+        <div class="dep-cumul" id="cumul_dep_sorties"><span class="clbl">Total</span><span class="cval">0 €</span></div>
+        <div class="dep-add">
+          <input type="number" id="quick_dep_sorties" placeholder="montant" min="0" onkeydown="if(event.key==='Enter')addDep('dep_sorties')">
+          <button class="add-btn" onclick="addDep('dep_sorties')">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-field">
+      <div class="dep-label">💊 Santé & sport</div>
+      <div class="dep-row">
+        <div class="dep-cumul" id="cumul_dep_sante"><span class="clbl">Total</span><span class="cval">0 €</span></div>
+        <div class="dep-add">
+          <input type="number" id="quick_dep_sante" placeholder="montant" min="0" onkeydown="if(event.key==='Enter')addDep('dep_sante')">
+          <button class="add-btn" onclick="addDep('dep_sante')">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-field">
+      <div class="dep-label">📱 Abonnements & télécom</div>
+      <div class="dep-row">
+        <div class="dep-cumul" id="cumul_dep_abo"><span class="clbl">Total</span><span class="cval">0 €</span></div>
+        <div class="dep-add">
+          <input type="number" id="quick_dep_abo" placeholder="montant" min="0" onkeydown="if(event.key==='Enter')addDep('dep_abo')">
+          <button class="add-btn" onclick="addDep('dep_abo')">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="total-row tr-red" style="margin-top:10px">
+      <span class="lbl">Total dépenses</span>
+      <span class="val" id="tot_depenses">0 €</span>
+    </div>
+  </div>
+
+  <!-- Bilan inline -->
+  <div id="inline-bilan-card" style="border-radius:var(--radius);padding:20px;margin-bottom:12px;border:1px solid var(--border);transition:background .3s,border-color .3s;">
+    <div style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">⚖️ Bilan du mois</div>
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+      <span id="inline-solde-amount" style="font-family:'Syne',sans-serif;font-size:42px;font-weight:800;letter-spacing:-2px;transition:color .3s;">0 €</span>
+      <span id="inline-solde-badge" style="font-size:12px;color:var(--muted);">—</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.2);border-radius:10px;padding:10px;">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Revenus</div>
+        <div id="inline-rev" style="font-size:15px;font-weight:500;color:var(--accent);">0 €</div>
+      </div>
+      <div style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);border-radius:10px;padding:10px;">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Dépenses</div>
+        <div id="inline-dep" style="font-size:15px;font-weight:500;color:var(--accent2);">0 €</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-note">Les données sont sauvegardées automatiquement sur cet appareil</p>
+</div>
+
+<!-- BILAN PAGE -->
+<div class="page" id="page-bilan">
+  <div class="big-solde" id="bigSolde">
+    <div class="lbl">Solde du mois</div>
+    <div class="amount" id="bilanAmount">0 €</div>
+    <div class="sub" id="bilanSub">—</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="slbl">Revenus</div>
+      <div class="sval" style="color:var(--accent)" id="b_rev">0 €</div>
+    </div>
+    <div class="stat-box">
+      <div class="slbl">Dépenses</div>
+      <div class="sval" style="color:var(--accent2)" id="b_dep">0 €</div>
+    </div>
+    <div class="stat-box">
+      <div class="slbl">Épargne</div>
+      <div class="sval" style="color:var(--accent3)" id="b_sav">0 €</div>
+    </div>
+    <div class="stat-box">
+      <div class="slbl">Taux d'épargne</div>
+      <div class="sval" style="color:var(--accent)" id="b_taux">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--accent)"></span>Répartition dépenses</div>
+    <div id="depBreakdown"></div>
+  </div>
+</div>
+
+<!-- ANNUEL PAGE -->
+<div class="page" id="page-annuel">
+  <div class="stat-grid" style="margin-bottom:12px">
+    <div class="stat-box">
+      <div class="slbl">Revenus annuels</div>
+      <div class="sval" style="color:var(--accent)" id="ann_rev">—</div>
+    </div>
+    <div class="stat-box">
+      <div class="slbl">Épargne annuelle</div>
+      <div class="sval" style="color:var(--accent3)" id="ann_sav">—</div>
+    </div>
+  </div>
+  <div id="annualList"></div>
+</div>
+
+<!-- DETTES PAGE -->
+<div class="page" id="page-dettes">
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--accent2)"></span>Crédits en cours</div>
+    <div id="dettesList"></div>
+  </div>
+  <div class="total-row tr-red" style="margin-bottom:12px">
+    <span class="lbl">Capital restant total</span>
+    <span class="val" id="tot_dettes">0 €</span>
+  </div>
+  <div class="total-row tr-red">
+    <span class="lbl">Mensualités totales</span>
+    <span class="val" id="tot_mensualites">0 €</span>
+  </div>
+</div>
+
+<!-- OBJECTIFS PAGE -->
+<div class="page" id="page-objectifs">
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--accent)"></span>Objectifs d'épargne</div>
+    <div id="objectifsList"></div>
+  </div>
+  <div class="total-row tr-green">
+    <span class="lbl">Total objectifs</span>
+    <span class="val" id="tot_objectifs">0 €</span>
+  </div>
+</div>
+
+<script>
+const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Déc"];
+let currentMonth = new Date().getMonth();
+
+const FIELDS_REV = ['rev_salaire','rev_freelance','rev_aides','rev_autres'];
+const FIELDS_SAV = [];
+const FIELDS_DEP = ['dep_logement','dep_transport','dep_alim','dep_sorties','dep_sante','dep_abo'];
+const FIELDS_SAISIE = [...FIELDS_REV, ...FIELDS_DEP];
+
+const DEP_LABELS = {
+  dep_logement:'Logement', dep_transport:'Transport',
+  dep_alim:'Alimentation', dep_sorties:'Sorties',
+  dep_sante:'Santé', dep_abo:'Abonnements'
+};
+
+const DETTES = [
+  {id:'d_immo', name:'Crédit immobilier'},
+  {id:'d_auto', name:'Crédit auto'},
+  {id:'d_conso', name:'Crédit conso'},
+  {id:'d_perso', name:'Prêt perso'},
+  {id:'d_autres', name:'Autres'},
+];
+
+const OBJECTIFS = [
+  {id:'obj_urgence', name:'Fonds d\'urgence'},
+  {id:'obj_vacances', name:'Vacances / voyage'},
+  {id:'obj_immo', name:'Projet immobilier'},
+  {id:'obj_vehicule', name:'Véhicule'},
+  {id:'obj_autre', name:'Autre projet'},
+];
+
+function fmt(n) {
+  if (n === 0) return '0 €';
+  return (n < 0 ? '-' : '') + Math.abs(Math.round(n)).toLocaleString('fr-FR') + ' €';
+}
+function pct(v) { return Math.round(v * 10) / 10 + ' %'; }
+function g(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+function s(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
+function getKey(field) { return `budget_m${currentMonth}_${field}`; }
+function getDKey(field) { return `budget_dette_${field}`; }
+function getOKey(field, sub) { return `budget_obj_${field}_${sub}`; }
+function getDepKey(field) { return `budget_m${currentMonth}_${field}_cumul`; }
+
+// ── Dépenses quick-add ──
+function getDepCumul(field) {
+  return parseFloat(localStorage.getItem(getDepKey(field))) || 0;
+}
+function setDepCumul(field, val) {
+  localStorage.setItem(getDepKey(field), val);
+}
+
+function addDep(field) {
+  const input = document.getElementById('quick_' + field);
+  const val = parseFloat(input.value);
+  if (!val || val <= 0) { input.focus(); return; }
+  const newTotal = getDepCumul(field) + val;
+  setDepCumul(field, newTotal);
+  input.value = '';
+  input.focus();
+  refreshDepCumul(field, true);
+  compute();
+}
+
+function refreshDepCumul(field, flash) {
+  const total = getDepCumul(field);
+  const box = document.getElementById('cumul_' + field);
+  if (!box) return;
+  box.querySelector('.cval').textContent = fmt(total);
+  if (flash) {
+    box.classList.remove('flash');
+    void box.offsetWidth; // reflow
+    box.classList.add('flash');
+  }
+}
+
+function loadDepCumuls() {
+  FIELDS_DEP.forEach(f => refreshDepCumul(f, false));
+}
+
+function loadMonth() {
+  FIELDS_REV.forEach(f => {
+    const el = document.getElementById(f);
+    if (el) el.value = localStorage.getItem(getKey(f)) || '';
+  });
+  loadDepCumuls();
+  compute();
+}
+
+function save() {
+  FIELDS_REV.forEach(f => {
+    const el = document.getElementById(f);
+    if (el) localStorage.setItem(getKey(f), el.value);
+  });
+  compute();
+}
+
+function compute() {
+  const rev = FIELDS_REV.reduce((s, f) => s + g(f), 0);
+  const dep = FIELDS_DEP.reduce((s, f) => s + getDepCumul(f), 0);
+  const solde = rev - dep;
+
+  s('tot_revenus', fmt(rev));
+  s('tot_depenses', fmt(dep));
+
+  // Bilan inline dans saisie
+  const card = document.getElementById('inline-bilan-card');
+  const amountEl = document.getElementById('inline-solde-amount');
+  const badgeEl = document.getElementById('inline-solde-badge');
+  if (card && amountEl && badgeEl) {
+    amountEl.textContent = fmt(solde);
+    if (solde > 0) {
+      card.style.background = 'rgba(0,229,160,.06)';
+      card.style.borderColor = 'rgba(0,229,160,.3)';
+      amountEl.style.color = 'var(--accent)';
+      badgeEl.textContent = '✅ Mois positif';
+      badgeEl.style.color = 'var(--accent)';
+    } else if (solde < 0) {
+      card.style.background = 'rgba(255,77,109,.06)';
+      card.style.borderColor = 'rgba(255,77,109,.3)';
+      amountEl.style.color = 'var(--accent2)';
+      badgeEl.textContent = '⚠️ Déficit';
+      badgeEl.style.color = 'var(--accent2)';
+    } else {
+      card.style.background = 'transparent';
+      card.style.borderColor = 'var(--border)';
+      amountEl.style.color = 'var(--muted)';
+      badgeEl.textContent = '— Équilibré';
+      badgeEl.style.color = 'var(--muted)';
+    }
+    s('inline-rev', fmt(rev));
+    s('inline-dep', fmt(dep));
+  }
+
+  // Bilan page
+  s('b_rev', fmt(rev));
+  s('b_dep', fmt(dep));
+  s('b_sav', '—');
+  s('b_taux', '—');
+  s('bilanAmount', fmt(solde));
+
+  const bigEl = document.getElementById('bigSolde');
+  const bilanAmtEl = document.getElementById('bilanAmount');
+  if (solde >= 0) {
+    bigEl.style.background = 'rgba(0,229,160,.08)';
+    bigEl.style.borderColor = 'rgba(0,229,160,.25)';
+    bilanAmtEl.style.color = 'var(--accent)';
+    s('bilanSub', solde > 0 ? '✅ Mois positif' : '— Équilibré');
+  } else {
+    bigEl.style.background = 'rgba(255,77,109,.08)';
+    bigEl.style.borderColor = 'rgba(255,77,109,.25)';
+    bilanAmtEl.style.color = 'var(--accent2)';
+    s('bilanSub', '⚠️ Déficit ce mois');
+  }
+
+  // Breakdown dépenses
+  let html = '';
+  FIELDS_DEP.forEach(k => {
+    const v = getDepCumul(k);
+    const share = dep > 0 ? (v/dep*100) : 0;
+    html += `<div class="field" style="padding:8px 0">
+      <label>${DEP_LABELS[k]}</label>
+      <div style="flex:1;margin:0 10px;height:5px;background:var(--border);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${Math.min(share,100)}%;background:var(--accent2);border-radius:3px"></div>
+      </div>
+      <span style="font-size:12px;color:var(--accent2);min-width:60px;text-align:right">${fmt(v)}</span>
+    </div>`;
+  });
+  document.getElementById('depBreakdown').innerHTML = html;
+
+  updateAnnual();
+}
+
+function updateAnnual() {
+  let totalRev = 0, totalSolde = 0;
+  let html = '';
+  let maxSolde = 0;
+
+  const monthData = MONTHS.map((m, i) => {
+    let rev = 0, dep = 0;
+    FIELDS_REV.forEach(f => { rev += parseFloat(localStorage.getItem(`budget_m${i}_${f}`)) || 0; });
+    FIELDS_DEP.forEach(f => { dep += parseFloat(localStorage.getItem(`budget_m${i}_${f}_cumul`)) || 0; });
+    const solde = rev - dep;
+    totalRev += rev;
+    totalSolde += solde;
+    if (Math.abs(solde) > maxSolde) maxSolde = Math.abs(solde);
+    return { m, rev, dep, solde };
+  });
+
+  monthData.forEach(({ m, solde }, i) => {
+    const hasData = rev => rev !== 0 || solde !== 0;
+    const barW = maxSolde > 0 ? Math.abs(solde) / maxSolde * 100 : 0;
+    const color = solde >= 0 ? 'var(--accent)' : 'var(--accent2)';
+    const isCurrent = i === currentMonth;
+    const hasAny = monthData[i].rev > 0 || monthData[i].dep > 0;
+    html += `
+      <div class="month-row" style="${isCurrent ? 'border-color:var(--accent);' : ''}">
+        <span class="mname" style="${isCurrent ? 'color:var(--accent)' : ''}">${m}</span>
+        <div class="bar-wrap"><div class="bar" style="width:${barW}%;background:${color}"></div></div>
+        <span class="mval" style="color:${hasAny ? color : 'var(--muted)'}">${hasAny ? fmt(solde) : '—'}</span>
+      </div>`;
+  });
+
+  document.getElementById('annualList').innerHTML = html;
+  s('ann_rev', totalRev > 0 ? fmt(totalRev) : '—');
+  s('ann_sav', totalSolde !== 0 ? fmt(totalSolde) : '—');
+}
+
+function buildMonthTabs() {
+  const container = document.getElementById('monthTabs');
+  container.innerHTML = '';
+  MONTHS.forEach((m, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'mtab' + (i === currentMonth ? ' active' : '');
+    btn.textContent = m;
+    btn.onclick = () => {
+      currentMonth = i;
+      document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadMonth();
+    };
+    container.appendChild(btn);
+  });
+  // Scroll to current
+  setTimeout(() => {
+    const active = container.querySelector('.active');
+    if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, 100);
+}
+
+function buildDettes() {
+  let html = '';
+  DETTES.forEach(({ id, name }) => {
+    html += `<div class="dette-item">
+      <div class="dette-header">
+        <span class="dette-name">${name}</span>
+        <span class="dette-capital" id="${id}_cap_disp">0 €</span>
+      </div>
+      <div class="dette-fields">
+        <div class="dette-mini">
+          <label>Capital restant</label>
+          <input type="number" id="${id}_cap" placeholder="0" min="0" oninput="saveDette('${id}')">
+        </div>
+        <div class="dette-mini">
+          <label>Mensualité</label>
+          <input type="number" id="${id}_men" placeholder="0" min="0" oninput="saveDette('${id}')">
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('dettesList').innerHTML = html;
+
+  // Load saved
+  DETTES.forEach(({ id }) => {
+    const cap = localStorage.getItem(getDKey(id + '_cap')) || '';
+    const men = localStorage.getItem(getDKey(id + '_men')) || '';
+    const capEl = document.getElementById(id + '_cap');
+    const menEl = document.getElementById(id + '_men');
+    if (capEl) capEl.value = cap;
+    if (menEl) menEl.value = men;
+    updateDetteDisp(id);
+  });
+  computeDettes();
+}
+
+function saveDette(id) {
+  const cap = document.getElementById(id + '_cap')?.value || '';
+  const men = document.getElementById(id + '_men')?.value || '';
+  localStorage.setItem(getDKey(id + '_cap'), cap);
+  localStorage.setItem(getDKey(id + '_men'), men);
+  updateDetteDisp(id);
+  computeDettes();
+}
+
+function updateDetteDisp(id) {
+  const cap = parseFloat(document.getElementById(id + '_cap')?.value) || 0;
+  const dispEl = document.getElementById(id + '_cap_disp');
+  if (dispEl) dispEl.textContent = fmt(cap);
+}
+
+function computeDettes() {
+  let totalCap = 0, totalMen = 0;
+  DETTES.forEach(({ id }) => {
+    totalCap += parseFloat(localStorage.getItem(getDKey(id + '_cap'))) || 0;
+    totalMen += parseFloat(localStorage.getItem(getDKey(id + '_men'))) || 0;
+  });
+  s('tot_dettes', fmt(totalCap));
+  s('tot_mensualites', fmt(totalMen));
+}
+
+function buildObjectifs() {
+  let html = '';
+  OBJECTIFS.forEach(({ id, name }) => {
+    html += `<div class="obj-item">
+      <div class="obj-header">
+        <span class="obj-name">${name}</span>
+        <span class="obj-pct" id="${id}_pct">0%</span>
+      </div>
+      <div class="obj-progress"><div class="fill" id="${id}_fill" style="width:0%"></div></div>
+      <div class="obj-fields">
+        <div class="obj-mini">
+          <label>Objectif cible</label>
+          <input type="number" id="${id}_cible" placeholder="0" min="0" oninput="saveObj('${id}')">
+        </div>
+        <div class="obj-mini">
+          <label>Déjà épargné</label>
+          <input type="number" id="${id}_actuel" placeholder="0" min="0" oninput="saveObj('${id}')">
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('objectifsList').innerHTML = html;
+
+  OBJECTIFS.forEach(({ id }) => {
+    const cible = localStorage.getItem(getOKey(id, 'cible')) || '';
+    const actuel = localStorage.getItem(getOKey(id, 'actuel')) || '';
+    const cEl = document.getElementById(id + '_cible');
+    const aEl = document.getElementById(id + '_actuel');
+    if (cEl) cEl.value = cible;
+    if (aEl) aEl.value = actuel;
+    updateObjDisp(id);
+  });
+  computeObjectifs();
+}
+
+function saveObj(id) {
+  localStorage.setItem(getOKey(id, 'cible'), document.getElementById(id + '_cible')?.value || '');
+  localStorage.setItem(getOKey(id, 'actuel'), document.getElementById(id + '_actuel')?.value || '');
+  updateObjDisp(id);
+  computeObjectifs();
+}
+
+function updateObjDisp(id) {
+  const cible = parseFloat(document.getElementById(id + '_cible')?.value) || 0;
+  const actuel = parseFloat(document.getElementById(id + '_actuel')?.value) || 0;
+  const ratio = cible > 0 ? Math.min(actuel / cible, 1) : 0;
+  const pctEl = document.getElementById(id + '_pct');
+  const fillEl = document.getElementById(id + '_fill');
+  if (pctEl) pctEl.textContent = Math.round(ratio * 100) + '%';
+  if (fillEl) fillEl.style.width = (ratio * 100) + '%';
+}
+
+function computeObjectifs() {
+  let total = 0;
+  OBJECTIFS.forEach(({ id }) => {
+    total += parseFloat(localStorage.getItem(getOKey(id, 'cible'))) || 0;
+  });
+  s('tot_objectifs', fmt(total));
+}
+
+function showPage(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.navbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page)?.classList.add('active');
+  if (btn) btn.classList.add('active');
+
+  if (page === 'bilan' || page === 'annuel') compute();
+  if (page === 'annuel') updateAnnual();
+}
+
+// Init
+buildMonthTabs();
+buildDettes();
+buildObjectifs();
+loadMonth();
+</script>
+</body>
+</html>

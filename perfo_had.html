@@ -291,6 +291,40 @@ function drawHV(masse){
   document.getElementById('hv_hmin').innerHTML=`${f(cur.hmin,0)}<span> ft</span>`;
 }
 
+// ── PERSISTANCE localStorage ──
+const STORE_KEY_PERFO = 'perfo_had_vals';
+const INPUT_IDS_PERFO = [
+  'masse_machine','masse_pilote','masse_gunner','masse_soute','tro_princ',
+  'emport_ol','qte_ol','emport_il','qte_il',
+  'emport_ir','qte_ir','emport_or','qte_or',
+  'nb_obus','nb_caissons'
+];
+
+function savePerfo() {
+  const data = {};
+  INPUT_IDS_PERFO.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  try { localStorage.setItem(STORE_KEY_PERFO, JSON.stringify(data)); } catch(e) {}
+}
+
+function loadPerfo() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY_PERFO) || '{}');
+    INPUT_IDS_PERFO.forEach(id => {
+      if (data[id] !== undefined) {
+        const el = document.getElementById(id);
+        if (el) el.value = data[id];
+      }
+    });
+  } catch(e) {}
+}
+
+const _calcOrigPerfo = calc;
+function calc() { _calcOrigPerfo(); savePerfo(); }
+
+loadPerfo();
 updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
 calc();
 window.addEventListener('resize',()=>calc());

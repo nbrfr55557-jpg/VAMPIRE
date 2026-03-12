@@ -496,11 +496,40 @@ function calc() {
   document.getElementById('kero_min_kg').textContent = `≈ ${fmt(kero_min_kg, 0)} kg`;
 }
 
+// ── PERSISTANCE localStorage ──
+const STORE_KEY = 'faisabilite_vals';
+const INPUTS_IDS = ['kero_dispo','reserve','conso_zone','conso_transit','dist_mep','vit_mep','dist_ret','vit_ret'];
+
+function saveVals() {
+  const data = {};
+  INPUTS_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function loadVals() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    INPUTS_IDS.forEach(id => {
+      if (data[id] !== undefined) {
+        const el = document.getElementById(id);
+        if (el) el.value = data[id];
+      }
+    });
+  } catch(e) {}
+}
+
+const _calcOrigFais = calc;
+function calc() { _calcOrigFais(); saveVals(); }
+
+loadVals();
 calc();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/FAISABILTY/sw.js', {scope: '/FAISABILTY/'}).catch(e => console.log(e));
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 </script>
 </body>

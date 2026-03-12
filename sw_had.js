@@ -1,4 +1,4 @@
-const CACHE = 'perfo-had-v1';
+const CACHE = 'perfo-had-v2';
 const FILES = [
   'https://nbrfr55557-jpg.github.io/FAISABILTY/perfo_had.html',
 ];

@@ -1,9 +1,5 @@
-const CACHE = 'faisabilite-v3';
-const FILES = [
-  'https://nbrfr55557-jpg.github.io/FAISABILTY/',
-  'https://nbrfr55557-jpg.github.io/FAISABILTY/index.html',
-  'https://nbrfr55557-jpg.github.io/FAISABILTY/sw.js'
-];
+const CACHE = 'faisabilite-v2';
+const FILES = ['/index.html'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));

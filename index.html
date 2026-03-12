@@ -254,7 +254,7 @@
     <div class="section-header">⛽ Carburant</div>
     <div class="row">
       <div class="row-label">Kéro disponible</div>
-      <input type="number" id="kero_dispo" value="2095" oninput="calc();save_fais()">
+      <input type="number" id="kero_dispo" value="2095" oninput="calc()">
       <div class="row-unit">L</div>
     </div>
     <div class="sub-row">
@@ -263,7 +263,7 @@
     </div>
     <div class="row">
       <div class="row-label">Réserve 30min HOGE</div>
-      <input type="number" id="reserve" value="230" oninput="calc();save_fais()">
+      <input type="number" id="reserve" value="230" oninput="calc()">
       <div class="row-unit">L</div>
     </div>
     <div class="sub-row">
@@ -286,7 +286,7 @@
     <div class="section-header">🔥 Consommations</div>
     <div class="row">
       <div class="row-label">Conso sur zone</div>
-      <input type="number" id="conso_zone" value="450" oninput="calc();save_fais()">
+      <input type="number" id="conso_zone" value="450" oninput="calc()">
       <div class="row-unit">L/h</div>
     </div>
     <div class="sub-row">
@@ -295,7 +295,7 @@
     </div>
     <div class="row">
       <div class="row-label">Conso en transit</div>
-      <input type="number" id="conso_transit" value="530" oninput="calc();save_fais()">
+      <input type="number" id="conso_transit" value="530" oninput="calc()">
       <div class="row-unit">L/h</div>
     </div>
     <div class="sub-row">
@@ -309,7 +309,7 @@
     <div class="section-header">📍 Mise en place</div>
     <div class="row">
       <div class="row-label">Distance zone d'action</div>
-      <input type="number" id="dist_mep" value="460" oninput="calc();save_fais()">
+      <input type="number" id="dist_mep" value="460" oninput="calc()">
       <div class="row-unit">Nm</div>
     </div>
     <div class="sub-row">
@@ -318,7 +318,7 @@
     </div>
     <div class="row">
       <div class="row-label">Vitesse MEP</div>
-      <input type="number" id="vit_mep" value="130" oninput="calc();save_fais()">
+      <input type="number" id="vit_mep" value="130" oninput="calc()">
       <div class="row-unit">Kt</div>
     </div>
     <div class="sub-row">
@@ -346,7 +346,7 @@
     <div class="section-header">🔄 Retour / FARP</div>
     <div class="row">
       <div class="row-label">Distance retour ou FARP</div>
-      <input type="number" id="dist_ret" value="0" oninput="calc();save_fais()">
+      <input type="number" id="dist_ret" value="0" oninput="calc()">
       <div class="row-unit">Nm</div>
     </div>
     <div class="sub-row">
@@ -355,7 +355,7 @@
     </div>
     <div class="row">
       <div class="row-label">Vitesse RET</div>
-      <input type="number" id="vit_ret" value="125" oninput="calc();save_fais()">
+      <input type="number" id="vit_ret" value="125" oninput="calc()">
       <div class="row-unit">Kt</div>
     </div>
     <div class="sub-row">
@@ -496,24 +496,32 @@ function calc() {
   document.getElementById('kero_min_kg').textContent = `≈ ${fmt(kero_min_kg, 0)} kg`;
 }
 
-// ── PERSISTANCE localStorage ──
+// localStorage — sauvegarde
 const FAIS_IDS = ['kero_dispo','reserve','conso_zone','conso_transit','dist_mep','vit_mep','dist_ret','vit_ret'];
 
-function save_fais() {
-  const d = {};
-  FAIS_IDS.forEach(id => { const el = document.getElementById(id); if(el) d[id] = el.value; });
-  try { localStorage.setItem('faisabilite_vals', JSON.stringify(d)); } catch(e) {}
-}
+document.addEventListener('input', function(e) {
+  if (FAIS_IDS.includes(e.target.id)) {
+    const d = {};
+    FAIS_IDS.forEach(id => { const el=document.getElementById(id); if(el) d[id]=el.value; });
+    try { localStorage.setItem('faisabilite_vals', JSON.stringify(d)); } catch(err) {}
+  }
+});
 
-function load_fais() {
-  try {
-    const d = JSON.parse(localStorage.getItem('faisabilite_vals') || '{}');
-    FAIS_IDS.forEach(id => { if(d[id]!==undefined){ const el=document.getElementById(id); if(el) el.value=d[id]; } });
-  } catch(e) {}
-}
-
-load_fais();
+// Charger après le premier calc()
 calc();
+
+try {
+  const saved = JSON.parse(localStorage.getItem('faisabilite_vals') || '{}');
+  if (Object.keys(saved).length > 0) {
+    FAIS_IDS.forEach(id => {
+      if (saved[id] !== undefined) {
+        const el = document.getElementById(id);
+        if (el) el.value = saved[id];
+      }
+    });
+    calc();
+  }
+} catch(err) {}
 
 </script>
 <script>

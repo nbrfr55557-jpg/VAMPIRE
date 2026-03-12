@@ -103,13 +103,13 @@ select option{background:var(--bg2);color:var(--text)}
   <div class="section">
     <div class="section-header">⚖️ Masses de base</div>
     <div class="grid3">
-      <div class="cell"><div class="cell-label">Masse machine</div><input type="number" id="masse_machine" value="4300" oninput="calc();save_perfo()"><div class="cell-unit">kg</div></div>
-      <div class="cell"><div class="cell-label">Pilote</div><input type="number" id="masse_pilote" value="120" oninput="calc();save_perfo()"><div class="cell-unit">kg</div></div>
-      <div class="cell"><div class="cell-label">Gunner</div><input type="number" id="masse_gunner" value="120" oninput="calc();save_perfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Masse machine</div><input type="number" id="masse_machine" value="4300" oninput="calc()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Pilote</div><input type="number" id="masse_pilote" value="120" oninput="calc()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Gunner</div><input type="number" id="masse_gunner" value="120" oninput="calc()"><div class="cell-unit">kg</div></div>
     </div>
     <div class="grid2">
-      <div class="cell"><div class="cell-label">Masse soute</div><input type="number" id="masse_soute" value="65" oninput="calc();save_perfo()"><div class="cell-unit">kg</div></div>
-      <div class="cell"><div class="cell-label">TR0 principal</div><input type="number" id="tro_princ" value="1100" oninput="calc();save_perfo()"><div class="cell-unit">L</div></div>
+      <div class="cell"><div class="cell-label">Masse soute</div><input type="number" id="masse_soute" value="65" oninput="calc()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">TR0 principal</div><input type="number" id="tro_princ" value="1100" oninput="calc()"><div class="cell-unit">L</div></div>
     </div>
   </div>
 
@@ -119,37 +119,37 @@ select option{background:var(--bg2);color:var(--text)}
       <div class="pylon-col">
         <div class="pylon-header">OL</div>
         <div class="pylon-cell"><div class="pylon-label">Type</div>
-          <select id="emport_ol" onchange="updatePylon('ol');calc();save_perfo()">
+          <select id="emport_ol" onchange="updatePylon('ol');calc()">
             <option value="VIDE">VIDE</option><option value="PLR12">PLR12</option><option value="PLM">PLM</option>
           </select></div>
-        <div class="pylon-cell" id="cell_ol_mun" style="display:none"><div class="pylon-label" id="label_ol_mun">Nb</div><input type="number" id="qte_ol" value="0" min="0" oninput="calc();save_perfo()"></div>
+        <div class="pylon-cell" id="cell_ol_mun" style="display:none"><div class="pylon-label" id="label_ol_mun">Nb</div><input type="number" id="qte_ol" value="0" min="0" oninput="calc()"></div>
         <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_ol" style="font-family:var(--mono);font-size:.85rem">0 <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
       </div>
       <div class="pylon-col">
         <div class="pylon-header">IL</div>
         <div class="pylon-cell"><div class="pylon-label">Type</div>
-          <select id="emport_il" onchange="updatePylon('il');calc();save_perfo()">
+          <select id="emport_il" onchange="updatePylon('il');calc()">
             <option value="FERRY" selected>FERRY</option><option value="PLR22">PLR22</option><option value="CHAISE">CHAISE</option><option value="VIDE">VIDE</option>
           </select></div>
-        <div class="pylon-cell" id="cell_il_mun"><div class="pylon-label" id="label_il_mun">QTE TR0</div><input type="number" id="qte_il" value="365" min="0" oninput="calc();save_perfo()"></div>
+        <div class="pylon-cell" id="cell_il_mun"><div class="pylon-label" id="label_il_mun">QTE TR0</div><input type="number" id="qte_il" value="365" min="0" oninput="calc()"></div>
         <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_il" style="font-family:var(--mono);font-size:.85rem">— <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
       </div>
       <div class="pylon-col">
         <div class="pylon-header">IR</div>
         <div class="pylon-cell"><div class="pylon-label">Type</div>
-          <select id="emport_ir" onchange="updatePylon('ir');calc();save_perfo()">
+          <select id="emport_ir" onchange="updatePylon('ir');calc()">
             <option value="FERRY" selected>FERRY</option><option value="PLR22">PLR22</option><option value="CHAISE">CHAISE</option><option value="VIDE">VIDE</option>
           </select></div>
-        <div class="pylon-cell" id="cell_ir_mun"><div class="pylon-label" id="label_ir_mun">QTE TR0</div><input type="number" id="qte_ir" value="365" min="0" oninput="calc();save_perfo()"></div>
+        <div class="pylon-cell" id="cell_ir_mun"><div class="pylon-label" id="label_ir_mun">QTE TR0</div><input type="number" id="qte_ir" value="365" min="0" oninput="calc()"></div>
         <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_ir" style="font-family:var(--mono);font-size:.85rem">— <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
       </div>
       <div class="pylon-col">
         <div class="pylon-header">OR</div>
         <div class="pylon-cell"><div class="pylon-label">Type</div>
-          <select id="emport_or" onchange="updatePylon('or');calc();save_perfo()">
+          <select id="emport_or" onchange="updatePylon('or');calc()">
             <option value="VIDE">VIDE</option><option value="PLR12">PLR12</option><option value="PLM">PLM</option>
           </select></div>
-        <div class="pylon-cell" id="cell_or_mun" style="display:none"><div class="pylon-label" id="label_or_mun">Nb</div><input type="number" id="qte_or" value="0" min="0" oninput="calc();save_perfo()"></div>
+        <div class="pylon-cell" id="cell_or_mun" style="display:none"><div class="pylon-label" id="label_or_mun">Nb</div><input type="number" id="qte_or" value="0" min="0" oninput="calc()"></div>
         <div class="pylon-cell"><div class="pylon-label">Masse</div><div id="masse_or" style="font-family:var(--mono);font-size:.85rem">0 <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
       </div>
     </div>
@@ -158,8 +158,8 @@ select option{background:var(--bg2);color:var(--text)}
   <div class="section">
     <div class="section-header">🔫 Canon</div>
     <div class="canon-row">
-      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb obus</div><input type="number" id="nb_obus" value="450" min="0" oninput="calc();save_perfo()"></div>
-      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb caissons</div><input type="number" id="nb_caissons" value="4" min="0" oninput="calc();save_perfo()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb obus</div><input type="number" id="nb_obus" value="450" min="0" oninput="calc()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb caissons</div><input type="number" id="nb_caissons" value="4" min="0" oninput="calc()"></div>
       <div><div class="pylon-label" style="margin-bottom:.3rem">Masse canon</div><div style="font-family:var(--mono);font-size:1rem;color:var(--text);padding:.25rem 0" id="masse_canon">—</div></div>
     </div>
 
@@ -291,29 +291,44 @@ function drawHV(masse){
   document.getElementById('hv_hmin').innerHTML=`${f(cur.hmin,0)}<span> ft</span>`;
 }
 
-// ── PERSISTANCE localStorage ──
+// localStorage — sauvegarde
 const PERFO_IDS = ['masse_machine','masse_pilote','masse_gunner','masse_soute','tro_princ',
   'emport_ol','qte_ol','emport_il','qte_il','emport_ir','qte_ir','emport_or','qte_or',
   'nb_obus','nb_caissons'];
 
-function save_perfo() {
-  const d = {};
-  PERFO_IDS.forEach(id => { const el = document.getElementById(id); if(el) d[id] = el.value; });
-  try { localStorage.setItem('perfo_had_vals', JSON.stringify(d)); } catch(e) {}
-}
+document.addEventListener('input', function(e) {
+  if (PERFO_IDS.includes(e.target.id)) {
+    const d = {};
+    PERFO_IDS.forEach(id => { const el=document.getElementById(id); if(el) d[id]=el.value; });
+    try { localStorage.setItem('perfo_had_vals', JSON.stringify(d)); } catch(err) {}
+  }
+});
+document.addEventListener('change', function(e) {
+  if (PERFO_IDS.includes(e.target.id)) {
+    const d = {};
+    PERFO_IDS.forEach(id => { const el=document.getElementById(id); if(el) d[id]=el.value; });
+    try { localStorage.setItem('perfo_had_vals', JSON.stringify(d)); } catch(err) {}
+  }
+});
 
-function load_perfo() {
-  try {
-    const d = JSON.parse(localStorage.getItem('perfo_had_vals') || '{}');
-    PERFO_IDS.forEach(id => {
-      if(d[id]!==undefined){ const el=document.getElementById(id); if(el) el.value=d[id]; }
-    });
-  } catch(e) {}
-}
-
-load_perfo();
+// Charger après que calc() a tourné une première fois
 updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
 calc();
+
+try {
+  const saved = JSON.parse(localStorage.getItem('perfo_had_vals') || '{}');
+  if (Object.keys(saved).length > 0) {
+    PERFO_IDS.forEach(id => {
+      if (saved[id] !== undefined) {
+        const el = document.getElementById(id);
+        if (el) el.value = saved[id];
+      }
+    });
+    updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
+    calc();
+  }
+} catch(err) {}
+
 window.addEventListener('resize',()=>calc());
 
 if('serviceWorker' in navigator){

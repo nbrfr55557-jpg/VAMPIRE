@@ -176,7 +176,19 @@
   .hv-kp.top-left{top:.7rem;left:.9rem}
   .hv-kp.mid-right{top:50%;right:.9rem;transform:translateY(-50%);text-align:right;align-items:flex-end}
   .hv-kp.bot-left{bottom:.7rem;left:.9rem}
-  .pylon-masse{font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.85rem;color:var(--accent)}
+  .perfo-inputs { display:grid; grid-template-columns:1fr 1fr; gap:0; border-bottom:1px solid rgba(255,255,255,.04); }
+  .perfo-input-cell { padding:.6rem .8rem; border-right:1px solid rgba(255,255,255,.04); display:flex; flex-direction:column; gap:.2rem; }
+  .perfo-input-cell:last-child { border-right:none; }
+  .perfo-result-row { display:flex; align-items:center; justify-content:space-between; padding:.65rem 1rem; border-bottom:1px solid rgba(255,255,255,.04); }
+  .perfo-result-row:last-child { border-bottom:none; }
+  .perfo-result-label { font-size:.85rem; font-weight:700; color:var(--text); }
+  .perfo-result-label small { display:block; font-size:.65rem; color:var(--muted); font-weight:400; font-family:ui-monospace,'SF Mono','Courier New',monospace; }
+  .perfo-result-val { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:1.4rem; font-weight:400; letter-spacing:.05em; }
+  .perfo-ok { color:var(--accent2); }
+  .perfo-warn { color:var(--red); }
+  .perfo-badge { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:.65rem; font-weight:700; padding:.15rem .4rem; border-radius:3px; margin-left:.5rem; }
+  .perfo-badge.ok { background:rgba(0,255,157,.12); color:var(--accent2); border:1px solid rgba(0,255,157,.3); }
+  .perfo-badge.nok { background:rgba(255,71,87,.12); color:var(--red); border:1px solid rgba(255,71,87,.3); }
 </style>
 </head>
 <body>
@@ -304,6 +316,60 @@
         <div class="hv-kp-label">Crocos 🐊</div>
         <div class="hv-kp-val" id="hv_hmin">—<span> ft</span></div>
       </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">🌡️ Performances — Masse max admissible</div>
+    <div class="perfo-inputs">
+      <div class="perfo-input-cell">
+        <div class="cell-label">Température</div>
+        <input type="number" id="p_temp" value="20" step="5" oninput="calcPerfo()">
+        <div class="cell-unit">°C</div>
+      </div>
+      <div class="perfo-input-cell">
+        <div class="cell-label">Altitude densité</div>
+        <input type="number" id="p_alti" value="1500" step="500" oninput="calcPerfo()">
+        <div class="cell-unit">ft</div>
+      </div>
+    </div>
+    <div class="perfo-result-row">
+      <div class="perfo-result-label">Stationnaire DES<small>dans l'effet de sol</small></div>
+      <div style="display:flex;align-items:baseline;gap:.3rem">
+        <div class="perfo-result-val" id="p_des_val">—</div>
+        <span id="p_des_badge"></span>
+      </div>
+    </div>
+    <div class="perfo-result-row">
+      <div class="perfo-result-label">Stationnaire HES<small>hors effet de sol</small></div>
+      <div style="display:flex;align-items:baseline;gap:.3rem">
+        <div class="perfo-result-val" id="p_hes_val">—</div>
+        <span id="p_hes_badge"></span>
+      </div>
+    </div>
+    <div class="perfo-result-row">
+      <div class="perfo-result-label">Décollage roulé</div>
+      <div style="display:flex;align-items:baseline;gap:.3rem">
+        <div class="perfo-result-val" id="p_rol_val">—</div>
+        <span id="p_rol_badge"></span>
+      </div>
+    </div>
+    <div style="padding:.6rem 1rem;background:rgba(255,214,10,0.05);border-top:1px solid rgba(255,214,10,0.15);font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.68rem;color:var(--muted);line-height:1.5;">
+      ⚠️ Valeurs obtenues par interpolation linéaire — la consultation des courbes officielles reste de rigueur.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">📐 VZ OEI INT</div>
+    <div class="perfo-result-row" style="background:rgba(0,212,255,0.03)">
+      <div class="perfo-result-label">Vitesse verticale monomoteur<small>interpolée — temp et alti du bloc ci-dessus</small></div>
+      <div style="display:flex;align-items:baseline;gap:.4rem">
+        <div class="perfo-result-val" id="vz_val" style="font-size:2rem">—</div>
+        <span style="font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.8rem;color:var(--muted)">ft/min</span>
+      </div>
+    </div>
+    <div style="padding:.6rem 1rem;background:rgba(255,214,10,0.05);border-top:1px solid rgba(255,214,10,0.15);font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.68rem;color:var(--muted);line-height:1.5;">
+      ⚠️ Valeurs obtenues par interpolation linéaire — la consultation des courbes officielles reste de rigueur.
     </div>
   </div>
 
@@ -586,7 +652,154 @@
 </div>
 
 <script>
-// ── PERFO HAD ──
+// ── TABLES PERFORMANCES ──
+const PERF_ALTI = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000];
+const PERF_TEMP = [0,5,10,15,20,25,30,35,40,45];
+
+const PERF_HES = [
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6560,6510,6450,6400],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6570,6510,6450,6400,6380],
+  [6600,6600,6600,6600,6600,6600,6600,6580,6550,6450,6420,6380,6320],
+  [6600,6600,6600,6600,6600,6600,6580,6550,6490,6420,6390,6350,6290],
+  [6600,6600,6600,6600,6600,6600,6550,6510,6450,6400,6350,6300,6200],
+  [6600,6600,6600,6600,6600,6580,6520,6480,6420,6380,6350,6300,6150],
+  [6600,6600,6600,6600,6560,6520,6450,6400,6320,6200,6100,6000,5850],
+  [6600,6600,6600,6570,6520,6420,6320,6250,6100,6000,5850,5750,5600],
+  [6600,6600,6570,6510,6400,6300,6150,6000,5900,5800,5650,null,null],
+  [6600,6550,6450,6300,6200,6100,null,null,null,null,null,null,null],
+];
+const PERF_DES = [
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6550],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6490],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6580,6450,6350],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6420,6350,6250],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6500,6400,6280,6180,6100],
+  [6600,6600,6600,6600,6600,6600,6550,6480,6400,6300,6100,5950,5850],
+  [6600,6600,6600,6600,6600,6550,6400,6300,6150,6000,5900,null,null],
+  [6600,6600,6600,6600,6400,6300,null,null,null,null,null,null,null],
+];
+const PERF_ROL = [
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6500],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6400,6300],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6400,null,null,null],
+  [6600,6600,6600,6600,6600,6600,null,null,null,null,null,null,null],
+];
+
+function lookupPerf(table, temp, alti) {
+  const t = Math.max(PERF_TEMP[0], Math.min(PERF_TEMP[PERF_TEMP.length-1], temp));
+  const a = Math.max(PERF_ALTI[0], Math.min(PERF_ALTI[PERF_ALTI.length-1], alti));
+
+  const ti0 = Math.max(...PERF_TEMP.map((v,i)=>v<=t?i:-1).filter(i=>i>=0));
+  const ti1 = Math.min(...PERF_TEMP.map((v,i)=>v>=t?i:999).filter(i=>i<999));
+  const ai0 = Math.max(...PERF_ALTI.map((v,i)=>v<=a?i:-1).filter(i=>i>=0));
+  const ai1 = Math.min(...PERF_ALTI.map((v,i)=>v>=a?i:999).filter(i=>i<999));
+
+  const ft = ti1!==ti0 ? (t-PERF_TEMP[ti0])/(PERF_TEMP[ti1]-PERF_TEMP[ti0]) : 0;
+  const fa = ai1!==ai0 ? (a-PERF_ALTI[ai0])/(PERF_ALTI[ai1]-PERF_ALTI[ai0]) : 0;
+
+  const v00=table[ti0][ai0], v01=table[ti0][ai1];
+  const v10=table[ti1][ai0], v11=table[ti1][ai1];
+  if(v00===null||v01===null||v10===null||v11===null) return null;
+  return Math.round(v00*(1-ft)*(1-fa) + v01*(1-ft)*fa + v10*ft*(1-fa) + v11*ft*fa);
+}
+
+function updatePerfoResult(valId, badgeId, massMax, masseTotale) {
+  const el = document.getElementById(valId);
+  const badge = document.getElementById(badgeId);
+  if(massMax === null) {
+    el.textContent = 'NON ASSURÉ';
+    el.className = 'perfo-result-val perfo-warn';
+    badge.innerHTML = '';
+  } else {
+    el.textContent = massMax + ' kg';
+    const ok = masseTotale <= massMax;
+    el.className = 'perfo-result-val ' + (ok ? 'perfo-ok' : 'perfo-warn');
+    badge.innerHTML = `<span class="perfo-badge ${ok?'ok':'nok'}">${ok?'✓ OK':'✗ NOK'}</span>`;
+  }
+}
+
+// ── VZ OEI INT ──
+const VZ_TEMP = [0,5,10,15,20,25,30,35,40,45];
+const VZ_ALTI = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000];
+
+// Tranche 5200–5800 kg
+const VZ_5500 = [
+  [420,420,420,420,420,420,420,420,420,405,400,400,375],
+  [420,420,420,420,420,420,420,420,420,390,375,310,270],
+  [420,420,420,420,420,420,420,420,420,350,300,225,200],
+  [420,420,420,420,420,420,420,375,310,250,200,175,100],
+  [420,420,420,420,420,400,325,290,210,150,100,50,-50],
+  [420,420,420,390,300,225,200,150,100,50,-20,-75,-100],
+  [418,380,300,250,200,125,75,40,-25,-75,-110,-175,-210],
+  [300,210,175,100,50,0,-40,-90,-125,-150,-200,-230,-290],
+  [190,100,50,0,-25,-75,-125,-175,-200,-225,-250,-300,-325],
+  [25,0,-25,-50,-75,-125,-150,-175,-200,-225,-250,-300,-325],
+];
+// Tranche 5800–6200 kg (milieu interpolé entre 5800 et 6400)
+const VZ_6000 = [
+  [210,210,210,200,190,190,180,175,160,150,150,125,110],
+  [210,210,210,200,190,190,180,175,160,150,120,80,0],
+  [210,210,210,200,190,190,180,175,130,90,40,-10,-80],
+  [210,210,210,200,190,190,180,100,60,0,-50,-90,-150],
+  [210,210,200,200,190,130,75,25,-30,-80,-120,-180,-220],
+  [210,210,150,110,90,10,-20,-80,-130,-190,-210,-290,-340],
+  [190,100,50,0,-60,-100,-140,-190,-230,-295,-340,-400,-450],
+  [50,0,-60,-90,-140,-190,-250,-290,-350,-380,-405,-480,-550],
+  [-80,-100,-175,-200,-250,-300,-350,-400,-410,-450,-500,-520,-550],
+  [-190,-200,-210,-250,-300,-350,-400,-420,-430,-455,-500,-520,-550],
+];
+// Tranche 6200–6400 kg
+const VZ_6300 = [
+  [120,120,100,100,90,90,80,80,75,75,60,50,0],
+  [120,120,100,100,90,90,80,80,75,75,0,-30,-60],
+  [120,120,100,100,90,90,80,50,40,0,-50,-100,-150],
+  [120,120,100,100,90,90,50,10,-25,-80,-120,-180,-220],
+  [120,120,100,100,90,30,0,-50,-100,-150,-200,-260,-300],
+  [120,120,50,25,-10,-50,-100,-160,-205,-250,-305,-360,-405],
+  [70,10,-25,-75,-110,-160,-205,-265,-305,-360,-420,-475,-520],
+  [-30,-60,-110,-150,-210,-280,-315,-360,-400,-450,-500,-550,-580],
+  [-150,-180,-215,-275,-320,-395,-420,-460,-480,-520,-580,-600,-625],
+  [-250,-280,-300,-330,-380,-430,-450,-480,-500,-520,-580,-600,-625],
+];
+
+function lookupVZ(table, temp, alti) {
+  const t = Math.max(VZ_TEMP[0], Math.min(VZ_TEMP[VZ_TEMP.length-1], temp));
+  const a = Math.max(VZ_ALTI[0], Math.min(VZ_ALTI[VZ_ALTI.length-1], alti));
+  const ti0 = Math.max(...VZ_TEMP.map((v,i)=>v<=t?i:-1).filter(i=>i>=0));
+  const ti1 = Math.min(...VZ_TEMP.map((v,i)=>v>=t?i:999).filter(i=>i<999));
+  const ai0 = Math.max(...VZ_ALTI.map((v,i)=>v<=a?i:-1).filter(i=>i>=0));
+  const ai1 = Math.min(...VZ_ALTI.map((v,i)=>v>=a?i:999).filter(i=>i<999));
+  const ft = ti1!==ti0 ? (t-VZ_TEMP[ti0])/(VZ_TEMP[ti1]-VZ_TEMP[ti0]) : 0;
+  const fa = ai1!==ai0 ? (a-VZ_ALTI[ai0])/(VZ_ALTI[ai1]-VZ_ALTI[ai0]) : 0;
+  const v00=table[ti0][ai0], v01=table[ti0][ai1];
+  const v10=table[ti1][ai0], v11=table[ti1][ai1];
+  return Math.round(v00*(1-ft)*(1-fa) + v01*(1-ft)*fa + v10*ft*(1-fa) + v11*ft*fa);
+}
+
+function calcVZ(masse, temp, alti) {
+  // Interpolation entre tranches de masse
+  if(masse <= 5800) {
+    // Tranche basse : on utilise VZ_5500
+    return lookupVZ(VZ_5500, temp, alti);
+  } else if(masse >= 6300) {
+    // Tranche haute : on utilise VZ_6300
+    return lookupVZ(VZ_6300, temp, alti);
+  } else {
+    // Entre 5800 et 6300 : interpolation linéaire entre VZ_6000 et VZ_6300
+    const fm = (masse - 5800) / (6300 - 5800);
+    const vz0 = lookupVZ(VZ_6000, temp, alti);
+    const vz1 = lookupVZ(VZ_6300, temp, alti);
+    return Math.round(vz0 * (1-fm) + vz1 * fm);
+  }
+}
 const DONNEES={
   VIDE:{masse:0,type:null,max:0},PLM:{masse:93.5,type:'MISSILES',max:2},
   PLR12:{masse:43,type:'ROQUETTES',max:12},PLR22:{masse:65,type:'ROQUETTES',max:22},
@@ -655,6 +868,19 @@ function calcPerfo(){
   document.getElementById('hv_hmax').innerHTML=`${fP(cur.hmax,0)}<span> ft</span>`;
   document.getElementById('hv_vmax').innerHTML=`${fP(cur.vmax,0)}<span> kt</span>`;
   document.getElementById('hv_hmin').innerHTML=`${fP(cur.hmin,0)}<span> ft</span>`;
+
+  // Performances masse max
+  const temp = parseFloat(document.getElementById('p_temp').value) || 20;
+  const alti = parseFloat(document.getElementById('p_alti').value) || 0;
+  updatePerfoResult('p_des_val','p_des_badge', lookupPerf(PERF_DES,temp,alti), mt_val);
+  updatePerfoResult('p_hes_val','p_hes_badge', lookupPerf(PERF_HES,temp,alti), mt_val);
+  updatePerfoResult('p_rol_val','p_rol_badge', lookupPerf(PERF_ROL,temp,alti), mt_val);
+
+  // VZ OEI
+  const vz = calcVZ(mt_val, temp, alti);
+  const vzEl = document.getElementById('vz_val');
+  vzEl.textContent = (vz >= 0 ? '+' : '') + vz;
+  vzEl.style.color = vz >= 0 ? 'var(--accent2)' : 'var(--red)';
 }
 const PERFO_IDS=['masse_machine','masse_pilote','masse_gunner','masse_soute','tro_princ',
   'emport_ol','qte_ol','emport_il','qte_il','emport_ir','qte_ir','emport_or','qte_or','nb_obus','nb_caissons'];

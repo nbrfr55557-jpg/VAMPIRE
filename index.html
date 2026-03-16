@@ -6,282 +6,332 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Faisabilité">
-<title>✈ Faisabilité Carburant</title>
-
+<title>OUTILS TIGRE</title>
 <style>
   :root {
-    --navy: #0d1b2a;
-    --navy2: #1b2a3e;
-    --navy3: #243447;
-    --accent: #00d4ff;
-    --accent2: #00ff9d;
-    --yellow: #ffd60a;
-    --red: #ff4757;
-    --text: #e8f4fd;
-    --muted: #7a9ab5;
-    --border: rgba(0,212,255,0.2);
-    --input-bg: rgba(255,214,10,0.08);
+    --navy: #0d1b2a; --navy2: #1b2a3e; --navy3: #243447;
+    --accent: #00d4ff; --accent2: #00ff9d; --yellow: #ffd60a;
+    --red: #ff4757; --text: #e8f4fd; --muted: #7a9ab5;
+    --border: rgba(0,212,255,0.2); --input-bg: rgba(255,214,10,0.08);
     --result-bg: rgba(0,255,157,0.07);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   body {
-    font-family: 'Arial Narrow', 'Helvetica Neue Condensed', 'Roboto Condensed', Arial, sans-serif; letter-spacing: 0.01em;
-    background: var(--navy);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 2rem;
-    background-image: 
-      radial-gradient(ellipse at 20% 0%, rgba(0,212,255,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, rgba(0,255,157,0.04) 0%, transparent 50%);
+    font-family: 'Arial Narrow','Helvetica Neue Condensed','Roboto Condensed',Arial,sans-serif;
+    letter-spacing: 0.01em; background: var(--navy); color: var(--text);
+    min-height: 100vh; padding-bottom: 2rem;
+    background-image: radial-gradient(ellipse at 20% 0%,rgba(0,212,255,0.06) 0%,transparent 60%),
+      radial-gradient(ellipse at 80% 100%,rgba(0,255,157,0.04) 0%,transparent 50%);
   }
-
   header {
-    background: linear-gradient(135deg, var(--navy2), var(--navy3));
-    border-bottom: 2px solid var(--accent);
-    padding: 1rem 1.2rem 0.8rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg,var(--navy2),var(--navy3));
+    border-bottom: 2px solid var(--accent); padding: 1rem 1.2rem 0.8rem;
+    position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    display:flex; align-items:center; justify-content:space-between;
   }
-
-  header h1 {
-    font-size: 1.3rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    text-transform: uppercase;
-    line-height: 1;
+  header h1 { font-size:1.3rem; font-weight:900; letter-spacing:0.08em; color:var(--accent); text-transform:uppercase; line-height:1; }
+  header p { font-size:0.75rem; color:var(--muted); letter-spacing:0.05em; margin-top:0.2rem; font-family:ui-monospace,'SF Mono','Courier New',monospace; }
+  .header-badge { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.6rem; letter-spacing:0.15em; color:var(--accent); border:1px solid rgba(0,212,255,0.4); border-radius:4px; padding:0.15rem 0.4rem; white-space:nowrap; }
+  .tab-bar {
+    display:flex; background:var(--navy2);
+    border-bottom:2px solid var(--accent);
+    position:sticky; top:72px; z-index:99;
+    overflow-x:auto; scrollbar-width:none;
+    gap:0; padding:0 0.6rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   }
-  header p {
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    margin-top: 0.2rem;
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+  .tab-bar::-webkit-scrollbar { display:none; }
+  .tab-btn {
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:0.25rem; padding:0.8rem 1rem 0.6rem;
+    font-family:ui-monospace,'SF Mono','Courier New',monospace;
+    font-size:0.62rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--muted); background:transparent; border:none;
+    border-bottom:3px solid transparent; cursor:pointer; white-space:nowrap;
+    transition:color 0.18s, border-color 0.18s, background 0.18s;
+    -webkit-tap-highlight-color:transparent; position:relative;
   }
-
-  .content { padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
-
-  .section {
-    background: var(--navy2);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
+  .tab-btn .tab-icon { font-size:1.4rem; line-height:1; transition:transform 0.2s,filter 0.2s; filter:grayscale(0.6) opacity(0.5); }
+  .tab-btn .tab-label { line-height:1; }
+  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); background:linear-gradient(180deg,transparent,rgba(0,212,255,0.06)); }
+  .tab-btn.active .tab-icon { filter:grayscale(0) opacity(1); transform:scale(1.1); }
+  .tab-btn:hover:not(.active) { color:var(--text); background:rgba(255,255,255,0.03); }
+  .tab-btn:hover:not(.active) .tab-icon { filter:grayscale(0.2) opacity(0.75); }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+  .content { padding:1rem; display:flex; flex-direction:column; gap:0.8rem; }
+  .section { background:var(--navy2); border-radius:10px; border:1px solid var(--border); overflow:hidden; }
   .section-header {
-    background: linear-gradient(90deg, var(--navy3), rgba(0,212,255,0.05));
-    padding: 0.5rem 1rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
+    background:linear-gradient(90deg,var(--navy3),rgba(0,212,255,0.05));
+    padding:0.5rem 1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.15em;
+    text-transform:uppercase; color:var(--accent); border-bottom:1px solid var(--border);
+    font-family:ui-monospace,'SF Mono','Courier New',monospace;
   }
-
-  .row {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .row:last-child { border-bottom: none; }
-
-  .row-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: 0.01em;
-  }
-  .row-label small {
-    display: block;
-    font-size: 0.7rem;
-    color: var(--muted);
-    font-weight: 400;
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
-  }
-
-  .row-value {
-    text-align: right;
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
-    font-size: 1rem;
-  }
-
-  .row-unit {
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    min-width: 2.5rem;
-    text-align: right;
-  }
-
-  /* Editable inputs (yellow) */
+  .row { display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:0.5rem; padding:0.6rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .row:last-child { border-bottom:none; }
+  .row-label { font-size:0.9rem; font-weight:600; color:var(--text); letter-spacing:0.01em; }
+  .row-label small { display:block; font-size:0.7rem; color:var(--muted); font-weight:400; font-family:ui-monospace,'SF Mono','Courier New',monospace; }
+  .row-value { text-align:right; font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:1rem; }
+  .row-unit { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.7rem; color:var(--muted); min-width:2.5rem; text-align:right; }
   input[type="number"] {
-    background: var(--input-bg);
-    border: 1.5px solid rgba(255,214,10,0.5);
-    border-radius: 6px;
-    color: var(--yellow);
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
-    font-size: 1rem;
-    text-align: right;
-    padding: 0.3rem 0.5rem;
-    width: 90px;
-    outline: none;
-    -moz-appearance: textfield;
-    transition: border-color 0.2s, background 0.2s;
+    background:var(--input-bg); border:1.5px solid rgba(255,214,10,0.5); border-radius:6px;
+    color:var(--yellow); font-family:ui-monospace,'SF Mono','Courier New',monospace;
+    font-size:1rem; text-align:right; padding:0.3rem 0.5rem; width:90px; outline:none;
+    -moz-appearance:textfield; transition:border-color 0.2s,background 0.2s;
   }
   input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-  input[type="number"]:focus {
-    border-color: var(--yellow);
-    background: rgba(255,214,10,0.14);
-  }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; }
+  input[type="number"]:focus { border-color:var(--yellow); background:rgba(255,214,10,0.14); }
+  .calc { color:var(--text); font-weight:400; }
+  .result-section .section-header { color:var(--accent2); background:linear-gradient(90deg,var(--navy3),rgba(0,255,157,0.05)); border-color:rgba(0,255,157,0.2); }
+  .result-section { border-color:rgba(0,255,157,0.2); }
+  .result-row { padding:0.9rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); background:var(--result-bg); }
+  .result-row:last-child { border-bottom:none; }
+  .result-main { display:flex; align-items:baseline; justify-content:space-between; gap:0.5rem; }
+  .result-label { font-size:0.95rem; font-weight:700; color:var(--text); letter-spacing:0.02em; }
+  .result-value { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:1.6rem; font-weight:400; color:var(--accent2); letter-spacing:0.05em; }
+  .result-value span { font-size:0.9rem; color:var(--muted); margin-left:0.2rem; }
+  .result-sub { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.75rem; color:var(--muted); margin-top:0.2rem; }
+  .result-sub.warn { color:var(--red); text-align:right; }
+  .result-warn { color:var(--red) !important; }
+  .result-ok { color:var(--accent2) !important; }
+  .alert-bar { margin:0 1rem; padding:0.6rem 1rem; border-radius:8px; font-size:0.85rem; font-weight:700; letter-spacing:0.05em; text-align:center; display:none; }
+  .alert-bar.show { display:block; }
+  .alert-bar.danger { background:rgba(255,71,87,0.15); border:1px solid var(--red); color:var(--red); }
+  .alert-bar.ok { background:rgba(0,255,157,0.1); border:1px solid var(--accent2); color:var(--accent2); }
+  .sub-row { display:flex; justify-content:space-between; align-items:center; padding:0.4rem 1rem 0.4rem 1.8rem; border-bottom:1px solid rgba(255,255,255,0.03); background:rgba(0,0,0,0.1); }
+  .sub-row:last-child { border-bottom:none; }
+  .sub-label { font-size:0.8rem; color:var(--muted); }
+  .sub-value { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.85rem; color:var(--text); }
+  .sub-unit { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.7rem; color:var(--muted); margin-left:0.3rem; }
 
-  /* Calculated values */
-  .calc {
-    color: var(--text);
-    font-weight: 400;
-  }
+  /* ── ON STATION — inputs prioritaires ── */
+  .big-input-row { display:flex; align-items:center; justify-content:space-between; padding:1rem 1rem 0.8rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,214,10,0.04); gap:0.8rem; }
+  .big-input-row:last-child { border-bottom:none; }
+  .big-input-label { font-size:0.9rem; font-weight:700; color:var(--text); letter-spacing:0.02em; flex:1; }
+  .big-input-label small { display:block; font-size:0.68rem; color:var(--muted); font-weight:400; font-family:ui-monospace,'SF Mono','Courier New',monospace; margin-top:0.1rem; }
+  .big-input-wrap { display:flex; align-items:center; gap:0.4rem; }
+  input.big { width:130px; height:52px; font-size:1.6rem; font-weight:700; background:rgba(255,214,10,0.12); border:2px solid rgba(255,214,10,0.7); border-radius:8px; color:var(--yellow); font-family:ui-monospace,'SF Mono','Courier New',monospace; text-align:right; padding:0.3rem 0.6rem; outline:none; -moz-appearance:textfield; transition:border-color 0.2s,background 0.2s,box-shadow 0.2s; }
+  input.big::-webkit-outer-spin-button, input.big::-webkit-inner-spin-button { -webkit-appearance:none; }
+  input.big:focus { border-color:var(--yellow); background:rgba(255,214,10,0.2); box-shadow:0 0 0 3px rgba(255,214,10,0.15); }
+  .big-input-unit { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.85rem; color:var(--muted); min-width:2rem; }
 
-  /* Converted values (kg/km) */
-  .convert {
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
+  /* ── ON STATION — playtime ── */
+  .playtime-block { padding:1.4rem 1rem; display:flex; flex-direction:column; align-items:center; gap:0.3rem; border-bottom:1px solid rgba(255,255,255,0.04); background:var(--result-bg); }
+  .playtime-block:last-child { border-bottom:none; }
+  .playtime-label { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.65rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+  .playtime-value { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:3rem; font-weight:400; line-height:1; color:var(--accent2); letter-spacing:0.05em; }
+  .playtime-value.warn { color:var(--red); }
+  .playtime-unit { font-size:1.1rem; color:var(--muted); margin-left:0.3rem; }
+  .playtime-min-val { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:1rem; font-weight:400; color:var(--muted); letter-spacing:0.05em; line-height:1; }
+  .playtime-dec { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:3rem; font-weight:400; color:var(--accent2); letter-spacing:0.05em; line-height:1; }
+  .playtime-sep { font-size:2rem; color:rgba(0,255,157,0.3); margin:0 0.4rem; }
+  .playtime-sub { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.8rem; color:var(--muted); }
+  .playtime-sub.warn { color:var(--red); }
+  .rtb-block { display:flex; align-items:center; justify-content:space-between; padding:1rem 1rem; border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(0,212,255,0.04); }
+  .rtb-block:last-child { border-bottom:none; }
+  .rtb-label { font-size:0.9rem; font-weight:700; color:var(--text); }
+  .rtb-label small { display:block; font-size:0.68rem; color:var(--muted); font-weight:400; font-family:ui-monospace,'SF Mono','Courier New',monospace; }
+  .rtb-value { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:2rem; font-weight:400; color:var(--accent); letter-spacing:0.05em; }
+  .rtb-value span { font-size:0.85rem; color:var(--muted); margin-left:0.2rem; }
 
-  /* Result rows */
-  .result-section .section-header {
-    color: var(--accent2);
-    background: linear-gradient(90deg, var(--navy3), rgba(0,255,157,0.05));
-    border-color: rgba(0,255,157,0.2);
-  }
-  .result-section { border-color: rgba(0,255,157,0.2); }
-
-  .result-row {
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    background: var(--result-bg);
-  }
-  .result-row:last-child { border-bottom: none; }
-
-  .result-main {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-  .result-label {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: 0.02em;
-  }
-  .result-value {
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--accent2);
-    letter-spacing: 0.05em;
-  }
-  .result-value span { font-size: 0.9rem; color: var(--muted); margin-left: 0.2rem; }
-
-  .result-sub {
-    font-family: ui-monospace, 'SF Mono', 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 0.2rem;
-  }
-  .result-sub.warn {
-    color: var(--red);
-    text-align: right;
-  }
-
-  .result-warn {
-    color: var(--red) !important;
-  }
-  .result-ok {
-    color: var(--accent2) !important;
-  }
-
-  .alert-bar {
-    margin: 0 1rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-align: center;
-    display: none;
-  }
-  .alert-bar.show { display: block; }
-  .alert-bar.danger { background: rgba(255,71,87,0.15); border: 1px solid var(--red); color: var(--red); }
-  .alert-bar.ok { background: rgba(0,255,157,0.1); border: 1px solid var(--accent2); color: var(--accent2); }
-
-  .sub-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.4rem 1rem 0.4rem 1.8rem;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    background: rgba(0,0,0,0.1);
-  }
-  .sub-row:last-child { border-bottom: none; }
-  .sub-label { font-size: 0.8rem; color: var(--muted); }
-  .sub-value { font-family: ui-monospace, 'SF Mono', 'Courier New', monospace; font-size: 0.85rem; color: var(--text); }
-  .sub-unit { font-family: ui-monospace, 'SF Mono', 'Courier New', monospace; font-size: 0.7rem; color: var(--muted); margin-left: 0.3rem; }
-
-  .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 0.4rem; vertical-align: middle; }
+  /* ── PERFO HAD ── */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.04)}
+  .grid2:last-child{border-bottom:none}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,.04)}
+  .grid3:last-child{border-bottom:none}
+  .cell{padding:.55rem .7rem;border-right:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column;gap:.15rem}
+  .cell:last-child{border-right:none}
+  .cell-label{font-size:.65rem;color:var(--muted);font-family:ui-monospace,'SF Mono','Courier New',monospace;letter-spacing:.05em;text-transform:uppercase}
+  .cell-unit{font-size:.6rem;color:var(--muted);font-family:ui-monospace,'SF Mono','Courier New',monospace}
+  .section select{background:var(--input-bg);border:1.5px solid rgba(255,214,10,.5);border-radius:6px;color:var(--yellow);font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.9rem;padding:.25rem .4rem;width:100%;outline:none;transition:border-color .15s,background .15s;cursor:pointer;-webkit-appearance:none;appearance:none}
+  .section select:focus{border-color:var(--yellow);background:rgba(255,214,10,.14)}
+  .section select option{background:var(--navy2);color:var(--text)}
+  .pylones-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .pylon-col{border-right:1px solid rgba(255,255,255,.06);overflow:hidden}
+  .pylon-col:last-child{border-right:none}
+  .pylon-header{background:linear-gradient(90deg,var(--navy3),rgba(0,212,255,.05));padding:.4rem .5rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:var(--accent);text-align:center;font-family:ui-monospace,'SF Mono','Courier New',monospace;border-bottom:1px solid rgba(255,255,255,.06);text-transform:uppercase}
+  .pylon-cell{padding:.45rem .5rem;border-bottom:1px solid rgba(255,255,255,.04)}
+  .pylon-cell:last-child{border-bottom:none}
+  .pylon-label{font-size:.6rem;color:var(--muted);font-family:ui-monospace,'SF Mono','Courier New',monospace;margin-bottom:.2rem}
+  .canon-row{display:grid;grid-template-columns:1fr 1fr 1fr;padding:.5rem .7rem;gap:.5rem;border-bottom:1px solid rgba(255,255,255,.04);align-items:end}
+  .result-sub-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.04)}
+  .result-sub-row:last-child{border-bottom:none}
+  .result-sub-cell{padding:.55rem .9rem;border-right:1px solid rgba(255,255,255,.04)}
+  .result-sub-cell:last-child{border-right:none}
+  .rs-label{font-size:.65rem;color:var(--muted);font-family:ui-monospace,'SF Mono','Courier New',monospace;text-transform:uppercase;letter-spacing:.05em}
+  .rs-val{font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:1rem;color:var(--accent);margin-top:.15rem}
+  .masse-totale-row{background:rgba(0,255,157,.05);padding:.7rem .9rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.04)}
+  .mt-label{font-size:.9rem;font-weight:700;color:var(--accent2)}
+  .mt-val{font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:1.8rem;color:var(--accent2)}
+  .mt-val span{font-size:.8rem;color:var(--muted);margin-left:.2rem}
+  .hv-section{border-color:rgba(255,71,87,.2)!important}
+  .hv-section .section-header{color:var(--red)!important;background:linear-gradient(90deg,var(--navy3),rgba(255,71,87,.04))!important;border-color:rgba(255,71,87,.15)!important}
+  .hv-diagram{position:relative;height:160px;border-top:1px solid rgba(255,255,255,.04);background:rgba(0,0,0,.2);margin:0}
+  .hv-kp{position:absolute;display:flex;flex-direction:column;gap:.15rem}
+  .hv-kp-label{font-size:.6rem;color:var(--muted);font-family:ui-monospace,'SF Mono','Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+  .hv-kp-val{font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:1.1rem;color:var(--red);font-weight:700}
+  .hv-kp-val span{font-size:.65rem;color:var(--muted);font-weight:400}
+  .hv-kp.top-left{top:.7rem;left:.9rem}
+  .hv-kp.mid-right{top:50%;right:.9rem;transform:translateY(-50%);text-align:right;align-items:flex-end}
+  .hv-kp.bot-left{bottom:.7rem;left:.9rem}
+  .pylon-masse{font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.85rem;color:var(--accent)}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>✈ Faisabilité Carburant</h1>
-  <p>Compléter les cases 🟡 — calcul automatique</p>
+  <div>
+    <h1>✈ OUTILS TIGRE</h1>
+    <p>Compléter les cases 🟡 — calcul automatique</p>
+  </div>
+  <div class="header-badge">HAD · TIGRE</div>
 </header>
 
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('perfo',this)">
+    <span class="tab-icon">🚁</span>
+    <span class="tab-label">Perfo HAD</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('faisabilite',this)">
+    <span class="tab-icon">⛽</span>
+    <span class="tab-label">Faisabilité</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('rayon',this)">
+    <span class="tab-icon">🎯</span>
+    <span class="tab-label">Rayon d'action</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('onstation',this)">
+    <span class="tab-icon">⏱</span>
+    <span class="tab-label">On Station</span>
+  </button>
+</div>
+
+<!-- ONGLET PERFO HAD -->
+<div id="tab-perfo" class="tab-panel active">
 <div class="content">
 
-  <!-- CARBURANT -->
+  <div class="section">
+    <div class="section-header">⚖️ Masses de base</div>
+    <div class="grid3">
+      <div class="cell"><div class="cell-label">Masse machine</div><input type="number" id="masse_machine" value="4100" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Pilote</div><input type="number" id="masse_pilote" value="90" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Gunner</div><input type="number" id="masse_gunner" value="90" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+    </div>
+    <div class="grid2">
+      <div class="cell"><div class="cell-label">Masse soute</div><input type="number" id="masse_soute" value="10" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">TR0 principal</div><input type="number" id="tro_princ" value="1360" oninput="calcPerfo()"><div class="cell-unit">L</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">🚀 Emports</div>
+    <div class="pylones-grid">
+      <div class="pylon-col">
+        <div class="pylon-header">OL</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_ol" onchange="updatePylon('ol');calcPerfo()">
+            <option value="VIDE">VIDE</option><option value="PLR12">PLR12</option><option value="PLM">PLM</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_ol_mun" style="display:none"><div class="pylon-label" id="label_ol_mun">Nb</div><input type="number" id="qte_ol" value="0" min="0" oninput="calcPerfo()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div class="pylon-masse" id="masse_ol">0 <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+      <div class="pylon-col">
+        <div class="pylon-header">IL</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_il" onchange="updatePylon('il');calcPerfo()">
+            <option value="FERRY" selected>FERRY</option><option value="PLR22">PLR22</option><option value="CHAISE">CHAISE</option><option value="VIDE">VIDE</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_il_mun"><div class="pylon-label" id="label_il_mun">QTE TR0</div><input type="number" id="qte_il" value="365" min="0" oninput="calcPerfo()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div class="pylon-masse" id="masse_il">— <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+      <div class="pylon-col">
+        <div class="pylon-header">IR</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_ir" onchange="updatePylon('ir');calcPerfo()">
+            <option value="FERRY" selected>FERRY</option><option value="PLR22">PLR22</option><option value="CHAISE">CHAISE</option><option value="VIDE">VIDE</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_ir_mun"><div class="pylon-label" id="label_ir_mun">QTE TR0</div><input type="number" id="qte_ir" value="365" min="0" oninput="calcPerfo()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div class="pylon-masse" id="masse_ir">— <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+      <div class="pylon-col">
+        <div class="pylon-header">OR</div>
+        <div class="pylon-cell"><div class="pylon-label">Type</div>
+          <select id="emport_or" onchange="updatePylon('or');calcPerfo()">
+            <option value="VIDE">VIDE</option><option value="PLR12">PLR12</option><option value="PLM">PLM</option>
+          </select></div>
+        <div class="pylon-cell" id="cell_or_mun" style="display:none"><div class="pylon-label" id="label_or_mun">Nb</div><input type="number" id="qte_or" value="0" min="0" oninput="calcPerfo()"></div>
+        <div class="pylon-cell"><div class="pylon-label">Masse</div><div class="pylon-masse" id="masse_or">0 <span style="font-size:.6rem;color:var(--muted)">kg</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">🔫 Canon</div>
+    <div class="canon-row">
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb obus</div><input type="number" id="nb_obus" value="0" min="0" oninput="calcPerfo()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb caissons</div><input type="number" id="nb_caissons" value="4" min="0" oninput="calcPerfo()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Masse canon</div><div style="font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:1rem;color:var(--accent);padding:.25rem 0" id="masse_canon">—</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">📊 Récapitulatif masse</div>
+    <div class="result-sub-row" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="result-sub-cell"><div class="rs-label">TR0 total</div><div class="rs-val" id="tro_tot">—<span style="font-size:.7rem;color:var(--muted)"> L</span></div></div>
+      <div class="result-sub-cell"><div class="rs-label">Masse TR0</div><div class="rs-val" id="masse_tro">—<span style="font-size:.7rem;color:var(--muted)"> kg</span></div></div>
+      <div class="result-sub-cell"><div class="rs-label">Jettison</div><div class="rs-val" id="masse_jettison">—<span style="font-size:.7rem;color:var(--muted)"> kg</span></div></div>
+    </div>
+    <div class="masse-totale-row">
+      <div class="mt-label">Masse totale</div>
+      <div class="mt-val" id="masse_totale">—<span>kg</span></div>
+    </div>
+  </div>
+
+  <div class="section hv-section">
+    <div class="section-header">📈 Diagramme H/V Zone 7</div>
+    <div class="hv-diagram">
+      <div class="hv-kp top-left">
+        <div class="hv-kp-label">Corbeaux 🐦‍⬛</div>
+        <div class="hv-kp-val" id="hv_hmax">—<span> ft</span></div>
+      </div>
+      <div class="hv-kp mid-right">
+        <div class="hv-kp-label">V1 🚀</div>
+        <div class="hv-kp-val" id="hv_vmax">—<span> kt</span></div>
+      </div>
+      <div class="hv-kp bot-left">
+        <div class="hv-kp-label">Crocos 🐊</div>
+        <div class="hv-kp-val" id="hv_hmin">—<span> ft</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ONGLET FAISABILITÉ -->
+<div id="tab-faisabilite" class="tab-panel">
+<div class="content">
+
   <div class="section">
     <div class="section-header">⛽ Carburant</div>
     <div class="row">
       <div class="row-label">Kéro disponible</div>
-      <input type="number" id="kero_dispo" value="2095" oninput="calc()">
+      <input type="number" id="kero_dispo" value="1200" oninput="calc()">
       <div class="row-unit">L</div>
-    </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg</span>
-      <span><span class="sub-value" id="kero_dispo_kg">—</span><span class="sub-unit">kg</span></span>
     </div>
     <div class="row">
       <div class="row-label">Réserve 30min HOGE</div>
       <input type="number" id="reserve" value="230" oninput="calc()">
       <div class="row-unit">L</div>
     </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg</span>
-      <span><span class="sub-value" id="reserve_kg">—</span><span class="sub-unit">kg</span></span>
-    </div>
     <div class="row">
       <div class="row-label">Kéro utilisable<small>calculé automatiquement</small></div>
       <div class="row-value calc" id="kero_util">—</div>
       <div class="row-unit">L</div>
     </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg</span>
-      <span><span class="sub-value" id="kero_util_kg">—</span><span class="sub-unit">kg</span></span>
-    </div>
   </div>
 
-  <!-- CONSOMMATIONS -->
   <div class="section">
     <div class="section-header">🔥 Consommations</div>
     <div class="row">
@@ -289,27 +339,18 @@
       <input type="number" id="conso_zone" value="450" oninput="calc()">
       <div class="row-unit">L/h</div>
     </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg/h</span>
-      <span><span class="sub-value" id="conso_zone_kg">—</span><span class="sub-unit">kg/h</span></span>
-    </div>
     <div class="row">
       <div class="row-label">Conso en transit</div>
-      <input type="number" id="conso_transit" value="530" oninput="calc()">
+      <input type="number" id="conso_transit" value="550" oninput="calc()">
       <div class="row-unit">L/h</div>
-    </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg/h</span>
-      <span><span class="sub-value" id="conso_transit_kg">—</span><span class="sub-unit">kg/h</span></span>
     </div>
   </div>
 
-  <!-- MISE EN PLACE -->
   <div class="section">
     <div class="section-header">📍 Mise en place</div>
     <div class="row">
       <div class="row-label">Distance zone d'action</div>
-      <input type="number" id="dist_mep" value="460" oninput="calc()">
+      <input type="number" id="dist_mep" value="70" oninput="calc()">
       <div class="row-unit">Nm</div>
     </div>
     <div class="sub-row">
@@ -318,7 +359,7 @@
     </div>
     <div class="row">
       <div class="row-label">Vitesse MEP</div>
-      <input type="number" id="vit_mep" value="130" oninput="calc()">
+      <input type="number" id="vit_mep" value="120" oninput="calc()">
       <div class="row-unit">Kt</div>
     </div>
     <div class="sub-row">
@@ -335,18 +376,13 @@
       <div class="row-value calc" id="conso_mep">—</div>
       <div class="row-unit">L</div>
     </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg</span>
-      <span><span class="sub-value" id="conso_mep_kg">—</span><span class="sub-unit">kg</span></span>
-    </div>
   </div>
 
-  <!-- RETOUR / FARP -->
   <div class="section">
     <div class="section-header">🔄 Retour / FARP</div>
     <div class="row">
       <div class="row-label">Distance retour ou FARP</div>
-      <input type="number" id="dist_ret" value="0" oninput="calc()">
+      <input type="number" id="dist_ret" value="70" oninput="calc()">
       <div class="row-unit">Nm</div>
     </div>
     <div class="sub-row">
@@ -355,7 +391,7 @@
     </div>
     <div class="row">
       <div class="row-label">Vitesse RET</div>
-      <input type="number" id="vit_ret" value="125" oninput="calc()">
+      <input type="number" id="vit_ret" value="120" oninput="calc()">
       <div class="row-unit">Kt</div>
     </div>
     <div class="sub-row">
@@ -372,13 +408,8 @@
       <div class="row-value calc" id="conso_ret">—</div>
       <div class="row-unit">L</div>
     </div>
-    <div class="sub-row">
-      <span class="sub-label">→ en kg</span>
-      <span><span class="sub-value" id="conso_ret_kg">—</span><span class="sub-unit">kg</span></span>
-    </div>
   </div>
 
-  <!-- RÉSULTATS -->
   <div id="alert" class="alert-bar"></div>
 
   <div class="section result-section">
@@ -395,140 +426,366 @@
         <div class="result-label">⛽ Kéro minimum RTB/FARP</div>
         <div class="result-value" id="kero_min">—<span>L</span></div>
       </div>
-      <div class="result-sub" id="kero_min_kg">—</div>
     </div>
   </div>
 
 </div>
+</div>
+
+<!-- ONGLET RAYON D'ACTION -->
+<div id="tab-rayon" class="tab-panel">
+<div class="content">
+
+  <div class="section">
+    <div class="section-header">🟡 Paramètres mission</div>
+    <div class="row">
+      <div class="row-label">Kéro disponible</div>
+      <input type="number" id="r_kero" value="2000" oninput="calcRange()">
+      <div class="row-unit">L</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Vi mise en place</div>
+      <input type="number" id="r_vi_mep" value="80" oninput="calcRange()">
+      <div class="row-unit">kt</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en km/h</span>
+      <span><span class="sub-value" id="r_vi_mep_kmh">—</span><span class="sub-unit">km/h</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso à cette Vi</div>
+      <input type="number" id="r_conso_mep" value="510" oninput="calcRange()">
+      <div class="row-unit">L/h</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Vi retour</div>
+      <input type="number" id="r_vi_ret" value="145" oninput="calcRange()">
+      <div class="row-unit">kt</div>
+    </div>
+    <div class="sub-row">
+      <span class="sub-label">→ en km/h</span>
+      <span><span class="sub-value" id="r_vi_ret_kmh">—</span><span class="sub-unit">km/h</span></span>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso à cette Vi</div>
+      <input type="number" id="r_conso_ret" value="550" oninput="calcRange()">
+      <div class="row-unit">L/h</div>
+    </div>
+    <div class="big-input-row">
+      <div class="big-input-label">
+        Playtime désiré sur zone
+        <small id="r_playtime_min_label">→ — min</small>
+      </div>
+      <div class="big-input-wrap">
+        <input type="number" class="big" id="r_playtime" value="0.3" step="0.1" oninput="calcRange()">
+        <span class="big-input-unit">h</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso sur zone (ZA)</div>
+      <input type="number" id="r_conso_zone" value="450" oninput="calcRange()">
+      <div class="row-unit">L/h</div>
+    </div>
+  </div>
+
+  <div class="section result-section">
+    <div class="section-header">🎯 Rayon d'action maximal</div>
+    <div class="result-row">
+      <div class="result-main">
+        <div class="result-label">📍 Distance max</div>
+        <div class="result-value" id="r_range_nm">—<span>Nm</span></div>
+      </div>
+      <div class="result-sub" id="r_range_km">—</div>
+    </div>
+    <div class="result-row">
+      <div class="result-main">
+        <div class="result-label">⏱ FT mise en place</div>
+        <div class="result-value" id="r_ft_mep" style="font-size:1.2rem">—<span>h</span></div>
+      </div>
+      <div class="result-sub" id="r_ft_mep_min">—</div>
+    </div>
+    <div class="result-row">
+      <div class="result-main">
+        <div class="result-label">⏱ FT retour</div>
+        <div class="result-value" id="r_ft_ret" style="font-size:1.2rem">—<span>h</span></div>
+      </div>
+      <div class="result-sub" id="r_ft_ret_min">—</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ONGLET ON STATION -->
+<div id="tab-onstation" class="tab-panel">
+<div class="content">
+
+  <!-- PARAMÈTRES SECONDAIRES (petits) -->
+  <div class="section">
+    <div class="section-header">🔧 Paramètres consommation</div>
+    <div class="row">
+      <div class="row-label">Conso sur zone (ZA)</div>
+      <input type="number" id="os_conso_za" value="400" oninput="calcOnStation()">
+      <div class="row-unit">L/h</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Conso transit / retour</div>
+      <input type="number" id="os_conso_transit" value="600" oninput="calcOnStation()">
+      <div class="row-unit">L/h</div>
+    </div>
+  </div>
+
+  <!-- INPUTS PRIORITAIRES (grands) -->
+  <div class="section">
+    <div class="section-header">🟡 Saisie prioritaire</div>
+
+    <div class="big-input-row">
+      <div class="big-input-label">
+        Kéro disponible
+        <small>carburant restant sur zone</small>
+      </div>
+      <div class="big-input-wrap">
+        <input type="number" class="big" id="os_kero" value="900" oninput="calcOnStation()">
+        <span class="big-input-unit">L</span>
+      </div>
+    </div>
+
+    <div class="big-input-row">
+      <div class="big-input-label">
+        Check CALC retour
+        <small>temps de vol estimé pour rentrer</small>
+      </div>
+      <div class="big-input-wrap">
+        <input type="number" class="big" id="os_check_ret" value="20" oninput="calcOnStation()">
+        <span class="big-input-unit">min</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÉSULTATS -->
+  <div class="section result-section">
+    <div class="section-header">✅ Résultats</div>
+
+    <div class="playtime-block">
+      <div class="playtime-label">⏱ Playtime on station</div>
+      <div class="playtime-value" id="os_playtime_val">—<span>min</span><span class="playtime-dec" id="os_playtime_dec"></span></div>
+      <div class="playtime-sub" id="os_playtime_h">—</div>
+    </div>
+
+    <div class="rtb-block">
+      <div class="rtb-label">
+        ⛽ Top RTB
+        <small>kéro min pour rentrer + réserve</small>
+      </div>
+      <div class="rtb-value" id="os_top_rtb">—<span>L</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
 
 <script>
-function fmt(v, dec=1) {
-  if (!isFinite(v) || isNaN(v)) return '—';
-  return v.toFixed(dec);
+// ── PERFO HAD ──
+const DONNEES={
+  VIDE:{masse:0,type:null,max:0},PLM:{masse:93.5,type:'MISSILES',max:2},
+  PLR12:{masse:43,type:'ROQUETTES',max:12},PLR22:{masse:65,type:'ROQUETTES',max:22},
+  FERRY:{masse:37,type:'QTE TR0',max:365},CHAISE:{masse:66,type:'HELLFIRE',max:4},
+};
+const MUNIT={RKT:7.75,OBUS:0.55,CAISSON:3.5,HELLFIRE:47,MISTRAL:19.5};
+const HV=[
+  {masse:5500,vmax:3,hmax:140,hmin:130},{masse:5600,vmax:6,hmax:160,hmin:90},
+  {masse:5700,vmax:11,hmax:175,hmin:60},{masse:5800,vmax:13,hmax:190,hmin:50},
+  {masse:5900,vmax:16,hmax:210,hmin:41},{masse:6000,vmax:19,hmax:225,hmin:35},
+  {masse:6100,vmax:21,hmax:246,hmin:30},{masse:6200,vmax:23,hmax:260,hmin:25},
+  {masse:6300,vmax:28,hmax:276,hmin:18},{masse:6400,vmax:30,hmax:290,hmin:15},
+  {masse:6500,vmax:32,hmax:300,hmin:14},{masse:6600,vmax:34,hmax:315,hmin:13},
+];
+function interpHV(m){
+  if(m<=HV[0].masse)return{...HV[0]};
+  if(m>=HV[HV.length-1].masse)return{...HV[HV.length-1]};
+  for(let i=0;i<HV.length;i++){if(m<=HV[i].masse)return{...HV[i]};}
+  return{...HV[HV.length-1]};
 }
-function fmtH(h) {
-  if (!isFinite(h) || isNaN(h) || h < 0) return '—';
-  const hh = Math.floor(h);
-  const mm = Math.round((h - hh) * 60);
-  return `${hh}h${mm.toString().padStart(2,'0')}`;
+function updatePylon(s){
+  const sel=document.getElementById('emport_'+s).value;
+  const cm=document.getElementById('cell_'+s+'_mun');
+  const lm=document.getElementById('label_'+s+'_mun');
+  const inp=document.getElementById('qte_'+s);
+  if(sel==='VIDE'){cm.style.display='none';inp.value=0;}
+  else{cm.style.display='block';lm.textContent=DONNEES[sel].type;inp.max=DONNEES[sel].max;
+    if(parseFloat(inp.value)>DONNEES[sel].max)inp.value=DONNEES[sel].max;}
 }
-
-function calc() {
-  const get = id => parseFloat(document.getElementById(id).value) || 0;
-
-  const kero_dispo = get('kero_dispo');
-  const reserve = get('reserve');
-  const conso_zone = get('conso_zone');
-  const conso_transit = get('conso_transit');
-  const dist_mep = get('dist_mep');
-  const vit_mep = get('vit_mep');
-  const dist_ret = get('dist_ret');
-  const vit_ret = get('vit_ret');
-
-  // Conversions
-  const kero_dispo_kg = kero_dispo * 0.8;
-  const reserve_kg = reserve * 0.8;
-  const kero_util = kero_dispo - reserve;
-  const kero_util_kg = kero_util * 0.8;
-  const conso_zone_kg = conso_zone * 0.79;
-  const conso_transit_kg = conso_transit * 0.79;
-  const dist_mep_km = dist_mep * 1.852;
-  const vit_mep_kmh = vit_mep * 1.852;
-  const dist_ret_km = dist_ret * 1.852;
-  const vit_ret_kmh = vit_ret * 1.852;
-
-  // MEP
-  const ft_mep = vit_mep > 0 ? ((60 / vit_mep) * dist_mep) / 60 : 0;
-  const conso_mep = ft_mep * conso_transit;
-  const conso_mep_kg = conso_mep * 0.79;
-
-  // RET
-  const ft_ret = vit_ret > 0 ? ((60 / vit_ret) * dist_ret) / 60 : 0;
-  const conso_ret = ft_ret * conso_transit;
-  const conso_ret_kg = conso_ret * 0.79;
-
-  // Results
-  const playtime = conso_zone > 0 ? (kero_util - conso_mep - conso_ret) / conso_zone : 0;
-  const kero_min = (ft_ret * conso_transit) + 230;
-  const kero_min_kg = kero_min / 0.8;
-
-  // Update DOM
-  document.getElementById('kero_dispo_kg').textContent = fmt(kero_dispo_kg, 0);
-  document.getElementById('reserve_kg').textContent = fmt(reserve_kg, 0);
-  document.getElementById('kero_util').textContent = fmt(kero_util, 0);
-  document.getElementById('kero_util_kg').textContent = fmt(kero_util_kg, 0);
-  document.getElementById('conso_zone_kg').textContent = fmt(conso_zone_kg, 1);
-  document.getElementById('conso_transit_kg').textContent = fmt(conso_transit_kg, 1);
-  document.getElementById('dist_mep_km').textContent = fmt(dist_mep_km, 0);
-  document.getElementById('vit_mep_kmh').textContent = fmt(vit_mep_kmh, 0);
-  document.getElementById('ft_mep').textContent = fmtH(ft_mep);
-  document.getElementById('conso_mep').textContent = fmt(conso_mep, 0);
-  document.getElementById('conso_mep_kg').textContent = fmt(conso_mep_kg, 0);
-  document.getElementById('dist_ret_km').textContent = fmt(dist_ret_km, 0);
-  document.getElementById('vit_ret_kmh').textContent = fmt(vit_ret_kmh, 0);
-  document.getElementById('ft_ret').textContent = fmtH(ft_ret);
-  document.getElementById('conso_ret').textContent = fmt(conso_ret, 0);
-  document.getElementById('conso_ret_kg').textContent = fmt(conso_ret_kg, 0);
-
-  // Results
-  const ptEl = document.getElementById('playtime');
-  const alertEl = document.getElementById('alert');
-
-  if (playtime >= 0) {
-    ptEl.innerHTML = `${fmtH(playtime)}<span>h</span>`;
-    ptEl.className = 'result-value result-ok';
-    const ptMin = document.getElementById('playtime_min');
-    ptMin.textContent = `≈ ${Math.round(playtime * 60)} min sur zone`;
-    ptMin.className = 'result-sub';
-    alertEl.className = 'alert-bar ok show';
-    alertEl.textContent = '✓ Mission faisable';
-  } else {
-    ptEl.innerHTML = `NÉGATIF<span></span>`;
-    ptEl.className = 'result-value result-warn';
-    const ptMin = document.getElementById('playtime_min');
-    ptMin.textContent = `− ${Math.abs(Math.round(playtime * 60))} min manquantes`;
-    ptMin.className = 'result-sub warn';
-    alertEl.className = 'alert-bar danger show';
-    alertEl.textContent = '⚠ Mission NON faisable — carburant insuffisant';
-  }
-
-  document.getElementById('kero_min').innerHTML = `${fmt(kero_min, 0)}<span>L</span>`;
-  document.getElementById('kero_min_kg').textContent = `≈ ${fmt(kero_min_kg, 0)} kg`;
+function getMpylon(s){
+  const sel=document.getElementById('emport_'+s).value;
+  const q=parseFloat(document.getElementById('qte_'+s).value)||0;
+  if(sel==='VIDE')return 0;
+  if(sel==='PLR12')return DONNEES.PLR12.masse+q*MUNIT.RKT;
+  if(sel==='PLM')return DONNEES.PLM.masse-(2-q)*MUNIT.MISTRAL;
+  if(sel==='PLR22')return DONNEES.PLR22.masse+q*MUNIT.RKT;
+  if(sel==='FERRY')return DONNEES.FERRY.masse+0.79*q;
+  if(sel==='CHAISE')return DONNEES.CHAISE.masse+q*MUNIT.HELLFIRE;
+  return 0;
 }
-
-// localStorage — sauvegarde
-const FAIS_IDS = ['kero_dispo','reserve','conso_zone','conso_transit','dist_mep','vit_mep','dist_ret','vit_ret'];
-
-document.addEventListener('input', function(e) {
-  if (FAIS_IDS.includes(e.target.id)) {
-    const d = {};
-    FAIS_IDS.forEach(id => { const el=document.getElementById(id); if(el) d[id]=el.value; });
-    try { localStorage.setItem('faisabilite_vals', JSON.stringify(d)); } catch(err) {}
+function fP(v,d=0){return(isFinite(v)&&!isNaN(v))?v.toFixed(d):'—';}
+function calcPerfo(){
+  const g=id=>parseFloat(document.getElementById(id).value)||0;
+  const mm=g('masse_machine'),mp=g('masse_pilote'),mg=g('masse_gunner'),
+        ms=g('masse_soute'),tp=g('tro_princ'),no=g('nb_obus'),nc=g('nb_caissons');
+  const mor=getMpylon('or'),mir=getMpylon('ir'),mil=getMpylon('il'),mol=getMpylon('ol');
+  const mc=no*MUNIT.OBUS+nc*MUNIT.CAISSON;
+  const mj=mor+mir+mil+mol;
+  const sir=document.getElementById('emport_ir').value;
+  const sil=document.getElementById('emport_il').value;
+  const qir=parseFloat(document.getElementById('qte_ir').value)||0;
+  const qil=parseFloat(document.getElementById('qte_il').value)||0;
+  const tt=tp+(sir==='FERRY'?qir:0)+(sil==='FERRY'?qil:0);
+  const mt_val=mm+mp+mg+ms+mc+mj+tp*0.79;
+  const mu='<span style="font-size:.6rem;color:var(--muted)"> kg</span>';
+  document.getElementById('masse_or').innerHTML=`${fP(mor,1)}${mu}`;
+  document.getElementById('masse_ir').innerHTML=`${fP(mir,1)}${mu}`;
+  document.getElementById('masse_il').innerHTML=`${fP(mil,1)}${mu}`;
+  document.getElementById('masse_ol').innerHTML=`${fP(mol,1)}${mu}`;
+  document.getElementById('masse_canon').textContent=`${fP(mc,1)} kg`;
+  document.getElementById('masse_jettison').innerHTML=`${fP(mj,0)}<span style="font-size:.7rem;color:var(--muted)"> kg</span>`;
+  document.getElementById('tro_tot').innerHTML=`${fP(tt,0)}<span style="font-size:.7rem;color:var(--muted)"> L</span>`;
+  document.getElementById('masse_tro').innerHTML=`${fP(tt*0.79,0)}<span style="font-size:.7rem;color:var(--muted)"> kg</span>`;
+  document.getElementById('masse_totale').innerHTML=`${fP(mt_val,0)}<span>kg</span>`;
+  const cur=interpHV(mt_val);
+  document.getElementById('hv_hmax').innerHTML=`${fP(cur.hmax,0)}<span> ft</span>`;
+  document.getElementById('hv_vmax').innerHTML=`${fP(cur.vmax,0)}<span> kt</span>`;
+  document.getElementById('hv_hmin').innerHTML=`${fP(cur.hmin,0)}<span> ft</span>`;
+}
+const PERFO_IDS=['masse_machine','masse_pilote','masse_gunner','masse_soute','tro_princ',
+  'emport_ol','qte_ol','emport_il','qte_il','emport_ir','qte_ir','emport_or','qte_or','nb_obus','nb_caissons'];
+document.addEventListener('change',function(e){
+  if(PERFO_IDS.includes(e.target.id)){
+    const d={};PERFO_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});
+    try{localStorage.setItem('perfo_had_vals',JSON.stringify(d));}catch(err){}
   }
 });
 
-// Charger après le premier calc()
-calc();
+function fmt(v,dec=1){if(!isFinite(v)||isNaN(v))return'—';return v.toFixed(dec);}
+function fmtH(h){if(!isFinite(h)||isNaN(h)||h<0)return'—';const hh=Math.floor(h);const mm=Math.round((h-hh)*60);return`${hh}h${mm.toString().padStart(2,'0')}`;}
 
-try {
-  const saved = JSON.parse(localStorage.getItem('faisabilite_vals') || '{}');
-  if (Object.keys(saved).length > 0) {
-    FAIS_IDS.forEach(id => {
-      if (saved[id] !== undefined) {
-        const el = document.getElementById(id);
-        if (el) el.value = saved[id];
-      }
-    });
-    calc();
-  }
-} catch(err) {}
-
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
 }
+
+function calc(){
+  const get=id=>parseFloat(document.getElementById(id).value)||0;
+  const kero_dispo=get('kero_dispo'),reserve=get('reserve'),conso_zone=get('conso_zone'),
+        conso_transit=get('conso_transit'),dist_mep=get('dist_mep'),vit_mep=get('vit_mep'),
+        dist_ret=get('dist_ret'),vit_ret=get('vit_ret');
+  const kero_util=kero_dispo-reserve;
+  const ft_mep=vit_mep>0?((60/vit_mep)*dist_mep)/60:0;
+  const conso_mep=ft_mep*conso_transit;
+  const ft_ret=vit_ret>0?((60/vit_ret)*dist_ret)/60:0;
+  const conso_ret=ft_ret*conso_transit;
+  const playtime=conso_zone>0?(kero_util-conso_mep-conso_ret)/conso_zone:0;
+  const kero_min=(ft_ret*conso_transit)+230;
+  document.getElementById('kero_util').textContent=fmt(kero_util,0);
+  document.getElementById('dist_mep_km').textContent=fmt(dist_mep*1.852,0);
+  document.getElementById('vit_mep_kmh').textContent=fmt(vit_mep*1.852,0);
+  document.getElementById('ft_mep').textContent=fmtH(ft_mep);
+  document.getElementById('conso_mep').textContent=fmt(conso_mep,0);
+  document.getElementById('dist_ret_km').textContent=fmt(dist_ret*1.852,0);
+  document.getElementById('vit_ret_kmh').textContent=fmt(vit_ret*1.852,0);
+  document.getElementById('ft_ret').textContent=fmtH(ft_ret);
+  document.getElementById('conso_ret').textContent=fmt(conso_ret,0);
+  const ptEl=document.getElementById('playtime'),alertEl=document.getElementById('alert');
+  if(playtime>=0){
+    ptEl.innerHTML=`${fmtH(playtime)}<span>h</span>`;ptEl.className='result-value result-ok';
+    document.getElementById('playtime_min').textContent=`≈ ${Math.round(playtime*60)} min sur zone`;
+    document.getElementById('playtime_min').className='result-sub';
+    alertEl.className='alert-bar ok show';alertEl.textContent='✓ Mission faisable';
+  }else{
+    ptEl.innerHTML=`NÉGATIF<span></span>`;ptEl.className='result-value result-warn';
+    document.getElementById('playtime_min').textContent=`− ${Math.abs(Math.round(playtime*60))} min manquantes`;
+    document.getElementById('playtime_min').className='result-sub warn';
+    alertEl.className='alert-bar danger show';alertEl.textContent='⚠ Mission NON faisable — carburant insuffisant';
+  }
+  document.getElementById('kero_min').innerHTML=`${fmt(kero_min,0)}<span>L</span>`;
+}
+
+function calcRange(){
+  const get=id=>parseFloat(document.getElementById(id).value)||0;
+  const kero=get('r_kero'),vi_mep=get('r_vi_mep'),c_mep=get('r_conso_mep'),
+        vi_ret=get('r_vi_ret'),c_ret=get('r_conso_ret'),
+        playtime=get('r_playtime'),c_zone=get('r_conso_zone'),reserve=230;
+  document.getElementById('r_vi_mep_kmh').textContent=fmt(vi_mep*1.852,0);
+  document.getElementById('r_vi_ret_kmh').textContent=fmt(vi_ret*1.852,0);
+  document.getElementById('r_playtime_min_label').textContent=`→ ${fmt(playtime*60,0)} min`;
+  const denom=(vi_mep>0?c_mep/vi_mep:0)+(vi_ret>0?c_ret/vi_ret:0);
+  const num=kero-reserve-playtime*c_zone;
+  const range_nm=denom>0&&num>0?num/denom:0;
+  const ft_mep=vi_mep>0?range_nm/vi_mep:0;
+  const ft_ret=vi_ret>0?range_nm/vi_ret:0;
+  const conso_za=playtime*c_zone;
+  const kero_trans=ft_mep*c_mep+ft_ret*c_ret;
+  document.getElementById('r_range_nm').innerHTML=`${fmt(range_nm,1)}<span>Nm</span>`;
+  document.getElementById('r_range_km').textContent=`≈ ${fmt(range_nm*1.852,0)} km`;
+  document.getElementById('r_ft_mep').innerHTML=`${fmtH(ft_mep)}<span>h</span>`;
+  document.getElementById('r_ft_mep_min').textContent=`≈ ${Math.round(ft_mep*60)} min de vol`;
+  document.getElementById('r_ft_ret').innerHTML=`${fmtH(ft_ret)}<span>h</span>`;
+  document.getElementById('r_ft_ret_min').textContent=`≈ ${Math.round(ft_ret*60)} min de vol`;
+}
+
+function calcOnStation(){
+  const get=id=>parseFloat(document.getElementById(id).value)||0;
+  const conso_za    = get('os_conso_za');
+  const conso_trans = get('os_conso_transit');
+  const kero        = get('os_kero');
+  const check_ret   = get('os_check_ret'); // en minutes
+  const reserve     = 230; // fixe
+
+  // Top RTB = kéro pour rentrer + réserve
+  const top_rtb = (check_ret / 60) * conso_trans + reserve;
+
+  // Playtime = (kero_dispo - top_rtb) / conso_za * 60 (en min)
+  const playtime_h = conso_za > 0 ? (kero - top_rtb) / conso_za : 0;
+  const playtime_min = playtime_h * 60;
+
+  const ptEl = document.getElementById('os_playtime_val');
+  const ptSub = document.getElementById('os_playtime_h');
+
+  if (playtime_min >= 0) {
+    const playtime_dec = (playtime_min / 60).toFixed(1);
+    ptEl.innerHTML = `<span class="playtime-dec">${playtime_dec}<span class="playtime-unit">h</span></span><span class="playtime-sep">/</span><span class="playtime-min-val">${Math.round(playtime_min)}</span><span class="playtime-unit">min</span>`;
+    ptEl.className = 'playtime-value';
+    ptSub.textContent = `soit ${fmtH(playtime_h)} — Top RTB à ${fmt(top_rtb,0)} L`;
+    ptSub.className = 'playtime-sub';
+  } else {
+    ptEl.innerHTML = `NÉGATIF<span></span>`;
+    ptEl.className = 'playtime-value warn';
+    ptSub.textContent = `kéro insuffisant — manque ${fmt(Math.abs(playtime_min),0)} min`;
+    ptSub.className = 'playtime-sub warn';
+  }
+
+  document.getElementById('os_top_rtb').innerHTML    = `${fmt(top_rtb,0)}<span>L</span>`;
+}
+
+const FAIS_IDS=['kero_dispo','reserve','conso_zone','conso_transit','dist_mep','vit_mep','dist_ret','vit_ret'];
+const RANGE_IDS=['r_kero','r_vi_mep','r_conso_mep','r_vi_ret','r_conso_ret','r_playtime','r_conso_zone'];
+const OS_IDS=['os_conso_za','os_conso_transit','os_kero','os_check_ret'];
+document.addEventListener('input',function(e){
+  if(PERFO_IDS.includes(e.target.id)){calcPerfo();const d={};PERFO_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('perfo_had_vals',JSON.stringify(d));}catch(err){}}
+  if(FAIS_IDS.includes(e.target.id)){const d={};FAIS_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('faisabilite_vals',JSON.stringify(d));}catch(err){}}
+  if(RANGE_IDS.includes(e.target.id)){const d={};RANGE_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('range_vals',JSON.stringify(d));}catch(err){}}
+  if(OS_IDS.includes(e.target.id)){const d={};OS_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('os_vals',JSON.stringify(d));}catch(err){}}
+});
+
+// Init — charger localStorage AVANT le premier calc()
+try{const s=JSON.parse(localStorage.getItem('perfo_had_vals')||'{}');if(Object.keys(s).length>0){PERFO_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('faisabilite_vals')||'{}');if(Object.keys(s).length>0){FAIS_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('range_vals')||'{}');if(Object.keys(s).length>0){RANGE_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('os_vals')||'{}');if(Object.keys(s).length>0){OS_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
+
+updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
+calcPerfo();calc();calcRange();calcOnStation();
 </script>
+<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}</script>
 </body>
 </html>
-

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOGBOOK MUSCU</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #c8ff00;
+    --accent2: #4daaff;
+    --accent-cardio: #ff9f1c;
+    --text: #e8e8e8;
+    --muted: #666;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 20px 0; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); letter-spacing: 2px; }
+  .week-badge { background: var(--accent); color: #000; font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; }
+  nav { display: flex; gap: 2px; }
+  nav button { background: none; border: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.78rem; padding: 8px 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px; }
+  nav button.nav-A { color: var(--accent); border-bottom-color: var(--accent); }
+  nav button.nav-B { color: var(--accent2); border-bottom-color: var(--accent2); }
+  nav button.nav-cardio { color: var(--accent-cardio); border-bottom-color: var(--accent-cardio); }
+  nav button.nav-log { color: var(--text); border-bottom-color: var(--text); }
+  nav button:hover:not(.nav-A):not(.nav-B):not(.nav-cardio):not(.nav-log) { color: var(--text); }
+
+  .page { display: none; padding: 20px; }
+  .page.active { display: block; }
+
+  .session-header { margin-bottom: 20px; }
+  .session-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; }
+  .session-A { color: var(--accent); }
+  .session-B { color: var(--accent2); }
+  .session-sub { color: var(--muted); font-size: 0.78rem; font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+  .exercise-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .exercise-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
+  .exercise-name { font-weight: 500; font-size: 0.95rem; }
+  .exercise-meta { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+  .exercise-toggle { font-size: 1rem; color: var(--muted); transition: transform 0.2s; }
+  .exercise-card.open .exercise-toggle { transform: rotate(180deg); }
+  .exercise-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+  .exercise-card.open .exercise-body { display: block; }
+
+  .bloc-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.8px; margin: 12px 0 6px; }
+  .bloc-label.force { color: var(--accent); }
+  .bloc-label.hyper { color: var(--accent2); }
+  .bloc-label.post  { color: var(--accent-cardio); }
+  .bloc-label.core  { color: #b388ff; }
+  .bloc-divider { border: none; border-top: 1px dashed var(--border); margin: 14px 0 4px; }
+
+  .sets-table { width: 100%; border-collapse: collapse; font-family: 'DM Mono', monospace; font-size: 0.82rem; }
+  .sets-table th { color: var(--muted); font-weight: 400; text-align: left; padding: 4px 8px 6px; font-size: 0.68rem; text-transform: uppercase; }
+  .sets-table td { padding: 3px 4px; }
+  .set-num { color: var(--muted); padding: 4px 8px !important; font-size: 0.72rem; width: 20px; }
+  .sets-table input { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.88rem; padding: 6px 8px; width: 76px; text-align: center; transition: border-color 0.15s; }
+  .sets-table input:focus { outline: none; border-color: var(--accent); }
+
+  .add-set-btn { background: none; border: 1px dashed var(--border); border-radius: 4px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 5px 12px; cursor: pointer; margin-top: 6px; width: 100%; transition: all 0.15s; text-transform: uppercase; }
+  .add-set-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .comment-input { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; padding: 7px 10px; width: 100%; margin-top: 8px; transition: border-color 0.15s, color 0.15s; }
+  .comment-input::placeholder { color: #3a3a3a; }
+  .comment-input:focus { outline: none; color: var(--text); }
+
+  .session-actions { margin-top: 24px; display: flex; gap: 12px; }
+  .btn-primary { background: var(--accent); color: #000; border: none; border-radius: 6px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 1.5px; padding: 12px 28px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; flex: 1; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary { background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; padding: 12px 16px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .btn-secondary:hover { border-color: var(--text); color: var(--text); }
+
+  /* CARDIO */
+  .cardio-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--accent-cardio); margin-bottom: 4px; }
+  .activity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .activity-btn { background: var(--card); border: 2px solid var(--border); border-radius: 10px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; padding: 16px 12px; cursor: pointer; text-align: center; transition: all 0.15s; text-transform: uppercase; }
+  .activity-btn .act-icon { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+  .activity-btn:hover { border-color: var(--accent-cardio); color: var(--text); }
+  .activity-btn.selected { border-color: var(--accent-cardio); color: var(--accent-cardio); background: rgba(255,159,28,0.06); }
+
+  .cardio-form { display: none; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 4px; }
+  .cardio-form.show { display: block; }
+  .cardio-field { margin-bottom: 14px; }
+  .cardio-field label { display: block; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .cardio-field input, .cardio-field textarea { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 1rem; padding: 10px 14px; width: 100%; transition: border-color 0.15s; }
+  .cardio-field textarea { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; resize: none; height: 60px; color: var(--muted); }
+  .cardio-field textarea::placeholder { color: #3a3a3a; }
+  .cardio-field input:focus, .cardio-field textarea:focus { outline: none; border-color: var(--accent-cardio); color: var(--text); }
+  .input-unit { display: flex; align-items: center; }
+  .input-unit input { border-radius: 6px 0 0 6px; }
+  .unit-label { background: var(--border); border: 1px solid var(--border); border-left: none; border-radius: 0 6px 6px 0; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; padding: 10px 12px; white-space: nowrap; }
+
+  /* LOGBOOK */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); line-height: 1; }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-btn { background: var(--card); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 5px 12px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .filter-btn.sel-ALL    { border-color: var(--text); color: var(--text); }
+  .filter-btn.sel-A      { border-color: var(--accent); color: var(--accent); background: rgba(200,255,0,0.05); }
+  .filter-btn.sel-B      { border-color: var(--accent2); color: var(--accent2); background: rgba(77,170,255,0.05); }
+  .filter-btn.sel-CARDIO { border-color: var(--accent-cardio); color: var(--accent-cardio); background: rgba(255,159,28,0.05); }
+
+  .log-entry { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .log-entry-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; }
+  .log-entry-left { display: flex; align-items: center; gap: 12px; }
+  .log-tag { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; width: 36px; text-align: center; line-height: 1; }
+  .log-tag-A { color: var(--accent); }
+  .log-tag-B { color: var(--accent2); }
+  .log-tag-CARDIO { font-size: 1.2rem; }
+  .log-date { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--text); }
+  .log-summary { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+  .log-delete { background: none; border: none; color: #333; cursor: pointer; font-size: 1rem; padding: 4px 8px; transition: color 0.15s; }
+  .log-delete:hover { color: #ff4d4d; }
+  .log-entry-body { display: none; border-top: 1px solid var(--border); padding: 14px 16px; }
+  .log-entry.open .log-entry-body { display: block; }
+  .log-exercise { margin-bottom: 12px; }
+  .log-ex-name { font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
+  .log-bloc-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; text-transform: uppercase; margin: 6px 0 4px; }
+  .log-bloc-label.force { color: var(--accent); }
+  .log-bloc-label.hyper { color: var(--accent2); }
+  .log-bloc-label.post  { color: var(--accent-cardio); }
+  .log-bloc-label.core  { color: #b388ff; }
+  .log-sets { display: flex; flex-wrap: wrap; gap: 5px; }
+  .log-set-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 3px 8px; color: var(--text); }
+  .log-comment { font-size: 0.78rem; color: var(--muted); font-style: italic; margin-top: 4px; }
+  .log-cardio-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--accent-cardio); line-height: 1; }
+  .log-cardio-detail { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+
+  .backup-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .backup-btn { flex: 1; padding: 10px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .export-btn { background: none; border: 1px solid var(--accent); color: var(--accent); }
+  .export-btn:hover { background: rgba(200,255,0,0.08); }
+  .import-btn { background: none; border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; }
+  .import-btn:hover { border-color: var(--text); color: var(--text); }
+    .logbook-empty { text-align: center; padding: 60px 20px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; }
+  .logbook-empty .icon { font-size: 3rem; margin-bottom: 16px; }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #000; font-family: 'DM Mono', monospace; font-size: 0.82rem; font-weight: 500; padding: 10px 20px; border-radius: 6px; z-index: 999; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: 100%; max-width: 360px; }
+  .modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--accent); margin-bottom: 8px; }
+  .modal p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-actions .btn-secondary { flex: 1; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>LOGBOOK</h1>
+  </div>
+  <nav>
+    <button class="nav-A" onclick="showPage('A',this)">SÉANCE A</button>
+    <button onclick="showPage('B',this)">SÉANCE B</button>
+    <button onclick="showPage('cardio',this)">CARDIO</button>
+    <button onclick="showPage('log',this)">HISTORIQUE</button>
+  </nav>
+</header>
+
+<!-- SÉANCE A -->
+<div class="page active" id="page-A">
+  <div class="session-header">
+    <div class="session-title session-A">A</div>
+    <div class="session-sub">SQUAT · BENCH · BENT OVER ROW · LUNGES</div>
+  </div>
+  <div id="exercises-A"></div>
+  <div class="session-actions">
+    <button class="btn-primary" onclick="saveSession('A')">VALIDER LA SÉANCE</button>
+    <button class="btn-secondary" onclick="confirmClear('A')">RAZ</button>
+  </div>
+</div>
+
+<!-- SÉANCE B -->
+<div class="page" id="page-B">
+  <div class="session-header">
+    <div class="session-title session-B">B</div>
+    <div class="session-sub">DEADLIFT · OHP · PULL-UPS · BACK EXTENSION</div>
+  </div>
+  <div id="exercises-B"></div>
+  <div class="session-actions">
+    <button class="btn-primary" onclick="saveSession('B')">VALIDER LA SÉANCE</button>
+    <button class="btn-secondary" onclick="confirmClear('B')">RAZ</button>
+  </div>
+</div>
+
+<!-- CARDIO -->
+<div class="page" id="page-cardio">
+  <div class="cardio-title">CARDIO</div>
+  <div class="session-sub">Sélectionne une activité</div>
+  <div class="activity-grid">
+    <button class="activity-btn" onclick="selectActivity('run',this)"><span class="act-icon">🏃</span>Run</button>
+    <button class="activity-btn" onclick="selectActivity('rameur',this)"><span class="act-icon">🚣</span>Rameur</button>
+    <button class="activity-btn" onclick="selectActivity('echobike',this)"><span class="act-icon">💨</span>Echo Bike</button>
+    <button class="activity-btn" onclick="selectActivity('velo',this)"><span class="act-icon">🚴</span>Vélo salle</button>
+  </div>
+  <div class="cardio-form" id="cardio-form">
+    <div class="cardio-field" id="field-distance" style="display:none">
+      <label>Distance</label>
+      <div class="input-unit">
+        <input type="number" inputmode="decimal" step="0.1" min="0" id="cardio-distance" placeholder="0.0">
+        <span class="unit-label">km</span>
+      </div>
+    </div>
+    <div class="cardio-field">
+      <label id="duree-label">Durée de travail</label>
+      <div class="input-unit">
+        <input type="number" inputmode="numeric" min="0" id="cardio-duree" placeholder="0">
+        <span class="unit-label">min</span>
+      </div>
+    </div>
+    <div class="cardio-field">
+      <label>Commentaire (optionnel)</label>
+      <textarea id="cardio-comment" placeholder="Intensité, ressenti, intervalles..."></textarea>
+    </div>
+    <div class="session-actions" style="margin-top:8px">
+      <button class="btn-primary" style="background:var(--accent-cardio)" onclick="saveCardio()">VALIDER</button>
+      <button class="btn-secondary" onclick="resetCardio()">RAZ</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORIQUE -->
+<div class="page" id="page-log">
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="stat-total">0</div><div class="stat-label">Total</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-month">0</div><div class="stat-label">Ce mois</div></div>
+    <div class="stat-box"><div class="stat-val" id="stat-week-count">0</div><div class="stat-label">Semaine</div></div>
+  </div>
+  <div class="backup-row">
+    <button class="backup-btn export-btn" onclick="exportLog()">&#8595; EXPORTER</button>
+    <label class="backup-btn import-btn">&#8593; IMPORTER<input type="file" accept=".json" onchange="importLog(event)" style="display:none"></label>
+  </div>
+    <div class="filter-row">
+    <button class="filter-btn sel-ALL" onclick="filterLog('ALL',this)">TOUT</button>
+    <button class="filter-btn" onclick="filterLog('A',this)">SÉANCE A</button>
+    <button class="filter-btn" onclick="filterLog('B',this)">SÉANCE B</button>
+    <button class="filter-btn" onclick="filterLog('CARDIO',this)">CARDIO</button>
+  </div>
+  <div id="logbook-container"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>CONFIRMER</h3>
+    <p id="modal-text"></p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">ANNULER</button>
+      <button class="btn-primary" id="modal-ok" onclick="confirmModal()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROGRAMME = {
+  A: [
+    { id:'squat',    name:'Back Squat',      blocs:[{type:'force',label:'Force',target:'5×5',sets:5},{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'bench',    name:'Bench Press',     blocs:[{type:'force',label:'Force',target:'5×5',sets:5},{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'bent_row', name:'Bent Over Row',   blocs:[{type:'force',label:'Force',target:'5×5',sets:5},{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'lunges',   name:'Walking Lunges',  blocs:[{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'abdos_a',  name:'Abdos / Gainage', blocs:[{type:'core',label:'Core',target:'libre',sets:0}] }
+  ],
+  B: [
+    { id:'deadlift', name:'Deadlift',        blocs:[{type:'force',label:'Force',target:'5×5',sets:5},{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'ohp',      name:'Overhead Press',  blocs:[{type:'force',label:'Force',target:'5×5',sets:5},{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'pullups',  name:'Pull-Ups',        blocs:[{type:'force',label:'Force',target:'5×5',sets:5},{type:'hyper',label:'Hypertrophie',target:'3×8–12',sets:3}] },
+    { id:'back_ext', name:'Back Extension',  blocs:[{type:'post',label:'Chaîne postérieure',target:'3–4×10–15',sets:3}] },
+    { id:'abdos_b',  name:'Abdos / Gainage', blocs:[{type:'core',label:'Core',target:'libre',sets:0}] }
+  ]
+};
+
+const ACT_LABELS = { run:'🏃 Run', rameur:'🚣 Rameur', echobike:'💨 Echo Bike', velo:'🚴 Vélo salle' };
+
+// --- Render sessions ---
+function renderSession(sess) {
+  const container = document.getElementById('exercises-' + sess);
+  container.innerHTML = '';
+  PROGRAMME[sess].forEach(ex => {
+    const card = document.createElement('div');
+    card.className = 'exercise-card';
+    let body = '';
+    ex.blocs.forEach((bloc, bi) => {
+      if (bi > 0) body += '<hr class="bloc-divider">';
+      if (bloc.type === 'core') {
+        body += `<input class="comment-input" type="text" style="margin-top:12px" placeholder="Décris ton travail abdos / gainage..." id="comment-${sess}-${ex.id}-${bloc.type}">`;
+      } else {
+        body += `<div class="bloc-label ${bloc.type}">${bloc.label} — ${bloc.target}</div>`;
+        body += `<table class="sets-table"><thead><tr><th>#</th><th>Charge (kg)</th><th>Reps</th></tr></thead><tbody id="sets-${sess}-${ex.id}-${bloc.type}">`;
+        for (let i = 1; i <= bloc.sets; i++) body += setRow(sess, ex.id, bloc.type, i);
+        body += `</tbody></table>`;
+        body += `<button class="add-set-btn" onclick="addSet('${sess}','${ex.id}','${bloc.type}')">+ série</button>`;
+        body += `<input class="comment-input" type="text" placeholder="Commentaire ${bloc.label.toLowerCase()}..." id="comment-${sess}-${ex.id}-${bloc.type}">`;
+      }
+    });
+    card.innerHTML = `
+      <div class="exercise-header" onclick="this.parentElement.classList.toggle('open')">
+        <div><div class="exercise-name">${ex.name}</div><div class="exercise-meta">${ex.blocs.map(b=>b.target).join(' · ')}</div></div>
+        <span class="exercise-toggle">▾</span>
+      </div>
+      <div class="exercise-body">${body}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function setRow(sess, exId, blocType, i) {
+  return `<tr><td class="set-num">${i}</td>
+    <td><input type="number" inputmode="decimal" step="0.5" min="0" placeholder="—" id="kg-${sess}-${exId}-${blocType}-${i}"></td>
+    <td><input type="number" inputmode="numeric" min="0" placeholder="—" id="reps-${sess}-${exId}-${blocType}-${i}"></td></tr>`;
+}
+
+function addSet(sess, exId, blocType) {
+  const tbody = document.getElementById(`sets-${sess}-${exId}-${blocType}`);
+  const i = tbody.querySelectorAll('tr').length + 1;
+  tbody.insertAdjacentHTML('beforeend', setRow(sess, exId, blocType, i));
+}
+
+// --- Save session ---
+function saveSession(sess) {
+  const exercises = [];
+  let hasData = false;
+  PROGRAMME[sess].forEach(ex => {
+    const blocsData = [];
+    ex.blocs.forEach(bloc => {
+      const tbody = document.getElementById(`sets-${sess}-${ex.id}-${bloc.type}`);
+      if (!tbody) return;
+      const sets = [];
+      tbody.querySelectorAll('tr').forEach((_, i) => {
+        const n = i + 1;
+        const kg = document.getElementById(`kg-${sess}-${ex.id}-${bloc.type}-${n}`)?.value;
+        const reps = document.getElementById(`reps-${sess}-${ex.id}-${bloc.type}-${n}`)?.value;
+        if (kg || reps) { hasData = true; sets.push({ kg: kg||'', reps: reps||'' }); }
+      });
+      const comment = document.getElementById(`comment-${sess}-${ex.id}-${bloc.type}`)?.value || '';
+      if (sets.length || comment) blocsData.push({ type: bloc.type, label: bloc.label, target: bloc.target, sets, comment });
+    });
+    if (blocsData.length) exercises.push({ name: ex.name, blocs: blocsData });
+  });
+  if (!hasData) { showToast('Aucune donnée saisie !'); return; }
+  const now = new Date();
+  pushLog({ id: Date.now(), type:'session', session: sess,
+    date: now.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),
+    dateISO: now.toISOString(), exercises });
+  showToast('✓ SÉANCE ' + sess + ' SAUVEGARDÉE');
+  updateStats();
+  renderSession(sess);
+}
+
+function confirmClear(sess) {
+  showModal(`Remettre à zéro la séance ${sess} ?`, () => renderSession(sess));
+}
+
+// --- Cardio ---
+let selectedActivity = null;
+
+function selectActivity(act, btn) {
+  selectedActivity = act;
+  document.querySelectorAll('.activity-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('cardio-form').classList.add('show');
+  const isRun = act === 'run';
+  document.getElementById('field-distance').style.display = isRun ? 'block' : 'none';
+  document.getElementById('duree-label').textContent = isRun ? 'Durée totale' : 'Durée de travail';
+}
+
+function saveCardio() {
+  if (!selectedActivity) { showToast('Choisis une activité !'); return; }
+  const duree = document.getElementById('cardio-duree').value;
+  const distance = document.getElementById('cardio-distance').value;
+  const comment = document.getElementById('cardio-comment').value;
+  if (!duree && !distance) { showToast('Saisis la durée ou la distance !'); return; }
+  const now = new Date();
+  pushLog({ id: Date.now(), type:'cardio', session:'CARDIO',
+    activity: selectedActivity, activityLabel: ACT_LABELS[selectedActivity],
+    duree: duree||'', distance: distance||'', comment,
+    date: now.toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),
+    dateISO: now.toISOString() });
+  showToast('✓ SESSION CARDIO SAUVEGARDÉE');
+  resetCardio();
+  updateStats();
+}
+
+function resetCardio() {
+  selectedActivity = null;
+  document.querySelectorAll('.activity-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('cardio-form').classList.remove('show');
+  ['cardio-distance','cardio-duree','cardio-comment'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+}
+
+// --- Logbook ---
+let currentFilter = 'ALL';
+
+function renderLogbook() {
+  const log = getLog();
+  const container = document.getElementById('logbook-container');
+  const filtered = currentFilter === 'ALL' ? log : log.filter(e => e.session === currentFilter);
+  if (!filtered.length) {
+    container.innerHTML = `<div class="logbook-empty"><div class="icon">📋</div>Aucune séance enregistrée</div>`;
+    return;
+  }
+  container.innerHTML = '';
+  filtered.forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    let summary = '', bodyHTML = '';
+    if (entry.type === 'cardio') {
+      const parts = [];
+      if (entry.distance) parts.push(entry.distance + ' km');
+      if (entry.duree) parts.push(entry.duree + ' min');
+      summary = entry.activityLabel + (parts.length ? ' · ' + parts.join(' · ') : '');
+      bodyHTML = `<div class="log-cardio-val">${entry.activityLabel}</div>
+        <div class="log-cardio-detail">
+          ${entry.distance ? `Distance : <span style="color:var(--text)">${entry.distance} km</span>&nbsp;&nbsp;` : ''}
+          ${entry.duree ? `Durée : <span style="color:var(--text)">${entry.duree} min</span>` : ''}
+        </div>
+        ${entry.comment ? `<div class="log-comment" style="margin-top:8px">${entry.comment}</div>` : ''}`;
+    } else {
+      const totalSets = entry.exercises.reduce((a,ex) => a + ex.blocs.reduce((b,bl) => b + bl.sets.length, 0), 0);
+      summary = `${entry.exercises.length} exercices · ${totalSets} séries`;
+      bodyHTML = entry.exercises.map(ex => {
+        const blocsHTML = ex.blocs.map(bl => {
+          const chips = bl.sets.map(s => {
+            let l = '';
+            if (s.kg) l += s.kg + 'kg';
+            if (s.kg && s.reps) l += ' × ';
+            if (s.reps) l += s.reps;
+            return l ? `<span class="log-set-chip">${l}</span>` : '';
+          }).filter(Boolean).join('');
+          return `<div class="log-bloc-label ${bl.type}">${bl.label}</div>
+            <div class="log-sets">${chips || '<span style="color:var(--muted);font-size:0.72rem">—</span>'}</div>
+            ${bl.comment ? `<div class="log-comment">${bl.comment}</div>` : ''}`;
+        }).join('');
+        return `<div class="log-exercise"><div class="log-ex-name">${ex.name}</div>${blocsHTML}</div>`;
+      }).join('');
+    }
+    const tagClass = entry.session === 'CARDIO' ? 'log-tag-CARDIO' : `log-tag-${entry.session}`;
+    const tagText = entry.session === 'CARDIO' ? '🔥' : entry.session;
+    div.innerHTML = `
+      <div class="log-entry-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="log-entry-left">
+          <span class="log-tag ${tagClass}">${tagText}</span>
+          <div><div class="log-date">${entry.date}</div><div class="log-summary">${summary}</div></div>
+        </div>
+        <button class="log-delete" onclick="event.stopPropagation();deleteEntry(${entry.id})">🗑</button>
+      </div>
+      <div class="log-entry-body">${bodyHTML}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function filterLog(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.className = 'filter-btn');
+  btn.classList.add('sel-' + type);
+  renderLogbook();
+}
+
+function deleteEntry(id) {
+  showModal('Supprimer cette entrée ?', () => {
+    saveLog(getLog().filter(e => String(e.id) !== String(id)));
+    renderLogbook(); updateStats(); showToast('Entrée supprimée');
+  });
+}
+
+// --- Stats ---
+function updateStats() {
+  const log = getLog();
+  document.getElementById('stat-total').textContent = log.length;
+  const now = new Date();
+  document.getElementById('stat-month').textContent = log.filter(e => {
+    const d = new Date(e.dateISO);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+  mon.setHours(0,0,0,0);
+  document.getElementById('stat-week-count').textContent = log.filter(e => new Date(e.dateISO) >= mon).length;
+  const el = document.getElementById('current-week');
+  if (el) {
+    const start = getStartDate();
+    const week = Math.min(Math.floor((now - start) / 604800000) + 1, 10);
+    el.textContent = `SEMAINE ${week}`;
+  }
+}
+
+// --- Storage ---
+function getLog() { return JSON.parse(localStorage.getItem('muscu_log') || '[]'); }
+function saveLog(log) { localStorage.setItem('muscu_log', JSON.stringify(log)); }
+function pushLog(entry) { const l = getLog(); l.unshift(entry); saveLog(l); }
+function getStartDate() {
+  let d = localStorage.getItem('muscu_start');
+  if (!d) { d = new Date().toISOString().split('T')[0]; localStorage.setItem('muscu_start', d); }
+  return new Date(d);
+}
+
+// --- UI helpers ---
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.className = '');
+  document.getElementById('page-' + name).classList.add('active');
+  const cls = { A:'nav-A', B:'nav-B', cardio:'nav-cardio', log:'nav-log' };
+  btn.className = cls[name] || '';
+  if (name === 'log') { renderLogbook(); updateStats(); }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+let pendingAction = null;
+function showModal(text, fn) {
+  document.getElementById('modal-text').textContent = text;
+  pendingAction = fn;
+  document.getElementById('modal').classList.add('show');
+}
+function confirmModal() {
+  document.getElementById('modal').classList.remove('show');
+  const action = pendingAction;
+  pendingAction = null;
+  if (action) action();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  pendingAction = null;
+}
+
+// --- Export / Import ---
+function exportLog() {
+  const log = getLog();
+  if (!log.length) { showToast('Aucune donnée à exporter !'); return; }
+  const data = JSON.stringify(log, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `logbook_muscu_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ EXPORT TÉLÉCHARGÉ');
+}
+
+function importLog(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error();
+      const existing = getLog();
+      const existingIds = new Set(existing.map(e => e.id));
+      const newEntries = imported.filter(e => !existingIds.has(e.id));
+      const merged = [...existing, ...newEntries].sort((a,b) => new Date(b.dateISO) - new Date(a.dateISO));
+      showModal(
+        `Import trouvé : ${imported.length} entrée(s). ${newEntries.length} nouvelle(s) à ajouter. Confirmer ?`,
+        () => {
+          saveLog(merged);
+          renderLogbook();
+          updateStats();
+          showToast(`✓ ${newEntries.length} ENTRÉE(S) IMPORTÉE(S)`);
+        }
+      );
+    } catch(err) {
+      showToast('Fichier invalide !');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// --- Init ---
+renderSession('A');
+renderSession('B');
+updateStats();
+</script>
+</body>
+</html>

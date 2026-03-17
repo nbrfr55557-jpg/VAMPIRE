@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMGQwZCIvPgogIDwhLS0gSGFsdMOocmUgLS0+CiAgPCEtLSBCYXJyZSBjZW50cmFsZSAtLT4KICA8cmVjdCB4PSIxNTYiIHk9IjIzOCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzNiIgcng9IjgiIGZpbGw9IiNjOGZmMDAiLz4KICA8IS0tIEPDtHTDqSBnYXVjaGUgLSBkaXNxdWVzIC0tPgogIDxyZWN0IHg9IjEwOCIgeT0iMjAwIiB3aWR0aD0iNTIiIGhlaWdodD0iMTEyIiByeD0iMTAiIGZpbGw9IiNjOGZmMDAiLz4KICA8cmVjdCB4PSI4OCIgeT0iMjE4IiB3aWR0aD0iMjQiIGhlaWdodD0iNzYiIHJ4PSI4IiBmaWxsPSIjYzhmZjAwIi8+CiAgPCEtLSBDw7R0w6kgZHJvaXQgLSBkaXNxdWVzIC0tPgogIDxyZWN0IHg9IjM1MiIgeT0iMjAwIiB3aWR0aD0iNTIiIGhlaWdodD0iMTEyIiByeD0iMTAiIGZpbGw9IiNjOGZmMDAiLz4KICA8cmVjdCB4PSI0MDAiIHk9IjIxOCIgd2lkdGg9IjI0IiBoZWlnaHQ9Ijc2IiByeD0iOCIgZmlsbD0iI2M4ZmYwMCIvPgogIDwhLS0gTGV0dHJlcyBMQiAtLT4KICA8dGV4dCB4PSIyNTYiIHk9IjQwMCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBzYW5zLXNlcmlmIiBmb250LXNpemU9Ijg4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjYzhmZjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iNCI+TEI8L3RleHQ+Cjwvc3ZnPg==">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LOGBOOK MUSCU</title>
+<title>LOGBOOK STAN</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -26,7 +26,7 @@
   h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); letter-spacing: 2px; }
   .week-badge { background: var(--accent); color: #000; font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; }
   nav { display: flex; gap: 2px; }
-  nav button { background: none; border: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.78rem; padding: 8px 14px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.5px; }
+  nav button { background: none; border: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 8px 8px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px; }
   nav button.nav-A { color: var(--accent); border-bottom-color: var(--accent); }
   nav button.nav-B { color: var(--accent2); border-bottom-color: var(--accent2); }
   nav button.nav-cardio { color: var(--accent-cardio); border-bottom-color: var(--accent-cardio); }
@@ -249,11 +249,11 @@
 
 <header>
   <div class="header-top">
-    <h1>LOGBOOK</h1>
+    <h1>LOGBOOK STAN</h1>
   </div>
   <nav>
-    <button class="nav-A" onclick="showPage('A',this)">SÉANCE A</button>
-    <button onclick="showPage('B',this)">SÉANCE B</button>
+    <button class="nav-A" onclick="showPage('A',this)">A</button>
+    <button onclick="showPage('B',this)">B</button>
     <button onclick="showPage('cardio',this)">CARDIO</button>
     <button onclick="showPage('log',this)">HISTORIQUE</button>
     <button onclick="showPage('stats',this)">STATS</button>
@@ -264,7 +264,7 @@
 <!-- SÉANCE A -->
 <div class="page active" id="page-A">
   <div class="session-header">
-    <div class="session-title session-A">A</div>
+    <div class="session-title session-A">SÉANCE A</div>
     <div class="session-sub">SQUAT · BENCH · BENT OVER ROW · LUNGES</div>
   </div>
   <div class="deload-banner" id="deload-banner-A">
@@ -282,7 +282,7 @@
 <!-- SÉANCE B -->
 <div class="page" id="page-B">
   <div class="session-header">
-    <div class="session-title session-B">B</div>
+    <div class="session-title session-B">SÉANCE B</div>
     <div class="session-sub">DEADLIFT · OHP · PULL-UPS · BACK EXTENSION</div>
   </div>
   <div class="deload-banner" id="deload-banner-B">
@@ -1290,6 +1290,19 @@ renderSession('B');
 updateStats();
 checkDeload();
 checkExportReminder();
+
+// Wake Lock - garde l'écran allumé
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      await navigator.wakeLock.request('screen');
+    }
+  } catch(e) {}
+}
+requestWakeLock();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') requestWakeLock();
+});
 </script>
   <div class="export-reminder" id="export-reminder">
     <div class="export-reminder-title">💾 SAUVEGARDE RECOMMANDÉE</div>

@@ -1048,7 +1048,10 @@ document.addEventListener('input',function(e){
   if(OS_IDS.includes(e.target.id)){const d={};OS_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('os_vals',JSON.stringify(d));}catch(err){}}
 });
 
-// Init — charger localStorage AVANT le premier calc()
+// Sélection automatique au focus sur tous les inputs numériques
+document.querySelectorAll('input[type="number"]').forEach(el => {
+  el.addEventListener('focus', function() { this.select(); });
+});
 try{const s=JSON.parse(localStorage.getItem('perfo_had_vals')||'{}');if(Object.keys(s).length>0){PERFO_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
 try{const s=JSON.parse(localStorage.getItem('faisabilite_vals')||'{}');if(Object.keys(s).length>0){FAIS_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
 try{const s=JSON.parse(localStorage.getItem('range_vals')||'{}');if(Object.keys(s).length>0){RANGE_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}

@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMGQwZCIvPgogIDwhLS0gSGFsdMOocmUgLS0+CiAgPCEtLSBCYXJyZSBjZW50cmFsZSAtLT4KICA8cmVjdCB4PSIxNTYiIHk9IjIzOCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzNiIgcng9IjgiIGZpbGw9IiNjOGZmMDAiLz4KICA8IS0tIEPDtHTDqSBnYXVjaGUgLSBkaXNxdWVzIC0tPgogIDxyZWN0IHg9IjEwOCIgeT0iMjAwIiB3aWR0aD0iNTIiIGhlaWdodD0iMTEyIiByeD0iMTAiIGZpbGw9IiNjOGZmMDAiLz4KICA8cmVjdCB4PSI4OCIgeT0iMjE4IiB3aWR0aD0iMjQiIGhlaWdodD0iNzYiIHJ4PSI4IiBmaWxsPSIjYzhmZjAwIi8+CiAgPCEtLSBDw7R0w6kgZHJvaXQgLSBkaXNxdWVzIC0tPgogIDxyZWN0IHg9IjM1MiIgeT0iMjAwIiB3aWR0aD0iNTIiIGhlaWdodD0iMTEyIiByeD0iMTAiIGZpbGw9IiNjOGZmMDAiLz4KICA8cmVjdCB4PSI0MDAiIHk9IjIxOCIgd2lkdGg9IjI0IiBoZWlnaHQ9Ijc2IiByeD0iOCIgZmlsbD0iI2M4ZmYwMCIvPgogIDwhLS0gTGV0dHJlcyBMQiAtLT4KICA8dGV4dCB4PSIyNTYiIHk9IjQwMCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLCBzYW5zLXNlcmlmIiBmb250LXNpemU9Ijg4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjYzhmZjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iNCI+TEI8L3RleHQ+Cjwvc3ZnPg==">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LOGBOOK MUSCU</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -30,6 +31,8 @@
   nav button.nav-B { color: var(--accent2); border-bottom-color: var(--accent2); }
   nav button.nav-cardio { color: var(--accent-cardio); border-bottom-color: var(--accent-cardio); }
   nav button.nav-log { color: var(--text); border-bottom-color: var(--text); }
+  nav button.nav-stats { color: #b388ff; border-bottom-color: #b388ff; }
+  nav button.nav-heatmap { color: #ff6b9d; border-bottom-color: #ff6b9d; }
   nav button:hover:not(.nav-A):not(.nav-B):not(.nav-cardio):not(.nav-log) { color: var(--text); }
 
   .page { display: none; padding: 20px; }
@@ -67,6 +70,68 @@
   .add-set-btn { background: none; border: 1px dashed var(--border); border-radius: 4px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.7rem; padding: 5px 12px; cursor: pointer; margin-top: 6px; width: 100%; transition: all 0.15s; text-transform: uppercase; }
   .add-set-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+
+  /* HEATMAP */
+  .heatmap-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #ff6b9d; margin-bottom: 4px; }
+  .heatmap-year-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 10px; }
+  .heatmap-grid-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .heatmap-grid { display: flex; gap: 3px; }
+  .heatmap-col { display: flex; flex-direction: column; gap: 3px; }
+  .heatmap-month-labels { display: flex; gap: 3px; margin-bottom: 4px; padding-left: 24px; }
+  .heatmap-month-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; }
+  .heatmap-day-labels { display: flex; flex-direction: column; gap: 3px; margin-right: 4px; padding-top: 0; }
+  .heatmap-day-label { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--muted); height: 11px; line-height: 11px; }
+  .heatmap-cell { width: 11px; height: 11px; border-radius: 2px; cursor: pointer; transition: transform 0.1s; flex-shrink: 0; }
+  .heatmap-cell:hover { transform: scale(1.4); }
+  .heatmap-cell.empty { background: #1e1e1e; }
+  .heatmap-cell.type-A { background: #c8ff00; }
+  .heatmap-cell.type-B { background: #4daaff; }
+  .heatmap-cell.type-CARDIO { background: #ff9f1c; }
+  .heatmap-cell.type-AB { background: #b388ff; }
+  .heatmap-cell.type-MULTI { background: #ff6b9d; }
+  .heatmap-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .heatmap-legend-item { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); }
+  .heatmap-legend-dot { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+  .heatmap-stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 20px; }
+  .heatmap-tooltip { position: fixed; background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 6px; padding: 8px 12px; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text); z-index: 300; pointer-events: none; display: none; max-width: 180px; line-height: 1.5; }
+
+  /* EXPORT REMINDER */
+  .export-reminder { display:none; position:fixed; bottom:80px; left:16px; right:16px; background:#1e1e1e; border:1px solid var(--accent); border-radius:10px; padding:14px 16px; z-index:150; box-shadow:0 4px 24px rgba(0,0,0,0.5); }
+  .export-reminder.show { display:block; animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+  .export-reminder-title { font-family:'Bebas Neue',sans-serif; font-size:1rem; color:var(--accent); letter-spacing:1px; margin-bottom:4px; }
+  .export-reminder-text { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); margin-bottom:10px; line-height:1.5; }
+  .export-reminder-actions { display:flex; gap:8px; }
+  .export-reminder-actions .btn-primary { font-size:0.85rem; padding:8px 16px; flex:1; }
+  .export-reminder-actions .btn-secondary { font-size:0.75rem; padding:8px 12px; }
+
+  /* DELOAD ALERT */
+  .deload-banner { display:none; background: rgba(255,77,77,0.08); border: 1px solid rgba(255,77,77,0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; position: relative; }
+  .deload-banner.show { display: block; }
+  .deload-banner-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: #ff4d4d; letter-spacing: 1px; margin-bottom: 4px; }
+  .deload-banner-text { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+  .deload-banner-close { position: absolute; top: 10px; right: 12px; background: none; border: none; color: #555; cursor: pointer; font-size: 1rem; padding: 0; }
+  .deload-banner-close:hover { color: #ff4d4d; }
+
+  /* DERNIERE PERF */
+  /* DERNIERE PERF */
+  .last-perf { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: #555; margin-top: 3px; }
+  .last-perf span { color: #888; }
+
+  /* CHRONO */
+  .chrono-bar { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; margin-top: 10px; }
+  .chrono-display { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; min-width: 56px; text-align: center; transition: color 0.3s; }
+  .chrono-display.running { color: var(--accent); }
+  .chrono-display.warning { color: var(--accent-cardio); }
+  .chrono-display.done    { color: #ff4d4d; }
+  .chrono-display.idle    { color: #444; }
+  .chrono-controls { display: flex; align-items: center; gap: 8px; }
+  .chrono-adj { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 4px 8px; cursor: pointer; transition: all 0.15s; }
+  .chrono-adj:hover { border-color: var(--text); color: var(--text); }
+  .chrono-start { background: var(--accent); color: #000; border: none; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 1px; padding: 6px 14px; cursor: pointer; transition: opacity 0.15s; }
+  .chrono-start:hover { opacity: 0.85; }
+  .chrono-start.stop { background: #ff4d4d; color: #fff; }
+  .chrono-preset { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); }
   .comment-input { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; padding: 7px 10px; width: 100%; margin-top: 8px; transition: border-color 0.15s, color 0.15s; }
   .comment-input::placeholder { color: #3a3a3a; }
   .comment-input:focus { outline: none; color: var(--text); }
@@ -146,7 +211,25 @@
   .export-btn:hover { background: rgba(200,255,0,0.08); }
   .import-btn { background: none; border: 1px solid var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; }
   .import-btn:hover { border-color: var(--text); color: var(--text); }
-    .logbook-empty { text-align: center; padding: 60px 20px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; }
+    /* STATS */
+  .stats-page-title { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: #b388ff; margin-bottom: 4px; }
+  .stat-select-row { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+  .stat-select-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .stat-select { background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.85rem; padding: 10px 14px; width: 100%; appearance: none; -webkit-appearance: none; cursor: pointer; }
+  .stat-select:focus { outline: none; border-color: #b388ff; }
+  .chart-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 8px; position: relative; }
+  .chart-empty { text-align: center; padding: 40px 10px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+  .chart-canvas { width: 100% !important; }
+  .chart-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .pr-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .pr-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+  .pr-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: #b388ff; line-height: 1; }
+  .pr-date { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+  .no-data-msg { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.8rem; text-align: center; padding: 30px 0; }
+
+  .logbook-empty { text-align: center; padding: 60px 20px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 0.85rem; }
   .logbook-empty .icon { font-size: 3rem; margin-bottom: 16px; }
 
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent); color: #000; font-family: 'DM Mono', monospace; font-size: 0.82rem; font-weight: 500; padding: 10px 20px; border-radius: 6px; z-index: 999; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; white-space: nowrap; }
@@ -160,6 +243,7 @@
   .modal-actions { display: flex; gap: 10px; }
   .modal-actions .btn-secondary { flex: 1; text-align: center; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -172,6 +256,8 @@
     <button onclick="showPage('B',this)">SÉANCE B</button>
     <button onclick="showPage('cardio',this)">CARDIO</button>
     <button onclick="showPage('log',this)">HISTORIQUE</button>
+    <button onclick="showPage('stats',this)">STATS</button>
+    <button onclick="showPage('heatmap',this)">RÉGULARITÉ</button>
   </nav>
 </header>
 
@@ -180,6 +266,11 @@
   <div class="session-header">
     <div class="session-title session-A">A</div>
     <div class="session-sub">SQUAT · BENCH · BENT OVER ROW · LUNGES</div>
+  </div>
+  <div class="deload-banner" id="deload-banner-A">
+    <button class="deload-banner-close" onclick="dismissDeload('A')">✕</button>
+    <div class="deload-banner-title">⚠ DÉLOAD RECOMMANDÉ</div>
+    <div class="deload-banner-text">Tu enchaînes 4 semaines de volume élevé sans décharge.<br>Réduis les charges de 40–50% cette semaine.</div>
   </div>
   <div id="exercises-A"></div>
   <div class="session-actions">
@@ -193,6 +284,11 @@
   <div class="session-header">
     <div class="session-title session-B">B</div>
     <div class="session-sub">DEADLIFT · OHP · PULL-UPS · BACK EXTENSION</div>
+  </div>
+  <div class="deload-banner" id="deload-banner-B">
+    <button class="deload-banner-close" onclick="dismissDeload('B')">✕</button>
+    <div class="deload-banner-title">⚠ DÉLOAD RECOMMANDÉ</div>
+    <div class="deload-banner-text">Tu enchaînes 4 semaines de volume élevé sans décharge.<br>Réduis les charges de 40–50% cette semaine.</div>
   </div>
   <div id="exercises-B"></div>
   <div class="session-actions">
@@ -257,6 +353,81 @@
   <div id="logbook-container"></div>
 </div>
 
+<!-- HEATMAP -->
+<div class="page" id="page-heatmap">
+  <div class="heatmap-title">RÉGULARITÉ</div>
+  <div class="session-sub">12 derniers mois</div>
+  <div class="heatmap-year-label" id="heatmap-year-label"></div>
+  <div class="heatmap-grid-wrap">
+    <div style="display:flex">
+      <div class="heatmap-day-labels">
+        <div class="heatmap-day-label">L</div>
+        <div class="heatmap-day-label"></div>
+        <div class="heatmap-day-label">M</div>
+        <div class="heatmap-day-label"></div>
+        <div class="heatmap-day-label">V</div>
+        <div class="heatmap-day-label"></div>
+        <div class="heatmap-day-label">D</div>
+      </div>
+      <div id="heatmap-grid" class="heatmap-grid"></div>
+    </div>
+  </div>
+  <div class="heatmap-legend">
+    <div class="heatmap-legend-item"><div class="heatmap-legend-dot" style="background:#c8ff00"></div>Séance A</div>
+    <div class="heatmap-legend-item"><div class="heatmap-legend-dot" style="background:#4daaff"></div>Séance B</div>
+    <div class="heatmap-legend-item"><div class="heatmap-legend-dot" style="background:#ff9f1c"></div>Cardio</div>
+    <div class="heatmap-legend-item"><div class="heatmap-legend-dot" style="background:#b388ff"></div>Muscu + Cardio</div>
+    <div class="heatmap-legend-item"><div class="heatmap-legend-dot" style="background:#1e1e1e; border:1px solid #2a2a2a"></div>Repos</div>
+  </div>
+  <div class="heatmap-stats-row" id="heatmap-stats"></div>
+</div>
+<div class="heatmap-tooltip" id="heatmap-tooltip"></div>
+
+<!-- STATS -->
+<div class="page" id="page-stats">
+  <div class="stats-page-title">STATS</div>
+  <div class="session-sub" style="margin-bottom:4px">Progression par exercice</div>
+  <div class="stat-select-row">
+    <div>
+      <div class="stat-select-label">Exercice</div>
+      <select class="stat-select" id="stats-exercise" onchange="renderStats()">
+        <option value="">-- Choisir --</option>
+        <option value="squat_force">Squat — Force</option>
+        <option value="squat_hyper">Squat — Hypertrophie</option>
+        <option value="bench_force">Bench Press — Force</option>
+        <option value="bench_hyper">Bench Press — Hypertrophie</option>
+        <option value="bent_row_force">Bent Over Row — Force</option>
+        <option value="bent_row_hyper">Bent Over Row — Hypertrophie</option>
+        <option value="deadlift_force">Deadlift — Force</option>
+        <option value="deadlift_hyper">Deadlift — Hypertrophie</option>
+        <option value="ohp_force">OHP — Force</option>
+        <option value="ohp_hyper">OHP — Hypertrophie</option>
+        <option value="pullups_force">Pull-Ups — Force</option>
+        <option value="pullups_hyper">Pull-Ups — Hypertrophie</option>
+      </select>
+    </div>
+  </div>
+  <div class="chart-wrap" id="chart-wrap">
+    <div class="chart-empty" id="chart-empty">Sélectionne un exercice</div>
+    <canvas id="myChart" class="chart-canvas" style="display:none"></canvas>
+  </div>
+  <div id="pr-container"></div>
+
+  <div style="margin-top:28px">
+    <div class="stats-page-title" style="font-size:1.4rem">VOLUME PAR SÉANCE</div>
+    <div class="session-sub" style="margin-bottom:12px">Charge totale soulevée (kg)</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="filter-btn sel-ALL" id="vol-btn-ALL" onclick="setVolFilter('ALL',this)">TOUT</button>
+      <button class="filter-btn" id="vol-btn-A" onclick="setVolFilter('A',this)">SÉANCE A</button>
+      <button class="filter-btn" id="vol-btn-B" onclick="setVolFilter('B',this)">SÉANCE B</button>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-empty" id="vol-empty">Pas encore de données</div>
+      <canvas id="volChart" class="chart-canvas" style="display:none"></canvas>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div class="modal-overlay" id="modal">
   <div class="modal">
@@ -290,6 +461,22 @@ const PROGRAMME = {
 const ACT_LABELS = { run:'🏃 Run', rameur:'🚣 Rameur', echobike:'💨 Echo Bike', velo:'🚴 Vélo salle' };
 
 // --- Render sessions ---
+function getLastPerf(sess, exName, blocType) {
+  const log = getLog().filter(e => e.type === 'session' && e.session === sess);
+  for (const entry of log) {
+    const ex = entry.exercises?.find(e => e.name === exName);
+    if (!ex) continue;
+    const bloc = ex.blocs?.find(b => b.type === blocType);
+    if (!bloc || !bloc.sets.length) continue;
+    const best = bloc.sets.reduce((max, s) => {
+      const kg = parseFloat(s.kg) || 0;
+      return kg > (parseFloat(max.kg) || 0) ? s : max;
+    }, bloc.sets[0]);
+    if (best.kg || best.reps) return `${best.kg ? best.kg+'kg' : '—'} × ${best.reps || '—'} reps`;
+  }
+  return null;
+}
+
 function renderSession(sess) {
   const container = document.getElementById('exercises-' + sess);
   container.innerHTML = '';
@@ -302,11 +489,25 @@ function renderSession(sess) {
       if (bloc.type === 'core') {
         body += `<input class="comment-input" type="text" style="margin-top:12px" placeholder="Décris ton travail abdos / gainage..." id="comment-${sess}-${ex.id}-${bloc.type}">`;
       } else {
+        const lastPerf = getLastPerf(sess, ex.name, bloc.type);
+        const lastPerfHTML = lastPerf ? `<div class="last-perf">Dernière fois : <span>${lastPerf}</span></div>` : '';
+        const defaultSecs = bloc.type === 'force' ? 180 : 90;
+        const chronoId = `chrono-${sess}-${ex.id}-${bloc.type}`;
         body += `<div class="bloc-label ${bloc.type}">${bloc.label} — ${bloc.target}</div>`;
+        body += lastPerfHTML;
         body += `<table class="sets-table"><thead><tr><th>#</th><th>Charge (kg)</th><th>Reps</th></tr></thead><tbody id="sets-${sess}-${ex.id}-${bloc.type}">`;
         for (let i = 1; i <= bloc.sets; i++) body += setRow(sess, ex.id, bloc.type, i);
         body += `</tbody></table>`;
         body += `<button class="add-set-btn" onclick="addSet('${sess}','${ex.id}','${bloc.type}')">+ série</button>`;
+        body += `<div class="chrono-bar" id="${chronoId}">
+          <div class="chrono-display idle" id="${chronoId}-display">${formatChronoTime(defaultSecs)}</div>
+          <div class="chrono-controls">
+            <span class="chrono-preset" id="${chronoId}-preset">${bloc.type === 'force' ? '3:00' : '1:30'}</span>
+            <button class="chrono-adj" onclick="adjustChrono('${chronoId}', -30)">−30s</button>
+            <button class="chrono-adj" onclick="adjustChrono('${chronoId}', 30)">+30s</button>
+            <button class="chrono-start" id="${chronoId}-btn" onclick="toggleChrono('${chronoId}', ${defaultSecs})">START</button>
+          </div>
+        </div>`;
         body += `<input class="comment-input" type="text" placeholder="Commentaire ${bloc.label.toLowerCase()}..." id="comment-${sess}-${ex.id}-${bloc.type}">`;
       }
     });
@@ -365,6 +566,7 @@ function saveSession(sess) {
   showToast('✓ SÉANCE ' + sess + ' SAUVEGARDÉE');
   updateStats();
   renderSession(sess);
+  checkExportReminder();
 }
 
 function confirmClear(sess) {
@@ -399,6 +601,7 @@ function saveCardio() {
   showToast('✓ SESSION CARDIO SAUVEGARDÉE');
   resetCardio();
   updateStats();
+  checkExportReminder();
 }
 
 function resetCardio() {
@@ -519,9 +722,11 @@ function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.className = '');
   document.getElementById('page-' + name).classList.add('active');
-  const cls = { A:'nav-A', B:'nav-B', cardio:'nav-cardio', log:'nav-log' };
+  const cls = { A:'nav-A', B:'nav-B', cardio:'nav-cardio', log:'nav-log', stats:'nav-stats', heatmap:'nav-heatmap' };
   btn.className = cls[name] || '';
   if (name === 'log') { renderLogbook(); updateStats(); }
+  if (name === 'heatmap') { renderHeatmap(); }
+  if (name === 'stats') { renderVolume(); }
 }
 
 function showToast(msg) {
@@ -592,10 +797,507 @@ function importLog(event) {
   reader.readAsText(file);
 }
 
+// --- Stats ---
+let chartInstance = null;
+
+const STATS_MAP = {
+  squat_force:    { name: 'Back Squat',     session: 'A', exId: 'squat',    bloc: 'force' },
+  squat_hyper:    { name: 'Back Squat',     session: 'A', exId: 'squat',    bloc: 'hyper' },
+  bench_force:    { name: 'Bench Press',    session: 'A', exId: 'bench',    bloc: 'force' },
+  bench_hyper:    { name: 'Bench Press',    session: 'A', exId: 'bench',    bloc: 'hyper' },
+  bent_row_force: { name: 'Bent Over Row',  session: 'A', exId: 'bent_row', bloc: 'force' },
+  bent_row_hyper: { name: 'Bent Over Row',  session: 'A', exId: 'bent_row', bloc: 'hyper' },
+  deadlift_force: { name: 'Deadlift',       session: 'B', exId: 'deadlift', bloc: 'force' },
+  deadlift_hyper: { name: 'Deadlift',       session: 'B', exId: 'deadlift', bloc: 'hyper' },
+  ohp_force:      { name: 'OHP',            session: 'B', exId: 'ohp',      bloc: 'force' },
+  ohp_hyper:      { name: 'OHP',            session: 'B', exId: 'ohp',      bloc: 'hyper' },
+  pullups_force:  { name: 'Pull-Ups',       session: 'B', exId: 'pullups',  bloc: 'force' },
+  pullups_hyper:  { name: 'Pull-Ups',       session: 'B', exId: 'pullups',  bloc: 'hyper' },
+};
+
+function renderStats() {
+  const key = document.getElementById('stats-exercise').value;
+  const prContainer = document.getElementById('pr-container');
+  const canvas = document.getElementById('myChart');
+  const emptyMsg = document.getElementById('chart-empty');
+  prContainer.innerHTML = '';
+
+  if (!key) { canvas.style.display = 'none'; emptyMsg.style.display = 'block'; return; }
+
+  const map = STATS_MAP[key];
+  const log = getLog().filter(e => e.type === 'session' && e.session === map.session);
+
+  const points = [];
+  log.forEach(entry => {
+    const ex = entry.exercises?.find(e => e.name === map.name);
+    if (!ex) return;
+    const bloc = ex.blocs?.find(b => b.type === map.bloc);
+    if (!bloc || !bloc.sets.length) return;
+    const maxKg = Math.max(...bloc.sets.map(s => parseFloat(s.kg) || 0));
+    if (maxKg > 0) {
+      const d = new Date(entry.dateISO);
+      const fmt = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(-2);
+      points.push({ date: fmt, dateISO: entry.dateISO, kg: maxKg });
+    }
+  });
+
+  points.sort((a, b) => new Date(a.dateISO) - new Date(b.dateISO));
+
+  if (!points.length) {
+    canvas.style.display = 'none';
+    emptyMsg.style.display = 'block';
+    emptyMsg.textContent = 'Pas encore de données pour cet exercice';
+    return;
+  }
+
+  emptyMsg.style.display = 'none';
+  canvas.style.display = 'block';
+
+  // PR
+  const pr = points.reduce((max, p) => p.kg > max.kg ? p : max, points[0]);
+  prContainer.innerHTML = `
+    <div class="pr-box">
+      <div><div class="pr-label">Record (charge max)</div><div class="pr-date">${pr.date}</div></div>
+      <div style="text-align:right"><div class="pr-val">${pr.kg} kg</div></div>
+    </div>`;
+
+  const labels = points.map(p => p.date);
+  const data = points.map(p => p.kg);
+  const color = map.bloc === 'force' ? '#c8ff00' : '#4daaff';
+
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const dashedDroplines = {
+    id: 'dashedDroplines',
+    afterDatasetsDraw(chart) {
+      const { ctx, data, scales: { x, y } } = chart;
+      ctx.save();
+      data.datasets[0].data.forEach((val, i) => {
+        const xPos = x.getPixelForValue(i);
+        const yPos = y.getPixelForValue(val);
+        const yBottom = y.getPixelForValue(y.min);
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]);
+        ctx.lineWidth = 0.6;
+        ctx.strokeStyle = color + '66';
+        ctx.moveTo(xPos, yPos + 7);
+        ctx.lineTo(xPos, yBottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+      ctx.restore();
+    }
+  };
+
+  chartInstance = new Chart(canvas, {
+    type: 'line',
+    plugins: [dashedDroplines],
+    data: {
+      labels,
+      datasets: [{
+        label: `${map.name} (${map.bloc})`,
+        data,
+        borderColor: color,
+        backgroundColor: color + '18',
+        borderWidth: 2,
+        pointBackgroundColor: color,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        tension: 0.3,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e1e1e',
+          borderColor: '#2a2a2a',
+          borderWidth: 1,
+          titleColor: '#666',
+          bodyColor: '#e8e8e8',
+          callbacks: { label: ctx => ctx.parsed.y + ' kg' }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#666', font: { family: 'DM Mono', size: 10 }, maxRotation: 45, minRotation: 45 },
+          grid: { color: '#1e1e1e' }
+        },
+        y: {
+          ticks: { color: '#666', font: { family: 'DM Mono', size: 10 }, callback: v => v + ' kg' },
+          grid: { color: '#2a2a2a' }
+        }
+      }
+    }
+  });
+}
+
+// --- Volume ---
+let volChartInstance = null;
+let volFilter = 'ALL';
+
+function setVolFilter(type, btn) {
+  volFilter = type;
+  document.querySelectorAll('#vol-btn-ALL, #vol-btn-A, #vol-btn-B').forEach(b => b.className = 'filter-btn');
+  const colorMap = { ALL: 'sel-ALL', A: 'sel-A', B: 'sel-B' };
+  btn.classList.add(colorMap[type]);
+  renderVolume();
+}
+
+function renderVolume() {
+  const log = getLog().filter(e => e.type === 'session');
+  const filtered = volFilter === 'ALL' ? log : log.filter(e => e.session === volFilter);
+  const sorted = [...filtered].sort((a,b) => new Date(a.dateISO) - new Date(b.dateISO));
+
+  const canvas = document.getElementById('volChart');
+  const empty = document.getElementById('vol-empty');
+
+  if (!sorted.length) {
+    canvas.style.display = 'none';
+    empty.style.display = 'block';
+    empty.textContent = 'Pas encore de données';
+    return;
+  }
+
+  const labels = sorted.map(e => {
+    const d = new Date(e.dateISO);
+    return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getFullYear()).slice(-2);
+  });
+
+  const data = sorted.map(e => {
+    let total = 0;
+    e.exercises?.forEach(ex => {
+      ex.blocs?.forEach(bl => {
+        bl.sets?.forEach(s => {
+          const kg = parseFloat(s.kg) || 0;
+          const reps = parseFloat(s.reps) || 0;
+          total += kg * reps;
+        });
+      });
+    });
+    return Math.round(total);
+  });
+
+  const colors = sorted.map(e => e.session === 'A' ? '#c8ff00' : '#4daaff');
+  const colorsBg = sorted.map(e => e.session === 'A' ? '#c8ff0033' : '#4daaff33');
+
+  empty.style.display = 'none';
+  canvas.style.display = 'block';
+
+  if (volChartInstance) { volChartInstance.destroy(); volChartInstance = null; }
+
+  volChartInstance = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Volume (kg)',
+        data,
+        backgroundColor: colorsBg,
+        borderColor: colors,
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e1e1e',
+          borderColor: '#2a2a2a',
+          borderWidth: 1,
+          titleColor: '#666',
+          bodyColor: '#e8e8e8',
+          callbacks: { label: ctx => ctx.parsed.y.toLocaleString('fr-FR') + ' kg' }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#666', font: { family: 'DM Mono', size: 10 }, maxRotation: 45, minRotation: 45 },
+          grid: { color: '#1e1e1e' }
+        },
+        y: {
+          ticks: { color: '#666', font: { family: 'DM Mono', size: 10 }, callback: v => v.toLocaleString('fr-FR') + ' kg' },
+          grid: { color: '#2a2a2a' }
+        }
+      }
+    }
+  });
+}
+
+// --- Heatmap ---
+function renderHeatmap() {
+  const log = getLog();
+  const grid = document.getElementById('heatmap-grid');
+  const statsRow = document.getElementById('heatmap-stats');
+  const tooltip = document.getElementById('heatmap-tooltip');
+  grid.innerHTML = '';
+
+  // Construire map date -> types
+  const dateMap = {};
+  log.forEach(e => {
+    const d = new Date(e.dateISO);
+    const key = d.toISOString().split('T')[0];
+    if (!dateMap[key]) dateMap[key] = new Set();
+    dateMap[key].add(e.session);
+  });
+
+  // 52 semaines en arrière depuis aujourd'hui
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  // Aller au lundi de la semaine courante
+  const dayOfWeek = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const endMonday = new Date(today);
+  endMonday.setDate(today.getDate() - dayOfWeek + 6); // dimanche de cette semaine
+
+  const startDate = new Date(endMonday);
+  startDate.setDate(endMonday.getDate() - 52 * 7 + 1);
+  // Reculer au lundi
+  const startDay = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
+  startDate.setDate(startDate.getDate() - startDay);
+
+  // Générer colonnes (semaines)
+  let current = new Date(startDate);
+  let totalSessions = 0, totalCardio = 0, streak = 0, tempStreak = 0;
+
+  const columns = [];
+  while (current <= endMonday) {
+    const col = [];
+    for (let d = 0; d < 7; d++) {
+      col.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+    }
+    columns.push(col);
+  }
+
+  columns.forEach(col => {
+    const colDiv = document.createElement('div');
+    colDiv.className = 'heatmap-col';
+    col.forEach(day => {
+      const cell = document.createElement('div');
+      cell.className = 'heatmap-cell';
+      const key = day.toISOString().split('T')[0];
+      const isFuture = day > today;
+      if (isFuture) {
+        cell.style.background = 'transparent';
+      } else {
+        const sessions = dateMap[key];
+        if (!sessions) {
+          cell.classList.add('empty');
+          tempStreak = 0;
+        } else {
+          totalSessions += sessions.size;
+          if (sessions.has('CARDIO')) totalCardio++;
+          tempStreak++;
+          streak = Math.max(streak, tempStreak);
+          const hasMuscu = sessions.has('A') || sessions.has('B');
+          const hasCardio = sessions.has('CARDIO');
+          if (hasMuscu && hasCardio) cell.classList.add('type-MULTI');
+          else if (sessions.has('A') && sessions.has('B')) cell.classList.add('type-AB');
+          else if (sessions.has('A')) cell.classList.add('type-A');
+          else if (sessions.has('B')) cell.classList.add('type-B');
+          else if (hasCardio) cell.classList.add('type-CARDIO');
+          // Tooltip
+          const dateStr = day.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+          const types = [...sessions].map(s => s === 'CARDIO' ? 'Cardio' : 'Séance ' + s).join(' + ');
+          cell.addEventListener('mouseover', e => {
+            tooltip.innerHTML = `<b>${dateStr}</b><br>${types}`;
+            tooltip.style.display = 'block';
+          });
+          cell.addEventListener('mousemove', e => {
+            tooltip.style.left = (e.clientX + 12) + 'px';
+            tooltip.style.top = (e.clientY - 30) + 'px';
+          });
+          cell.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+        }
+      }
+      colDiv.appendChild(cell);
+    });
+    grid.appendChild(colDiv);
+  });
+
+  // Stats
+  const now = new Date();
+  const thisWeekSessions = log.filter(e => {
+    const d = new Date(e.dateISO); d.setHours(0,0,0,0);
+    const mon = new Date(now); mon.setDate(now.getDate() - (now.getDay()===0?6:now.getDay()-1)); mon.setHours(0,0,0,0);
+    return d >= mon;
+  }).length;
+
+  statsRow.innerHTML = `
+    <div class="stat-box"><div class="stat-val" style="color:#ff6b9d">${totalSessions}</div><div class="stat-label">Total séances</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#ff6b9d">${thisWeekSessions}</div><div class="stat-label">Cette semaine</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:#ff6b9d">${streak}</div><div class="stat-label">Meilleure série</div></div>
+  `;
+
+  // Label année
+  const y1 = startDate.getFullYear();
+  const y2 = today.getFullYear();
+  document.getElementById('heatmap-year-label').textContent = y1 === y2 ? y1 : `${y1} — ${y2}`;
+}
+
+// --- Chrono ---
+const chronoState = {};
+
+function formatChronoTime(secs) {
+  const m = Math.floor(Math.abs(secs) / 60);
+  const s = Math.abs(secs) % 60;
+  return (secs < 0 ? '-' : '') + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function toggleChrono(id, defaultSecs) {
+  const state = chronoState[id];
+  if (state && state.interval) {
+    clearInterval(state.interval);
+    chronoState[id] = null;
+    const display = document.getElementById(id + '-display');
+    const btn = document.getElementById(id + '-btn');
+    if (display) { display.textContent = formatChronoTime(chronoState[id + '_preset'] || defaultSecs); display.className = 'chrono-display idle'; }
+    if (btn) { btn.textContent = 'START'; btn.className = 'chrono-start'; }
+    return;
+  }
+  const preset = chronoState[id + '_preset'] || defaultSecs;
+  chronoState[id] = { remaining: preset, interval: null };
+  const display = document.getElementById(id + '-display');
+  const btn = document.getElementById(id + '-btn');
+  if (btn) { btn.textContent = 'STOP'; btn.className = 'chrono-start stop'; }
+  chronoState[id].interval = setInterval(() => {
+    chronoState[id].remaining--;
+    const r = chronoState[id].remaining;
+    if (display) {
+      display.textContent = formatChronoTime(r);
+      if (r <= 0 && r > -5) { display.className = 'chrono-display done'; }
+      else if (r <= 30 && r > 0) { display.className = 'chrono-display warning'; }
+      else if (r > 0) { display.className = 'chrono-display running'; }
+    }
+    if (r === 0) {
+      try { const ctx = new AudioContext(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.setValueAtTime(0.3, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4); o.start(); o.stop(ctx.currentTime + 0.4); } catch(e) {}
+    }
+  }, 1000);
+}
+
+function adjustChrono(id, delta) {
+  const state = chronoState[id];
+  if (state && state.interval) return;
+  const currentPreset = chronoState[id + '_preset'] || (id.includes('force') ? 180 : 90);
+  const newPreset = Math.max(30, currentPreset + delta);
+  chronoState[id + '_preset'] = newPreset;
+  const display = document.getElementById(id + '-display');
+  const preset = document.getElementById(id + '-preset');
+  if (display) { display.textContent = formatChronoTime(newPreset); display.className = 'chrono-display idle'; }
+  if (preset) preset.textContent = formatChronoTime(newPreset);
+}
+
+// --- Deload Alert ---
+function checkDeload() {
+  const log = getLog().filter(e => e.type === 'session');
+  if (log.length < 4) return;
+
+  // Calculer volume par semaine (lundi -> dimanche)
+  const weekVolumes = {};
+  log.forEach(e => {
+    const d = new Date(e.dateISO);
+    const mon = new Date(d);
+    mon.setDate(d.getDate() - (d.getDay() === 0 ? 6 : d.getDay() - 1));
+    mon.setHours(0,0,0,0);
+    const key = mon.toISOString().split('T')[0];
+    if (!weekVolumes[key]) weekVolumes[key] = 0;
+    e.exercises?.forEach(ex => {
+      ex.blocs?.forEach(bl => {
+        bl.sets?.forEach(s => {
+          weekVolumes[key] += (parseFloat(s.kg)||0) * (parseFloat(s.reps)||0);
+        });
+      });
+    });
+  });
+
+  const weeks = Object.keys(weekVolumes).sort().slice(-5); // 5 dernières semaines
+  if (weeks.length < 4) return;
+
+  const lastWeek = weeks[weeks.length - 1];
+  const lastVol = weekVolumes[lastWeek];
+  const prevWeeks = weeks.slice(0, -1);
+  const avgVol = prevWeeks.reduce((a, k) => a + weekVolumes[k], 0) / prevWeeks.length;
+
+  // Déload détecté si la dernière semaine est < 60% de la moyenne = volume chute de 40%+
+  const isDeload = avgVol > 0 && lastVol < avgVol * 0.6;
+
+  // Vérifier si 4 semaines consécutives sans déload
+  const dismissed = JSON.parse(localStorage.getItem('deload_dismissed') || '[]');
+  const now = new Date();
+  const thisMon = new Date(now);
+  thisMon.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+  thisMon.setHours(0,0,0,0);
+  const thisWeekKey = thisMon.toISOString().split('T')[0];
+
+  // Vérifier si 4 semaines avec volume > 0 sans déload
+  const workWeeks = weeks.filter(k => weekVolumes[k] > 0);
+  const needsDeload = workWeeks.length >= 4 && !isDeload && !dismissed.includes(thisWeekKey);
+
+  ['A','B'].forEach(sess => {
+    const banner = document.getElementById('deload-banner-' + sess);
+    if (banner) banner.classList.toggle('show', needsDeload);
+  });
+}
+
+function dismissDeload(sess) {
+  const banner = document.getElementById('deload-banner-' + sess);
+  if (banner) banner.classList.remove('show');
+  // Sauvegarder le dismiss pour cette semaine
+  const now = new Date();
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+  mon.setHours(0,0,0,0);
+  const key = mon.toISOString().split('T')[0];
+  const dismissed = JSON.parse(localStorage.getItem('deload_dismissed') || '[]');
+  if (!dismissed.includes(key)) {
+    dismissed.push(key);
+    localStorage.setItem('deload_dismissed', JSON.stringify(dismissed.slice(-10)));
+  }
+}
+
+// --- Export Reminder ---
+function checkExportReminder() {
+  const log = getLog();
+  const total = log.length;
+  if (total === 0) return;
+  const lastReminder = parseInt(localStorage.getItem('last_export_reminder') || '0');
+  const dismissed = parseInt(localStorage.getItem('export_reminder_dismissed') || '0');
+  // Afficher si on a 10 séances de plus depuis le dernier export/dismiss
+  const threshold = Math.max(lastReminder, dismissed) + 5;
+  if (total >= threshold) {
+    document.getElementById('export-reminder').classList.add('show');
+  }
+}
+
+function exportFromReminder() {
+  exportLog();
+  document.getElementById('export-reminder').classList.remove('show');
+  localStorage.setItem('last_export_reminder', getLog().length);
+}
+
+function dismissReminder() {
+  document.getElementById('export-reminder').classList.remove('show');
+  localStorage.setItem('export_reminder_dismissed', getLog().length);
+}
+
 // --- Init ---
 renderSession('A');
 renderSession('B');
 updateStats();
+checkDeload();
+checkExportReminder();
 </script>
+  <div class="export-reminder" id="export-reminder">
+    <div class="export-reminder-title">💾 SAUVEGARDE RECOMMANDÉE</div>
+    <div class="export-reminder-text">Tu as atteint 5 séances depuis le dernier export.<br>Exporte ton historique pour ne rien perdre.</div>
+    <div class="export-reminder-actions">
+      <button class="btn-primary" onclick="exportFromReminder()">EXPORTER</button>
+      <button class="btn-secondary" onclick="dismissReminder()">PLUS TARD</button>
+    </div>
+  </div>
 </body>
 </html>

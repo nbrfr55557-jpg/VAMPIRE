@@ -303,17 +303,17 @@
 
   <div class="section hv-section">
     <div class="section-header">📈 Diagramme H/V Zone 7</div>
-    <div class="hv-diagram">
-      <div class="hv-kp top-left">
-        <div class="hv-kp-label">Corbeaux 🐦‍⬛</div>
-        <div class="hv-kp-val" id="hv_hmax">—<span> ft</span></div>
-      </div>
-      <div class="hv-kp mid-right">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid rgba(255,71,87,.1)">
+      <div style="padding:.7rem .9rem;border-right:1px solid rgba(255,71,87,.1);display:flex;flex-direction:column;gap:.2rem">
         <div class="hv-kp-label">V1 🚀</div>
         <div class="hv-kp-val" id="hv_vmax">—<span> kt</span></div>
       </div>
-      <div class="hv-kp bot-left">
-        <div class="hv-kp-label">Crocos 🐊</div>
+      <div style="padding:.7rem .9rem;border-right:1px solid rgba(255,71,87,.1);display:flex;flex-direction:column;gap:.2rem">
+        <div class="hv-kp-label">HHP 🐦‍⬛</div>
+        <div class="hv-kp-val" id="hv_hmax">—<span> ft</span></div>
+      </div>
+      <div style="padding:.7rem .9rem;display:flex;flex-direction:column;gap:.2rem">
+        <div class="hv-kp-label">LHP 🐊</div>
         <div class="hv-kp-val" id="hv_hmin">—<span> ft</span></div>
       </div>
     </div>
@@ -347,25 +347,24 @@
         <span id="p_hes_badge"></span>
       </div>
     </div>
-    <div class="perfo-result-row">
-      <div class="perfo-result-label">Décollage roulé</div>
-      <div style="display:flex;align-items:baseline;gap:.3rem">
-        <div class="perfo-result-val" id="p_rol_val">—</div>
-        <span id="p_rol_badge"></span>
-      </div>
-    </div>
     <div style="padding:.6rem 1rem;background:rgba(255,214,10,0.05);border-top:1px solid rgba(255,214,10,0.15);font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.68rem;color:var(--muted);line-height:1.5;">
-      ⚠️ Valeurs obtenues par interpolation linéaire — la consultation des courbes officielles reste de rigueur.
+      ⚠️ Valeurs obtenues par interpolation linéaire pour des valeurs d'altitude comprises entre 0 et 11000ft — la consultation des courbes officielles reste de rigueur.
     </div>
   </div>
 
   <div class="section">
     <div class="section-header">📐 VZ OEI INT</div>
     <div class="perfo-result-row" style="background:rgba(0,212,255,0.03)">
-      <div class="perfo-result-label">Vitesse verticale monomoteur<small>interpolée — temp et alti du bloc ci-dessus</small></div>
+      <div class="perfo-result-label">Vitesse verticale monomoteur<small id="vz_bloc_label">interpolée — temp et alti du bloc ci-dessus</small></div>
       <div style="display:flex;align-items:baseline;gap:.4rem">
         <div class="perfo-result-val" id="vz_val" style="font-size:2rem">—</div>
         <span style="font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.8rem;color:var(--muted)">ft/min</span>
+      </div>
+    </div>
+    <div class="perfo-result-row">
+      <div class="perfo-result-label">Altitude pallier mono</div>
+      <div style="display:flex;align-items:baseline;gap:.4rem">
+        <div class="perfo-result-val" id="vz_alti50_val" style="font-size:1.4rem">—</div>
       </div>
     </div>
     <div style="padding:.6rem 1rem;background:rgba(255,214,10,0.05);border-top:1px solid rgba(255,214,10,0.15);font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:.68rem;color:var(--muted);line-height:1.5;">
@@ -653,47 +652,41 @@
 
 <script>
 // ── TABLES PERFORMANCES ──
-const PERF_ALTI = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000];
+const PERF_ALTI = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500,10000,10500,11000];
 const PERF_TEMP = [0,5,10,15,20,25,30,35,40,45];
 
 const PERF_HES = [
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6560,6510,6450,6400],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6570,6510,6450,6400,6380],
-  [6600,6600,6600,6600,6600,6600,6600,6580,6550,6450,6420,6380,6320],
-  [6600,6600,6600,6600,6600,6600,6580,6550,6490,6420,6390,6350,6290],
-  [6600,6600,6600,6600,6600,6600,6550,6510,6450,6400,6350,6300,6200],
-  [6600,6600,6600,6600,6600,6580,6520,6480,6420,6380,6350,6300,6150],
-  [6600,6600,6600,6600,6560,6520,6450,6400,6320,6200,6100,6000,5850],
-  [6600,6600,6600,6570,6520,6420,6320,6250,6100,6000,5850,5750,5600],
-  [6600,6600,6570,6510,6400,6300,6150,6000,5900,5800,5650,null,null],
-  [6600,6550,6450,6300,6200,6100,null,null,null,null,null,null,null],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6560,6510,6450,6400,6350,6290,6230,6180,6150,6060,5980,5810,5610,5470],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6570,6510,6450,6400,6380,6300,6260,6200,6150,6080,5980,5810,5680,5450,5300],
+  [6600,6600,6600,6600,6600,6600,6600,6580,6550,6450,6420,6380,6320,6270,6210,6190,6110,6000,5850,5630,5500,5300,5180],
+  [6600,6600,6600,6600,6600,6600,6580,6550,6490,6420,6390,6350,6290,6200,6180,6090,5930,5810,5700,5500,5330,5170,5000],
+  [6600,6600,6600,6600,6600,6600,6550,6510,6450,6400,6350,6300,6200,6100,6000,5890,5760,5630,5530,5330,5200,5000,4850],
+  [6600,6600,6600,6600,6600,6580,6520,6480,6420,6380,6350,6300,6150,5900,5800,5690,5550,5430,5300,5200,5060,4870,4730],
+  [6600,6600,6600,6600,6560,6520,6450,6400,6320,6200,6100,6000,5850,5700,5600,5480,5330,5220,5110,5000,4900,null,null],
+  [6600,6600,6600,6570,6520,6420,6320,6250,6100,6000,5850,5750,5600,5500,5400,5270,null,null,null,null,null,null,null],
+  [6600,6600,6570,6510,6400,6300,6150,6000,5900,5800,5650,null,null,null,null,null,null,null,null,null,null,null,null],
+  [6600,6550,6450,6300,6200,6100,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
 ];
 const PERF_DES = [
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6550],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6490],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6580,6450,6350],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6420,6350,6250],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6500,6400,6280,6180,6100],
-  [6600,6600,6600,6600,6600,6600,6550,6480,6400,6300,6100,5950,5850],
-  [6600,6600,6600,6600,6600,6550,6400,6300,6150,6000,5900,null,null],
-  [6600,6600,6600,6600,6400,6300,null,null,null,null,null,null,null],
-];
-const PERF_ROL = [
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6500],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6400,6300],
-  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6400,null,null,null],
-  [6600,6600,6600,6600,6600,6600,null,null,null,null,null,null,null],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6590,6510,6410,6350,6220,6170,6000,5810,5610,5470],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6460,6370,6270,6160,6010,5810,5680,5450,5300],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6480,6370,6250,6190,6010,5850,5630,5500,5300,5180],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6490,6400,6270,6190,6090,5870,5700,5500,5330,5170,5000],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6600,6580,6450,6350,6270,6190,6090,5900,5700,5530,5330,5200,5000,4850],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6600,6550,6420,6350,6250,6170,6080,5900,5710,5520,5390,5200,5060,4870,4730],
+  [6600,6600,6600,6600,6600,6600,6600,6600,6500,6400,6280,6180,6100,5950,5820,5700,5580,5400,5200,5000,4900,null,null],
+  [6600,6600,6600,6600,6600,6600,6550,6480,6400,6300,6100,5950,5850,5730,5600,5490,null,null,null,null,null,null,null],
+  [6600,6600,6600,6600,6600,6550,6400,6300,6150,6000,5900,null,null,null,null,null,null,null,null,null,null,null,null],
+  [6600,6600,6600,6600,6400,6300,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
 ];
 
+function isHorsDomaine(temp, alti) {
+  const t_limite = Math.min(45, 50 - (alti / 1000) * 3);
+  return temp > t_limite;
+}
+
 function lookupPerf(table, temp, alti) {
+  if(isHorsDomaine(temp, alti)) return null;
   const t = Math.max(PERF_TEMP[0], Math.min(PERF_TEMP[PERF_TEMP.length-1], temp));
   const a = Math.max(PERF_ALTI[0], Math.min(PERF_ALTI[PERF_ALTI.length-1], alti));
 
@@ -728,35 +721,39 @@ function updatePerfoResult(valId, badgeId, massMax, masseTotale) {
 
 // ── VZ OEI INT ──
 const VZ_TEMP = [0,5,10,15,20,25,30,35,40,45];
-const VZ_ALTI = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000];
 
-// Tranche 5200–5800 kg
+// Bloc 5200–5800 kg — altitudes jusqu'à 9500ft
+const VZ_ALTI_5500 = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500,8000,8500,9000,9500];
 const VZ_5500 = [
-  [420,420,420,420,420,420,420,420,420,405,400,400,375],
-  [420,420,420,420,420,420,420,420,420,390,375,310,270],
-  [420,420,420,420,420,420,420,420,420,350,300,225,200],
-  [420,420,420,420,420,420,420,375,310,250,200,175,100],
-  [420,420,420,420,420,400,325,290,210,150,100,50,-50],
-  [420,420,420,390,300,225,200,150,100,50,-20,-75,-100],
-  [418,380,300,250,200,125,75,40,-25,-75,-110,-175,-210],
-  [300,210,175,100,50,0,-40,-90,-125,-150,-200,-230,-290],
-  [190,100,50,0,-25,-75,-125,-175,-200,-225,-250,-300,-325],
-  [25,0,-25,-50,-75,-125,-150,-175,-200,-225,-250,-300,-325],
+  [420,420,420,420,420,420,420,420,420,405,400,400,375,300,220,180,100,50,0,-50],
+  [420,420,420,420,420,420,420,420,420,390,375,310,270,220,150,100,50,-20,-50,-120],
+  [420,420,420,420,420,420,420,420,420,350,300,225,200,130,80,20,-50,-100,-150,-200],
+  [420,420,420,420,420,420,420,375,310,250,200,175,100,50,-30,-50,-100,-170,-230,-300],
+  [420,420,420,420,420,400,325,290,210,150,100,50,-50,-50,-100,-150,-200,-270,-330,-400],
+  [420,420,420,390,300,225,200,150,100,50,-20,-75,-100,-150,-200,-250,-300,-370,-400,-450],
+  [418,380,300,250,200,125,75,40,-25,-75,-110,-175,-210,-250,-320,-380,-450,-500,-500,-550],
+  [300,210,175,100,50,0,-40,-90,-125,-150,-200,-230,-290,-300,-350,-420,-470,-500,-530,-550],
+  [190,100,50,0,-25,-75,-125,-175,-200,-225,-250,-300,-325,-350,-400,-420,-470,-500,-530,-550],
+  [25,0,-25,-50,-75,-125,-150,-175,-200,-225,-250,-300,-325,-350,-400,-420,-470,-500,-530,-550],
 ];
-// Tranche 5800–6200 kg (milieu interpolé entre 5800 et 6400)
+
+// Bloc 5800–6400 kg — altitudes jusqu'à 7500ft
+const VZ_ALTI_6000 = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000,6500,7000,7500];
 const VZ_6000 = [
-  [210,210,210,200,190,190,180,175,160,150,150,125,110],
-  [210,210,210,200,190,190,180,175,160,150,120,80,0],
-  [210,210,210,200,190,190,180,175,130,90,40,-10,-80],
-  [210,210,210,200,190,190,180,100,60,0,-50,-90,-150],
-  [210,210,200,200,190,130,75,25,-30,-80,-120,-180,-220],
-  [210,210,150,110,90,10,-20,-80,-130,-190,-210,-290,-340],
-  [190,100,50,0,-60,-100,-140,-190,-230,-295,-340,-400,-450],
-  [50,0,-60,-90,-140,-190,-250,-290,-350,-380,-405,-480,-550],
-  [-80,-100,-175,-200,-250,-300,-350,-400,-410,-450,-500,-520,-550],
-  [-190,-200,-210,-250,-300,-350,-400,-420,-430,-455,-500,-520,-550],
+  [210,210,210,200,190,190,180,175,160,150,150,125,110,70,-50,-100],
+  [210,210,210,200,190,190,180,175,160,150,120,80,0,-50,-100,-150],
+  [210,210,210,200,190,190,180,175,130,90,40,-10,-80,-100,-150,-200],
+  [210,210,210,200,190,190,180,100,60,0,-50,-90,-150,-200,-250,-300],
+  [210,210,200,200,190,130,75,25,-30,-80,-120,-180,-220,-300,-350,-400],
+  [210,210,150,110,90,10,-20,-80,-130,-190,-210,-290,-340,-400,-420,-500],
+  [190,100,50,0,-60,-100,-140,-190,-230,-295,-340,-400,-450,-500,-550,-600],
+  [50,0,-60,-90,-140,-190,-250,-290,-350,-380,-405,-480,-550,-550,-600,-650],
+  [-80,-100,-175,-200,-250,-300,-350,-400,-410,-450,-500,-520,-550,-600,-650,-650],
+  [-190,-200,-210,-250,-300,-350,-400,-420,-430,-455,-500,-520,-550,-600,-650,-650],
 ];
-// Tranche 6200–6400 kg
+
+// Bloc 6400–6600 kg — altitudes jusqu'à 6000ft
+const VZ_ALTI_6300 = [0,500,1000,1500,2000,2500,3000,3500,4000,4500,5000,5500,6000];
 const VZ_6300 = [
   [120,120,100,100,90,90,80,80,75,75,60,50,0],
   [120,120,100,100,90,90,80,80,75,75,0,-30,-60],
@@ -770,35 +767,30 @@ const VZ_6300 = [
   [-250,-280,-300,-330,-380,-430,-450,-480,-500,-520,-580,-600,-625],
 ];
 
-function lookupVZ(table, temp, alti) {
+function lookupVZ(table, alti_arr, temp, alti) {
+  if(isHorsDomaine(temp, alti)) return null;
   const t = Math.max(VZ_TEMP[0], Math.min(VZ_TEMP[VZ_TEMP.length-1], temp));
-  const a = Math.max(VZ_ALTI[0], Math.min(VZ_ALTI[VZ_ALTI.length-1], alti));
+  const outOfRange = alti > alti_arr[alti_arr.length-1];
+  const a = Math.max(alti_arr[0], Math.min(alti_arr[alti_arr.length-1], alti));
   const ti0 = Math.max(...VZ_TEMP.map((v,i)=>v<=t?i:-1).filter(i=>i>=0));
   const ti1 = Math.min(...VZ_TEMP.map((v,i)=>v>=t?i:999).filter(i=>i<999));
-  const ai0 = Math.max(...VZ_ALTI.map((v,i)=>v<=a?i:-1).filter(i=>i>=0));
-  const ai1 = Math.min(...VZ_ALTI.map((v,i)=>v>=a?i:999).filter(i=>i<999));
+  const ai0 = Math.max(...alti_arr.map((v,i)=>v<=a?i:-1).filter(i=>i>=0));
+  const ai1 = Math.min(...alti_arr.map((v,i)=>v>=a?i:999).filter(i=>i<999));
   const ft = ti1!==ti0 ? (t-VZ_TEMP[ti0])/(VZ_TEMP[ti1]-VZ_TEMP[ti0]) : 0;
-  const fa = ai1!==ai0 ? (a-VZ_ALTI[ai0])/(VZ_ALTI[ai1]-VZ_ALTI[ai0]) : 0;
+  const fa = ai1!==ai0 ? (a-alti_arr[ai0])/(alti_arr[ai1]-alti_arr[ai0]) : 0;
   const v00=table[ti0][ai0], v01=table[ti0][ai1];
   const v10=table[ti1][ai0], v11=table[ti1][ai1];
-  return Math.round(v00*(1-ft)*(1-fa) + v01*(1-ft)*fa + v10*ft*(1-fa) + v11*ft*fa);
+  if(v00==null||v01==null||v10==null||v11==null) return null;
+  const val = Math.round(v00*(1-ft)*(1-fa) + v01*(1-ft)*fa + v10*ft*(1-fa) + v11*ft*fa);
+  return outOfRange ? { val, outOfRange: true } : val;
 }
 
 function calcVZ(masse, temp, alti) {
-  // Interpolation entre tranches de masse
-  if(masse <= 5800) {
-    // Tranche basse : on utilise VZ_5500
-    return lookupVZ(VZ_5500, temp, alti);
-  } else if(masse >= 6300) {
-    // Tranche haute : on utilise VZ_6300
-    return lookupVZ(VZ_6300, temp, alti);
-  } else {
-    // Entre 5800 et 6300 : interpolation linéaire entre VZ_6000 et VZ_6300
-    const fm = (masse - 5800) / (6300 - 5800);
-    const vz0 = lookupVZ(VZ_6000, temp, alti);
-    const vz1 = lookupVZ(VZ_6300, temp, alti);
-    return Math.round(vz0 * (1-fm) + vz1 * fm);
-  }
+  if(isHorsDomaine(temp, alti)) return null;
+  // Pas d'interpolation en masse — valeurs conservatives par bloc
+  if(masse <= 5800) return lookupVZ(VZ_5500, VZ_ALTI_5500, temp, alti);  // bloc 5200–5800 kg
+  if(masse <= 6400) return lookupVZ(VZ_6000, VZ_ALTI_6000, temp, alti);  // bloc 5800–6400 kg
+  return lookupVZ(VZ_6300, VZ_ALTI_6300, temp, alti);                     // bloc 6400–6600 kg
 }
 const DONNEES={
   VIDE:{masse:0,type:null,max:0},PLM:{masse:93.5,type:'MISSILES',max:2},
@@ -874,13 +866,65 @@ function calcPerfo(){
   const alti = parseFloat(document.getElementById('p_alti').value) || 0;
   updatePerfoResult('p_des_val','p_des_badge', lookupPerf(PERF_DES,temp,alti), mt_val);
   updatePerfoResult('p_hes_val','p_hes_badge', lookupPerf(PERF_HES,temp,alti), mt_val);
-  updatePerfoResult('p_rol_val','p_rol_badge', lookupPerf(PERF_ROL,temp,alti), mt_val);
 
-  // VZ OEI
+  // VZ OEI à l'alti saisie
   const vz = calcVZ(mt_val, temp, alti);
   const vzEl = document.getElementById('vz_val');
-  vzEl.textContent = (vz >= 0 ? '+' : '') + vz;
-  vzEl.style.color = vz >= 0 ? 'var(--accent2)' : 'var(--red)';
+  const blocLabel = mt_val <= 5800 ? '5200–5800 kg' : mt_val <= 6400 ? '5800–6400 kg' : '6400–6600 kg';
+  document.getElementById('vz_bloc_label').textContent = `valeurs conservatives du bloc ${blocLabel}`;
+  if(vz === null) {
+    vzEl.textContent = 'Hors domaine';
+    vzEl.style.color = 'var(--red)';
+  } else if(typeof vz === 'object' && vz.outOfRange) {
+    vzEl.textContent = `> ${vz.val}`;
+    vzEl.style.color = 'var(--red)';
+  } else {
+    vzEl.textContent = (vz >= 0 ? '+' : '') + vz;
+    vzEl.style.color = vz >= 0 ? 'var(--accent2)' : 'var(--red)';
+  }
+
+  // Altitude max VZ = +50 ft/min
+  const alti50 = findAltiVZ50(mt_val, temp);
+  const a50El = document.getElementById('vz_alti50_val');
+  if(alti50 === null) {
+    a50El.textContent = 'Vol en palier impossible';
+    a50El.style.color = 'var(--red)';
+    a50El.style.fontSize = '1rem';
+  } else if(alti50 === '>6000') {
+    a50El.textContent = '> 6000 ft';
+    a50El.style.color = 'var(--accent2)';
+    a50El.style.fontSize = '1.4rem';
+  } else {
+    a50El.textContent = alti50 + ' ft';
+    a50El.style.color = 'var(--accent2)';
+    a50El.style.fontSize = '1.4rem';
+  }
+}
+
+function findAltiVZ50(masse, temp) {
+  // Sélection du bloc conservatif
+  let table, alti_arr;
+  if(masse <= 5800)      { table = VZ_5500; alti_arr = VZ_ALTI_5500; }
+  else if(masse <= 6400) { table = VZ_6000; alti_arr = VZ_ALTI_6000; }
+  else                   { table = VZ_6300; alti_arr = VZ_ALTI_6300; }
+
+  function vzAtAlti(ai) {
+    const t = Math.max(VZ_TEMP[0], Math.min(VZ_TEMP[VZ_TEMP.length-1], temp));
+    const ti0 = Math.max(...VZ_TEMP.map((v,i)=>v<=t?i:-1).filter(i=>i>=0));
+    const ti1 = Math.min(...VZ_TEMP.map((v,i)=>v>=t?i:999).filter(i=>i<999));
+    const ft = ti1!==ti0 ? (t-VZ_TEMP[ti0])/(VZ_TEMP[ti1]-VZ_TEMP[ti0]) : 0;
+    return table[ti0][ai]*(1-ft) + table[ti1][ai]*ft;
+  }
+
+  const vzs = alti_arr.map((_,ai) => vzAtAlti(ai));
+  if(vzs[0] < 50) return null;
+  for(let ai=0; ai<alti_arr.length-1; ai++) {
+    if(vzs[ai] >= 50 && vzs[ai+1] < 50) {
+      const ratio = (vzs[ai]-50) / (vzs[ai]-vzs[ai+1]);
+      return Math.round(alti_arr[ai] + ratio*(alti_arr[ai+1]-alti_arr[ai]));
+    }
+  }
+  return `>${alti_arr[alti_arr.length-1]}`;
 }
 const PERFO_IDS=['masse_machine','masse_pilote','masse_gunner','masse_soute','tro_princ',
   'emport_ol','qte_ol','emport_il','qte_il','emport_ir','qte_ir','emport_or','qte_or','nb_obus','nb_caissons'];

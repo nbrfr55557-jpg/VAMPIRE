@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LOGBOOK MUSCU</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -124,7 +124,10 @@
   .log-delete:hover { color: #ff4d4d; }
   .log-entry-body { display: none; border-top: 1px solid var(--border); padding: 14px 16px; }
   .log-entry.open .log-entry-body { display: block; }
-  .log-exercise { margin-bottom: 12px; }
+  .log-exercise { margin-bottom: 0; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .log-exercise:last-child { border-bottom: none; padding-bottom: 0; }
+  .log-exercise:first-child { padding-top: 0; }
+  .log-exercise:nth-child(even) { background: rgba(255,255,255,0.02); margin: 0 -16px; padding: 12px 16px; }
   .log-ex-name { font-size: 0.85rem; font-weight: 500; margin-bottom: 4px; }
   .log-bloc-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; text-transform: uppercase; margin: 6px 0 4px; }
   .log-bloc-label.force { color: var(--accent); }
@@ -336,6 +339,11 @@ function saveSession(sess) {
   PROGRAMME[sess].forEach(ex => {
     const blocsData = [];
     ex.blocs.forEach(bloc => {
+      const comment = document.getElementById(`comment-${sess}-${ex.id}-${bloc.type}`)?.value || '';
+      if (bloc.type === 'core') {
+        if (comment) { hasData = true; blocsData.push({ type: bloc.type, label: bloc.label, target: bloc.target, sets: [], comment }); }
+        return;
+      }
       const tbody = document.getElementById(`sets-${sess}-${ex.id}-${bloc.type}`);
       if (!tbody) return;
       const sets = [];
@@ -345,7 +353,6 @@ function saveSession(sess) {
         const reps = document.getElementById(`reps-${sess}-${ex.id}-${bloc.type}-${n}`)?.value;
         if (kg || reps) { hasData = true; sets.push({ kg: kg||'', reps: reps||'' }); }
       });
-      const comment = document.getElementById(`comment-${sess}-${ex.id}-${bloc.type}`)?.value || '';
       if (sets.length || comment) blocsData.push({ type: bloc.type, label: bloc.label, target: bloc.target, sets, comment });
     });
     if (blocsData.length) exercises.push({ name: ex.name, blocs: blocsData });

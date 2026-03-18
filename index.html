@@ -105,6 +105,8 @@
   .sub-label { font-size:0.8rem; color:var(--muted); }
   .sub-value { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.85rem; color:var(--text); }
   .sub-unit { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.7rem; color:var(--muted); margin-left:0.3rem; }
+  .input-warn-icon { display:none; font-size:0.85rem; margin-left:0.35rem; color:#ffb83d; vertical-align:middle; }
+  .input-warn-icon.visible { display:inline; }
 
   /* ── ON STATION — inputs prioritaires ── */
   .big-input-row { display:flex; align-items:center; justify-content:space-between; padding:1rem 1rem 0.8rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,214,10,0.04); gap:0.8rem; }
@@ -228,13 +230,13 @@
   <div class="section">
     <div class="section-header">⚖️ Masses de base</div>
     <div class="grid3">
-      <div class="cell"><div class="cell-label">Masse machine</div><input type="number" inputmode="numeric" id="masse_machine" value="4100" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
-      <div class="cell"><div class="cell-label">Pilote</div><input type="number" inputmode="numeric" id="masse_pilote" value="90" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
-      <div class="cell"><div class="cell-label">Gunner</div><input type="number" inputmode="numeric" id="masse_gunner" value="90" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Masse machine<span class="input-warn-icon" id="warn_masse_machine">⚠️</span></div><input type="number" inputmode="numeric" id="masse_machine" value="4100" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Pilote<span class="input-warn-icon" id="warn_masse_pilote">⚠️</span></div><input type="number" inputmode="numeric" id="masse_pilote" value="90" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">Gunner<span class="input-warn-icon" id="warn_masse_gunner">⚠️</span></div><input type="number" inputmode="numeric" id="masse_gunner" value="90" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
     </div>
     <div class="grid2">
-      <div class="cell"><div class="cell-label">Masse soute</div><input type="number" inputmode="numeric" id="masse_soute" value="10" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
-      <div class="cell"><div class="cell-label">TR0 principal</div><input type="number" inputmode="numeric" id="tro_princ" value="1360" oninput="calcPerfo()"><div class="cell-unit">L</div></div>
+      <div class="cell"><div class="cell-label">Masse soute<span class="input-warn-icon" id="warn_masse_soute">⚠️</span></div><input type="number" inputmode="numeric" id="masse_soute" value="10" oninput="calcPerfo()"><div class="cell-unit">kg</div></div>
+      <div class="cell"><div class="cell-label">TR0 principal<span class="input-warn-icon" id="warn_tro_princ">⚠️</span></div><input type="number" inputmode="numeric" id="tro_princ" value="1360" oninput="calcPerfo()"><div class="cell-unit">L</div></div>
     </div>
   </div>
 
@@ -283,8 +285,8 @@
   <div class="section">
     <div class="section-header">🔫 Canon</div>
     <div class="canon-row">
-      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb obus</div><input type="number" inputmode="numeric" id="nb_obus" value="0" min="0" oninput="calcPerfo()"></div>
-      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb caissons</div><input type="number" inputmode="numeric" id="nb_caissons" value="4" min="0" oninput="calcPerfo()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb obus<span class="input-warn-icon" id="warn_nb_obus">⚠️</span></div><input type="number" inputmode="numeric" id="nb_obus" value="0" min="0" oninput="calcPerfo()"></div>
+      <div><div class="pylon-label" style="margin-bottom:.3rem">Nb caissons<span class="input-warn-icon" id="warn_nb_caissons">⚠️</span></div><input type="number" inputmode="numeric" id="nb_caissons" value="4" min="0" oninput="calcPerfo()"></div>
       <div><div class="pylon-label" style="margin-bottom:.3rem">Masse canon</div><div style="font-family:ui-monospace,'SF Mono','Courier New',monospace;font-size:1rem;color:var(--accent);padding:.25rem 0" id="masse_canon">—</div></div>
     </div>
   </div>
@@ -324,12 +326,12 @@
     <div class="section-header">🌡️ Performances — Masse max admissible</div>
     <div class="perfo-inputs">
       <div class="perfo-input-cell">
-        <div class="cell-label">Température</div>
+        <div class="cell-label">Température<span class="input-warn-icon" id="warn_p_temp">⚠️</span></div>
         <input type="number" inputmode="numeric" id="p_temp" value="20" step="5" oninput="calcPerfo()">
         <div class="cell-unit">°C</div>
       </div>
       <div class="perfo-input-cell">
-        <div class="cell-label">Altitude densité</div>
+        <div class="cell-label">Altitude densité<span class="input-warn-icon" id="warn_p_alti">⚠️</span></div>
         <input type="number" inputmode="numeric" id="p_alti" value="1500" step="500" oninput="calcPerfo()">
         <div class="cell-unit">ft</div>
       </div>
@@ -383,12 +385,12 @@
   <div class="section">
     <div class="section-header">⛽ Carburant</div>
     <div class="row">
-      <div class="row-label">Kéro disponible</div>
+      <div class="row-label">Kéro disponible<span class="input-warn-icon" id="warn_kero_dispo">⚠️</span></div>
       <input type="number" inputmode="numeric" id="kero_dispo" value="1200" oninput="calc()">
       <div class="row-unit">L</div>
     </div>
     <div class="row">
-      <div class="row-label">Réserve 30min HOGE</div>
+      <div class="row-label">Réserve<span class="input-warn-icon" id="warn_reserve">⚠️</span></div>
       <input type="number" inputmode="numeric" id="reserve" value="230" oninput="calc()">
       <div class="row-unit">L</div>
     </div>
@@ -402,12 +404,12 @@
   <div class="section">
     <div class="section-header">🔥 Consommations</div>
     <div class="row">
-      <div class="row-label">Conso sur zone</div>
+      <div class="row-label">Conso sur zone<span class="input-warn-icon" id="warn_conso_zone">⚠️</span></div>
       <input type="number" inputmode="numeric" id="conso_zone" value="450" oninput="calc()">
       <div class="row-unit">L/h</div>
     </div>
     <div class="row">
-      <div class="row-label">Conso en transit</div>
+      <div class="row-label">Conso en transit<span class="input-warn-icon" id="warn_conso_transit">⚠️</span></div>
       <input type="number" inputmode="numeric" id="conso_transit" value="550" oninput="calc()">
       <div class="row-unit">L/h</div>
     </div>
@@ -416,7 +418,7 @@
   <div class="section">
     <div class="section-header">📍 Mise en place</div>
     <div class="row">
-      <div class="row-label">Distance zone d'action</div>
+      <div class="row-label">Distance zone d'action<span class="input-warn-icon" id="warn_dist_mep">⚠️</span></div>
       <input type="number" inputmode="numeric" id="dist_mep" value="70" oninput="calc()">
       <div class="row-unit">Nm</div>
     </div>
@@ -425,7 +427,7 @@
       <span><span class="sub-value" id="dist_mep_km">—</span><span class="sub-unit">km</span></span>
     </div>
     <div class="row">
-      <div class="row-label">Vitesse MEP</div>
+      <div class="row-label">Vitesse MEP<span class="input-warn-icon" id="warn_vit_mep">⚠️</span></div>
       <input type="number" inputmode="numeric" id="vit_mep" value="120" oninput="calc()">
       <div class="row-unit">Kt</div>
     </div>
@@ -448,7 +450,7 @@
   <div class="section">
     <div class="section-header">🔄 Retour / FARP</div>
     <div class="row">
-      <div class="row-label">Distance retour ou FARP</div>
+      <div class="row-label">Distance retour ou FARP<span class="input-warn-icon" id="warn_dist_ret">⚠️</span></div>
       <input type="number" inputmode="numeric" id="dist_ret" value="70" oninput="calc()">
       <div class="row-unit">Nm</div>
     </div>
@@ -457,7 +459,7 @@
       <span><span class="sub-value" id="dist_ret_km">—</span><span class="sub-unit">km</span></span>
     </div>
     <div class="row">
-      <div class="row-label">Vitesse RET</div>
+      <div class="row-label">Vitesse RET<span class="input-warn-icon" id="warn_vit_ret">⚠️</span></div>
       <input type="number" inputmode="numeric" id="vit_ret" value="120" oninput="calc()">
       <div class="row-unit">Kt</div>
     </div>
@@ -506,12 +508,17 @@
   <div class="section">
     <div class="section-header">🟡 Paramètres mission</div>
     <div class="row">
-      <div class="row-label">Kéro disponible</div>
+      <div class="row-label">Kéro disponible<span class="input-warn-icon" id="warn_r_kero">⚠️</span></div>
       <input type="number" inputmode="numeric" id="r_kero" value="2000" oninput="calcRange()">
       <div class="row-unit">L</div>
     </div>
     <div class="row">
-      <div class="row-label">Vi mise en place</div>
+      <div class="row-label">Réserve<span class="input-warn-icon" id="warn_r_reserve">⚠️</span></div>
+      <input type="number" inputmode="numeric" id="r_reserve" value="230" oninput="calcRange()">
+      <div class="row-unit">L</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Vi mise en place<span class="input-warn-icon" id="warn_r_vi_mep">⚠️</span></div>
       <input type="number" inputmode="numeric" id="r_vi_mep" value="80" oninput="calcRange()">
       <div class="row-unit">kt</div>
     </div>
@@ -520,12 +527,12 @@
       <span><span class="sub-value" id="r_vi_mep_kmh">—</span><span class="sub-unit">km/h</span></span>
     </div>
     <div class="row">
-      <div class="row-label">Conso à cette Vi</div>
+      <div class="row-label">Conso à cette Vi<span class="input-warn-icon" id="warn_r_conso_mep">⚠️</span></div>
       <input type="number" inputmode="numeric" id="r_conso_mep" value="510" oninput="calcRange()">
       <div class="row-unit">L/h</div>
     </div>
     <div class="row">
-      <div class="row-label">Vi retour</div>
+      <div class="row-label">Vi retour<span class="input-warn-icon" id="warn_r_vi_ret">⚠️</span></div>
       <input type="number" inputmode="numeric" id="r_vi_ret" value="145" oninput="calcRange()">
       <div class="row-unit">kt</div>
     </div>
@@ -534,22 +541,22 @@
       <span><span class="sub-value" id="r_vi_ret_kmh">—</span><span class="sub-unit">km/h</span></span>
     </div>
     <div class="row">
-      <div class="row-label">Conso à cette Vi</div>
+      <div class="row-label">Conso à cette Vi<span class="input-warn-icon" id="warn_r_conso_ret">⚠️</span></div>
       <input type="number" inputmode="numeric" id="r_conso_ret" value="550" oninput="calcRange()">
       <div class="row-unit">L/h</div>
     </div>
     <div class="big-input-row">
       <div class="big-input-label">
-        Playtime désiré sur zone
+        Playtime désiré sur zone<span class="input-warn-icon" id="warn_r_playtime">⚠️</span>
         <small id="r_playtime_min_label">→ — min</small>
       </div>
       <div class="big-input-wrap">
-        <input type="number" inputmode="numeric" class="big" id="r_playtime" value="0.3" step="0.1" oninput="calcRange()">
+        <input type="number" inputmode="decimal" class="big" id="r_playtime" value="0.3" step="0.1" oninput="calcRange()">
         <span class="big-input-unit">h</span>
       </div>
     </div>
     <div class="row">
-      <div class="row-label">Conso sur zone (ZA)</div>
+      <div class="row-label">Conso sur zone (ZA)<span class="input-warn-icon" id="warn_r_conso_zone">⚠️</span></div>
       <input type="number" inputmode="numeric" id="r_conso_zone" value="450" oninput="calcRange()">
       <div class="row-unit">L/h</div>
     </div>
@@ -591,14 +598,19 @@
   <div class="section">
     <div class="section-header">🔧 Paramètres consommation</div>
     <div class="row">
-      <div class="row-label">Conso sur zone (ZA)</div>
+      <div class="row-label">Conso sur zone (ZA)<span class="input-warn-icon" id="warn_os_conso_za">⚠️</span></div>
       <input type="number" inputmode="numeric" id="os_conso_za" value="400" oninput="calcOnStation()">
       <div class="row-unit">L/h</div>
     </div>
     <div class="row">
-      <div class="row-label">Conso transit / retour</div>
+      <div class="row-label">Conso transit / retour<span class="input-warn-icon" id="warn_os_conso_transit">⚠️</span></div>
       <input type="number" inputmode="numeric" id="os_conso_transit" value="600" oninput="calcOnStation()">
       <div class="row-unit">L/h</div>
+    </div>
+    <div class="row">
+      <div class="row-label">Réserve<span class="input-warn-icon" id="warn_os_reserve">⚠️</span></div>
+      <input type="number" inputmode="numeric" id="os_reserve" value="230" oninput="calcOnStation()">
+      <div class="row-unit">L</div>
     </div>
   </div>
 
@@ -608,7 +620,7 @@
 
     <div class="big-input-row">
       <div class="big-input-label">
-        Kéro disponible
+        Kéro disponible<span class="input-warn-icon" id="warn_os_kero">⚠️</span>
         <small>carburant restant sur zone</small>
       </div>
       <div class="big-input-wrap">
@@ -619,7 +631,7 @@
 
     <div class="big-input-row">
       <div class="big-input-label">
-        Check CALC retour
+        Check CALC retour<span class="input-warn-icon" id="warn_os_check_ret">⚠️</span>
         <small>temps de vol estimé pour rentrer</small>
       </div>
       <div class="big-input-wrap">
@@ -948,7 +960,9 @@ function switchTab(id,btn){
 
 function calc(){
   const get=id=>parseFloat(document.getElementById(id).value)||0;
-  const kero_dispo=get('kero_dispo'),reserve=get('reserve'),conso_zone=get('conso_zone'),
+  const reserveEl=document.getElementById('reserve');
+  const reserve=reserveEl&&reserveEl.value!==''?parseFloat(reserveEl.value):230;
+  const kero_dispo=get('kero_dispo'),conso_zone=get('conso_zone'),
         conso_transit=get('conso_transit'),dist_mep=get('dist_mep'),vit_mep=get('vit_mep'),
         dist_ret=get('dist_ret'),vit_ret=get('vit_ret');
   const kero_util=kero_dispo-reserve;
@@ -986,7 +1000,9 @@ function calcRange(){
   const get=id=>parseFloat(document.getElementById(id).value)||0;
   const kero=get('r_kero'),vi_mep=get('r_vi_mep'),c_mep=get('r_conso_mep'),
         vi_ret=get('r_vi_ret'),c_ret=get('r_conso_ret'),
-        playtime=get('r_playtime'),c_zone=get('r_conso_zone'),reserve=230;
+        playtime=get('r_playtime'),c_zone=get('r_conso_zone');
+  const r_reserveEl=document.getElementById('r_reserve');
+  const reserve=r_reserveEl&&r_reserveEl.value!==''?parseFloat(r_reserveEl.value):230;
   document.getElementById('r_vi_mep_kmh').textContent=fmt(vi_mep*1.852,0);
   document.getElementById('r_vi_ret_kmh').textContent=fmt(vi_ret*1.852,0);
   document.getElementById('r_playtime_min_label').textContent=`→ ${fmt(playtime*60,0)} min`;
@@ -1011,7 +1027,8 @@ function calcOnStation(){
   const conso_trans = get('os_conso_transit');
   const kero        = get('os_kero');
   const check_ret   = get('os_check_ret'); // en minutes
-  const reserve     = 230; // fixe
+  const os_reserveEl=document.getElementById('os_reserve');
+  const reserve=os_reserveEl&&os_reserveEl.value!==''?parseFloat(os_reserveEl.value):230;
 
   // Top RTB = kéro pour rentrer + réserve
   const top_rtb = (check_ret / 60) * conso_trans + reserve;
@@ -1040,8 +1057,8 @@ function calcOnStation(){
 }
 
 const FAIS_IDS=['kero_dispo','reserve','conso_zone','conso_transit','dist_mep','vit_mep','dist_ret','vit_ret'];
-const RANGE_IDS=['r_kero','r_vi_mep','r_conso_mep','r_vi_ret','r_conso_ret','r_playtime','r_conso_zone'];
-const OS_IDS=['os_conso_za','os_conso_transit','os_kero','os_check_ret'];
+const RANGE_IDS=['r_kero','r_reserve','r_vi_mep','r_conso_mep','r_vi_ret','r_conso_ret','r_playtime','r_conso_zone'];
+const OS_IDS=['os_conso_za','os_conso_transit','os_reserve','os_kero','os_check_ret'];
 document.addEventListener('input',function(e){
   if(PERFO_IDS.includes(e.target.id)){calcPerfo();const d={};PERFO_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('perfo_had_vals',JSON.stringify(d));}catch(err){}}
   if(FAIS_IDS.includes(e.target.id)){const d={};FAIS_IDS.forEach(id=>{const el=document.getElementById(id);if(el)d[id]=el.value;});try{localStorage.setItem('faisabilite_vals',JSON.stringify(d));}catch(err){}}
@@ -1058,8 +1075,27 @@ try{const s=JSON.parse(localStorage.getItem('faisabilite_vals')||'{}');if(Object
 try{const s=JSON.parse(localStorage.getItem('range_vals')||'{}');if(Object.keys(s).length>0){RANGE_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
 try{const s=JSON.parse(localStorage.getItem('os_vals')||'{}');if(Object.keys(s).length>0){OS_IDS.forEach(id=>{if(s[id]!==undefined){const el=document.getElementById(id);if(el)el.value=s[id];}});}}catch(e){}
 
+// ── WARN ICONS sur cases vides ──
+const WARN_IDS = [
+  'masse_machine','masse_pilote','masse_gunner','masse_soute','tro_princ',
+  'nb_obus','nb_caissons','p_temp','p_alti',
+  'kero_dispo','reserve','conso_zone','conso_transit','dist_mep','vit_mep','dist_ret','vit_ret',
+  'r_kero','r_reserve','r_vi_mep','r_conso_mep','r_vi_ret','r_conso_ret','r_playtime','r_conso_zone',
+  'os_conso_za','os_conso_transit','os_reserve','os_kero','os_check_ret'
+];
+function checkWarnings(){
+  WARN_IDS.forEach(id=>{
+    const el=document.getElementById(id);
+    const icon=document.getElementById('warn_'+id);
+    if(!el||!icon)return;
+    icon.classList.toggle('visible', el.value==='');
+  });
+}
+document.addEventListener('input', checkWarnings);
+
 updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
 calcPerfo();calc();calcRange();calcOnStation();
+checkWarnings();
 </script>
 <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}</script>
 </body>

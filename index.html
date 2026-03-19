@@ -193,6 +193,22 @@
   .perfo-badge { font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:.65rem; font-weight:700; padding:.15rem .4rem; border-radius:3px; margin-left:.5rem; }
   .perfo-badge.ok { background:rgba(0,255,157,.12); color:var(--accent2); border:1px solid rgba(0,255,157,.3); }
   .perfo-badge.nok { background:rgba(255,71,87,.12); color:var(--red); border:1px solid rgba(255,71,87,.3); }
+
+  /* ── Bannière mise à jour ── */
+  #update-banner {
+    display:none; position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%);
+    z-index:9999; background:var(--navy3); border:1.5px solid var(--accent);
+    border-radius:10px; padding:0.7rem 1.1rem; box-shadow:0 4px 24px rgba(0,0,0,0.5);
+    display:none; align-items:center; gap:0.8rem; white-space:nowrap;
+    font-family:ui-monospace,'SF Mono','Courier New',monospace;
+  }
+  #update-banner.show { display:flex; }
+  #update-banner span { font-size:0.78rem; color:var(--text); letter-spacing:0.05em; }
+  #update-banner button {
+    background:var(--accent); color:#000; border:none; border-radius:6px;
+    font-family:ui-monospace,'SF Mono','Courier New',monospace; font-size:0.75rem;
+    font-weight:700; letter-spacing:0.08em; padding:0.35rem 0.8rem; cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -1098,6 +1114,27 @@ updatePylon('or');updatePylon('ir');updatePylon('il');updatePylon('ol');
 calcPerfo();calc();calcRange();calcOnStation();
 checkWarnings();
 </script>
-<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}</script>
+<script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/VAMPIRE/sw.js').then(reg=>{
+  reg.addEventListener('updatefound',()=>{
+    const newSW=reg.installing;
+    newSW.addEventListener('statechange',()=>{
+      if(newSW.state==='installed'&&navigator.serviceWorker.controller){
+        document.getElementById('update-banner').classList.add('show');
+      }
+    });
+  });
+  document.getElementById('btn-update').addEventListener('click',()=>{
+    if(reg.waiting){
+      reg.waiting.postMessage('SKIP_WAITING');
+    }
+  });
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    window.location.reload();
+  });
+}).catch(()=>{});}</script>
+<div id="update-banner">
+  <span>🔄 Mise à jour disponible</span>
+  <button id="btn-update">INSTALLER</button>
+</div>
 </body>
 </html>

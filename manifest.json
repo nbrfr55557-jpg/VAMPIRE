@@ -1,0 +1,17 @@
+{
+  "name": "VAMPIRE HAD",
+  "short_name": "VAMPIRE HAD",
+  "start_url": "/VAMPIRE/index.html",
+  "scope": "/VAMPIRE/",
+  "display": "standalone",
+  "background_color": "#0d1b2a",
+  "theme_color": "#0d1b2a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/VAMPIRE/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

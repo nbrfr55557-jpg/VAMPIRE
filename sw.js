@@ -1,4 +1,4 @@
-const CACHE = 'vampire-v7';
+const CACHE = 'vampire-v8';
 const FILES = ['/VAMPIRE/index.html'];
 
 self.addEventListener('install', e => {

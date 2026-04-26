@@ -823,11 +823,11 @@ function calcVZ(masse, temp, alti) {
   return lookupVZ(VZ_6300, VZ_ALTI_6300, temp, alti);                     // bloc 6400–6600 kg
 }
 const DONNEES={
-  VIDE:{masse:0,type:null,max:0},PLM:{masse:93.5,type:'MISSILES',max:2},
+  VIDE:{masse:0,type:null,max:0},PLM:{masse:95,type:'MISSILES',max:2},
   PLR12:{masse:43,type:'ROQUETTES',max:12},PLR22:{masse:65,type:'ROQUETTES',max:22},
   FERRY:{masse:37,type:'QTE TR0',max:365},CHAISE:{masse:66,type:'HELLFIRE',max:4},
 };
-const MUNIT={RKT:7.75,OBUS:0.55,CAISSON:3.5,HELLFIRE:47,MISTRAL:19.5};
+const MUNIT={RKT:7.75,OBUS:0.55,CAISSON:3.5,HELLFIRE:47,MISTRAL:25};
 const HV=[
   {masse:5500,vmax:3,hmax:140,hmin:130},{masse:5600,vmax:6,hmax:160,hmin:90},
   {masse:5700,vmax:11,hmax:175,hmin:60},{masse:5800,vmax:13,hmax:190,hmin:50},

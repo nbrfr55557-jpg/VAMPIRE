@@ -708,27 +708,6 @@
 <div class="content">
 
   <div class="section">
-    <div class="section-header">🧭 Conversion DMS ↔ DMm</div>
-    <div class="coord-conv">
-      <div class="coord-field">
-        <div class="coord-field-label"><strong>DMS</strong>Secondes</div>
-        <input type="number" inputmode="decimal" id="coord_sec" class="coord-input" placeholder="0–59" min="0" max="59.99" step="0.01" oninput="convSecToMil()">
-        <div class="coord-unit">″ (sec)</div>
-      </div>
-      <div class="coord-arrow">⇄</div>
-      <div class="coord-field">
-        <div class="coord-field-label"><strong>DMm</strong>Millièmes</div>
-        <input type="number" inputmode="numeric" id="coord_mil" class="coord-input" placeholder="0–999" min="0" max="999" step="1" oninput="convMilToSec()">
-        <div class="coord-unit">/1000 min</div>
-      </div>
-    </div>
-    <div class="coord-hint">
-      Saisir dans un champ → l'autre se calcule.<br>
-      Plage : 0 à 59,99″ ↔ 0 à 999 millièmes.
-    </div>
-  </div>
-
-  <div class="section">
     <div class="section-header">📋 Tableau de référence</div>
     <div class="coord-table-wrap">
       <table class="coord-table" id="coord_ref_table">
@@ -1209,7 +1188,8 @@ function buildCoordRefTable(){
     for(let c = 0; c < cols; c++){
       const sec = r + c * rows;
       const mil = Math.round(sec * 1000 / 60);
-      html += `<td class="sec">${sec}″</td><td class="mil">${mil}</td>`;
+      const mil2 = String(Math.round(mil / 10)).padStart(2,'0');
+      html += `<td class="sec">${String(sec).padStart(2,'0')}″</td><td class="mil">${mil2}</td>`;
     }
     html += '</tr>';
   }
